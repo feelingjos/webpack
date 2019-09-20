@@ -42,11 +42,18 @@ module.exports = {
 	module: {
 		rules: [
 			{
-				test: /.(js|jsx)$/,
+				//test: /.(js|jsx)$/,
+				test: /\.js$/,
 				include: [],
-				loader: 'babel-loader',
-
-				options: {
+				//loader: 'babel-loader',
+				use: {
+                    loader: 'babel-loader',
+                    /*options: {
+                        plugins: ['syntax-dynamic-import'],
+                    }*/
+                },
+                exclude: '/node_modules/' /*,
+                options: {
 					plugins: ['syntax-dynamic-import'],
 
 					presets: [
@@ -57,7 +64,7 @@ module.exports = {
 							}
 						]
 					]
-				}
+				}*/
 			}
 		]
 	},
