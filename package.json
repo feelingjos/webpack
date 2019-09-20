@@ -2,8 +2,9 @@
   "version": "1.0.0",
   "description": "My webpack project",
   "scripts": {
-    "build": "webpack",
-    "start": "webpack-dev-server"
+    "build": "npm run clean && webpack",
+    "start": "webpack-dev-server",
+    "clean": "shx rm -rf ./dist"
   },
   "devDependencies": {
     "@babel/core": "^7.6.0",
@@ -18,5 +19,8 @@
     "webpack": "^4.40.2",
     "webpack-cli": "^3.3.9",
     "webpack-dev-server": "^3.8.0"
+  },
+  "dependencies": {
+    "shx": "^0.3.2"
   }
 }
