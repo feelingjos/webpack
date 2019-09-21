@@ -1,6 +1,6 @@
 //es module
-//import sun from './src/scripts/sun.js'
-import '@babel/polyfill'
+import sun from './src/scripts/sun.js'
+//import '@babel/polyfill'
 //import es6 from './src/scripts/es6.js'
 
 //commonjs
@@ -15,14 +15,19 @@ console.log('sun(23,24)',sun(23,24))
 console.log('minus(24,17)',minus(24,17))
 */
 
+console.log('sun(23,24)',sun(23,24))
+
 console.log("Hello World from y main file!")
 
 
-let func = () => {}
+let funcs = () => {}
 const NUM = 45
 let arr = [1,2,4]
 let arrB = arr.map(item => item * 2)
 
-arr.includes(8)
+//arr.includes(8)
 
-console.log(new Set(arrB))
+console.log(new Set(arrB))/**/
+
+//-----------------------------
+

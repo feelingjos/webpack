@@ -43,33 +43,35 @@ module.exports = {
 		rules: [
 			{
 				//test: /.(js|jsx)$/,
-				test: /\.js$/,
-				include: [],
-				//loader: 'babel-loader',
-				use: {
-                    loader: 'babel-loader',
-                    /*options: {
+				//test: /\.js$/,
+                test: /\.m?js$/,
+				//include: [],
+				//loaders: ['babel-loader'],
+                use: {
+                    loader: 'babel-loader'/*
+                    options: {
                         plugins: ['syntax-dynamic-import'],
                     }*/
                 },
+                //include: path.join(__dirname, 'src'),
                 exclude: '/node_modules/' /*,
                 options: {
-					plugins: ['syntax-dynamic-import'],
+                    plugins: ['syntax-dynamic-import'],
 
-					presets: [
-						[
-							'@babel/preset-env',
-							{
-								modules: false
-							}
-						]
-					]
-				}*/
+                    presets: [
+                        [
+                            '@babel/preset-env',
+                            {
+                                modules: false
+                            }
+                        ]
+                    ]
+                }*/
 			}
 		]
 	},
 
-	optimization: {
+	/*optimization: {
 		splitChunks: {
 			cacheGroups: {
 				vendors: {
@@ -83,7 +85,7 @@ module.exports = {
 			minSize: 30000,
 			name: true
 		}
-	},
+	},*/
 
 	devServer: {
 		open: true
