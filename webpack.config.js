@@ -1,5 +1,5 @@
-const path = require('path');
-const webpack = require('webpack');
+const path = require('path')
+const webpack = require('webpack')
 
 /*
  * SplitChunksPlugin is enabled by default and replaced
@@ -14,7 +14,8 @@ const webpack = require('webpack');
  *
  */
 
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const ExtractTextWebpackPlugin = require('extract-text-webpack-plugin')
 
 /*
  * We've enabled HtmlWebpackPlugin for you! This generates a html
@@ -40,7 +41,10 @@ module.exports = {
 
 	plugins: [
 		new webpack.ProgressPlugin(),
-		new HtmlWebpackPlugin()/*,
+		new HtmlWebpackPlugin(),
+		new ExtractTextWebpackPlugin({
+			filename: '[name].min.css'
+		})/*,
 	    new webpack.optimize.CommonsChunkPlugin({
 			name: 'common', //公共代码打包
 			minChunks: 2   //执行2次后再打包
@@ -117,26 +121,27 @@ module.exports = {
 			},
 			{
 				test: /\.less$/,
-				use: [
-                    {
+				use: ExtractTextWebpackPlugin.extract({
+					fallback:{
                         loader: 'style-loader',
                         options: {
-                            insertInto: '#body',
                             singleton: true,
                             transform : './css.transform.js'
                         }
                     },
-                    {
-                        loader: 'css-loader',
-                        options: {
-                            //minimize: true,//压缩
-                            modules: true//模块引用标签样式
+					use:[
+                        {
+                            loader: 'css-loader',
+                            options: {
+                                //minimize: true,//压缩
+                                modules: true//模块引用标签样式
+                            }
+                        },
+                        {
+                            loader: 'less-loader'
                         }
-                    },
-					{
-						loader: 'less-loader'
-					}
-				]
+                    ]
+				})
 			}
 		]
 	},
