@@ -88,7 +88,7 @@ module.exports = {
 					{
                         loader: 'style-loader',
                         options: {
-                        	insertInto: '#body',
+                        	//insertInto: '#body',
 							singleton: true,
 							transform : './css.transform.js'
 						}
@@ -96,9 +96,9 @@ module.exports = {
 					{
 						loader: 'css-loader',
                         options: {
-							minimize: true,//压缩
-							modules: true,//模块引用标签样式
-							localIdentName: '[path][name]_[local]_[hash:base64:5]'//生成名称控制
+							//minimize: true,//压缩
+							modules: true//,//模块引用标签样式
+							//localIdentName: '[path][name]_[local]_[hash:base64:5]'//生成名称控制
 						}
                     }
 					/*{
@@ -113,6 +113,29 @@ module.exports = {
 					{
 						loader: 'css-loader'
 					}*/
+				]
+			},
+			{
+				test: /\.less$/,
+				use: [
+                    {
+                        loader: 'style-loader',
+                        options: {
+                            insertInto: '#body',
+                            singleton: true,
+                            transform : './css.transform.js'
+                        }
+                    },
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            //minimize: true,//压缩
+                            modules: true//模块引用标签样式
+                        }
+                    },
+					{
+						loader: 'less-loader'
+					}
 				]
 			}
 		]

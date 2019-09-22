@@ -72,3 +72,5 @@ setInterval(function(){
     }
     flag = !flag
 },500)*/
+
+import './src/less/base.less'
