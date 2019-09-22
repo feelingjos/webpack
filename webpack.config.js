@@ -29,7 +29,8 @@ module.exports = {
 	mode: 'development',
 
 	entry: {
-		index: './index.js'
+		index: './index.js',
+		indexts: './src/index.ts'
 	},
 
 	output: {
@@ -67,11 +68,17 @@ module.exports = {
                         ]
                     ]
                 }*/
+			},
+			{
+				test: /\.tsx?$/,
+				use:{
+					loader: 'ts-loader'
+				}
 			}
 		]
 	},
 
-	/*optimization: {
+	optimization: {
 		splitChunks: {
 			cacheGroups: {
 				vendors: {
@@ -85,7 +92,7 @@ module.exports = {
 			minSize: 30000,
 			name: true
 		}
-	},*/
+	},
 
 	devServer: {
 		open: true
