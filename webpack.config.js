@@ -38,7 +38,14 @@ module.exports = {
 		path: path.resolve(__dirname, 'dist')
 	},
 
-	plugins: [new webpack.ProgressPlugin(), new HtmlWebpackPlugin()],
+	plugins: [
+		new webpack.ProgressPlugin(),
+		new HtmlWebpackPlugin(),
+	    new webpack.optimize.CommonsChunkPlugin({
+			name: 'common', //公共代码打包
+			minChunks: 2   //执行2次后再打包
+		})
+	],
 
 	module: {
 		rules: [
