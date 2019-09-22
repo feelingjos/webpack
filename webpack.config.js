@@ -29,8 +29,8 @@ module.exports = {
 	mode: 'development',
 
 	entry: {
-		index: './index.js',
-		indexts: './src/index.ts'
+		index: './index.js'/*,
+		indexts: './src/index.ts'*/
 	},
 
 	output: {
@@ -40,11 +40,11 @@ module.exports = {
 
 	plugins: [
 		new webpack.ProgressPlugin(),
-		new HtmlWebpackPlugin(),
+		new HtmlWebpackPlugin()/*,
 	    new webpack.optimize.CommonsChunkPlugin({
 			name: 'common', //公共代码打包
 			minChunks: 2   //执行2次后再打包
-		})
+		})*/
 	],
 
 	module: {
@@ -81,6 +81,39 @@ module.exports = {
 				use:{
 					loader: 'ts-loader'
 				}
+			},
+			{
+				test: /\.css/,
+				use: [
+					{
+                        loader: 'style-loader',
+                        options: {
+                        	insertInto: '#body',
+							singleton: true,
+							transform : './css.transform.js'
+						}
+                    },
+					{
+						loader: 'css-loader',
+                        options: {
+							minimize: true,//压缩
+							modules: true,//模块引用标签样式
+							localIdentName: '[path][name]_[local]_[hash:base64:5]'//生成名称控制
+						}
+                    }
+					/*{
+                        loader: 'style-loader/url'
+                    },
+					{
+						loader: 'file-loader'
+					}*/
+					/*{
+                        loader: 'style-loader/useable'
+                    },
+					{
+						loader: 'css-loader'
+					}*/
+				]
 			}
 		]
 	},

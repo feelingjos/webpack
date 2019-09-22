@@ -1,3 +1,4 @@
+/*
 //es module
 import sun from './src/scripts/sun.js'
 //import '@babel/polyfill'
@@ -6,14 +7,14 @@ import sun from './src/scripts/sun.js'
 //commonjs
 //var minus = require('./src/scripts/minus')
 
-/*
+/!*
 require(['./src/scripts/muti'],function (muti) {
     console.log('muti(2,3)',muti(2,3))
 })
 
 console.log('sun(23,24)',sun(23,24))
 console.log('minus(24,17)',minus(24,17))
-*/
+*!/
 
 console.log('sun(23,24)',sun(23,24))
 
@@ -27,7 +28,7 @@ let arrB = arr.map(item => item * 2)
 
 //arr.includes(8)
 
-console.log(new Set(arrB))/**/
+console.log(new Set(arrB))/!**!/
 
 //-----------------------------
 
@@ -53,4 +54,21 @@ console.log('装饰器', user.annotated)
 
 new Promise(resolve => console.log('promise'))
 
-Array.from('foo')
+Array.from('foo')*/
+
+//import './src/css/base.css'
+import base from './src/css/base.css'
+
+//base.use()
+
+/*
+var flag = false;
+
+setInterval(function(){
+    if(flag){
+        base.unuse()
+    }else{
+        base.use()
+    }
+    flag = !flag
+},500)*/
