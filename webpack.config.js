@@ -44,7 +44,8 @@ module.exports = {
 		new HtmlWebpackPlugin(),
 		new ExtractTextWebpackPlugin({
 			filename: '[name].min.css'
-		})/*,
+		})
+		/*,
 	    new webpack.optimize.CommonsChunkPlugin({
 			name: 'common', //公共代码打包
 			minChunks: 2   //执行2次后再打包

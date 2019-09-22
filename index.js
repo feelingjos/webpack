@@ -74,3 +74,7 @@ setInterval(function(){
 },500)*/
 
 import './src/less/base.less'
+import { a } from './src/common/util'
+
+console.log(a());
+
