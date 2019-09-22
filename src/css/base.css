@@ -1,3 +1,4 @@
 html{
     background: red;
+    transition: transform 1s;
 }

@@ -104,6 +104,15 @@ module.exports = {
 							modules: true//,//模块引用标签样式
 							//localIdentName: '[path][name]_[local]_[hash:base64:5]'//生成名称控制
 						}
+                    },
+                    {
+                        loader: 'postcss-loader',
+                        options:{
+                            ident: 'postcss',
+                            plugins: [
+                                require('autoprefixer')()
+                            ]
+                        }
                     }
 					/*{
                         loader: 'style-loader/url'
@@ -134,9 +143,19 @@ module.exports = {
                             loader: 'css-loader',
                             options: {
                                 //minimize: true,//压缩
-                                modules: true//模块引用标签样式
+                                //modules: true//模块引用标签样式
                             }
                         },
+						{
+					 		loader: 'postcss-loader',
+							options:{
+								ident: 'postcss',
+								plugins: [
+									//require('autoprefixer')(),
+									require('postcss-cssnext')()
+								]
+							}
+						},
                         {
                             loader: 'less-loader'
                         }
