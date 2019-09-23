@@ -41,7 +41,14 @@ module.exports = {
 
 	plugins: [
 		new webpack.ProgressPlugin(),
-		new HtmlWebpackPlugin(),
+		new HtmlWebpackPlugin({
+			filename: 'index.html',
+			template: './index.html',
+			chunks: ['index'],//指定入口插入
+			minify: {
+				collapseWhitespace: true //压缩空格
+			}
+		}),
 		new ExtractTextWebpackPlugin({
 			filename: '[name].min.css'
 		})
@@ -153,7 +160,11 @@ module.exports = {
 								ident: 'postcss',
 								plugins: [
 									//require('autoprefixer')(),
-									require('postcss-cssnext')()
+									/*require('postcss-sprites')({
+										spritePath: 'dist/sprites',
+										retina: true
+									}),//雪碧图*/
+									require('postcss-cssnext')()//新语法
 								]
 							}
 						},
@@ -162,6 +173,60 @@ module.exports = {
                         }
                     ]
 				})
+			},
+			{
+				test: /\.(png|jpg|jpeg|gif)$/,
+				use: [
+					/*{
+                        loader: 'file-loader',
+                        options: {
+                        	publicPath: '',
+                        	outputPath: './image',
+                        	useRelativePath: true
+						}
+                    }*/
+					{
+                        loader: 'url-loader',
+                        /*options: {
+                        	limit: 1000
+						}*/
+                    },
+					{
+						loader: 'img-loader',
+                        options: {
+							pngquant:{
+								quality: 10
+							},
+                            plugins: [
+                                /*require('imagemin-gifsicle')({
+                                    interlaced: false
+                                }),
+                                require('imagemin-mozjpeg')({
+                                    progressive: true,
+                                    arithmetic: false
+                                }),
+                                require('imagemin-pngquant')({
+                                    floyd: 0.5,
+                                    speed: 2
+                                })*/
+                            ]
+						}
+                    }
+				]
+			},
+			{
+				test: /\.(eot|woff2|woff|ttf|svg)/,
+				use: [
+					{
+                        loader: "url-loader",
+                        options: {
+                        	name: '[name]-[hash:5].[ext]',
+                            publicPath: '',
+                            outputPath: './image',
+                            useRelativePath: true
+						}
+                    }
+				]
 			}
 		]
 	},
