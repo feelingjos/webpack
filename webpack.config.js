@@ -13,7 +13,7 @@ module.exports = {
 	},
 
 	output: {
-		filename: '[name].[chunkhash].js',
+		filename: '[name].[hash].js',
 		path: path.resolve(__dirname, 'dist')
 	},
 
@@ -32,7 +32,9 @@ module.exports = {
 		}),
 		new ExtractTextWebpackPlugin({
 			filename: '[name].min.css'
-		})
+		}),
+		new webpack.HotModuleReplacementPlugin(),//热部署 刷新
+		new webpack.NamedModulesPlugin()
 		/*,
 	    new webpack.optimize.CommonsChunkPlugin({
 			name: 'common', //公共代码打包
@@ -239,9 +241,37 @@ module.exports = {
 			//name: 'manifest'
 		}
 	},
-
+    devtool: 'eval',//SourceMap 功能
 	devServer: {
 		open: true,
+		/*proxy: {
+			'api': {
+				target: 'https://m.weibo.cn',
+				changeOrigin: true,
+				logLevel: 'debug',
+				pathRewrite: {
+				    '^/comments': '/api/comments'
+				},
+				headers: {
+				    'Cookie': 'asdfasdf....'
+				}
+			}
+		},代理接口*/
+		//historyApiFallback: true, 任意路径不会报错
+		/*historyApiFallback: {
+			rewrites: [
+				{
+                    from: '/pages/a',//支持正则
+					//to: '/pages/a.html'
+					to: function(context){
+                    	return "";
+                    }
+				}
+			]
+		},*/
+		hot: true,
+		hotOnly: true,
 		port: 9001
+		//inline: false//页面进度条
 	}
 };
