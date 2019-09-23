@@ -43,10 +43,10 @@ module.exports = {
 		new webpack.ProgressPlugin(),
 		new HtmlWebpackPlugin({
 			filename: 'index.html',
-			//template: 'index.html',
+			template: './src/index.html',
 			chunks: ['index'],//指定入口插入
 			minify: {
-				collapseWhitespace: true //压缩空格
+				collapseWhitespace: false //压缩空格
 			}
 		}),
 		new ExtractTextWebpackPlugin({
