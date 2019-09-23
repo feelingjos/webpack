@@ -16,6 +16,7 @@ const webpack = require('webpack')
 
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ExtractTextWebpackPlugin = require('extract-text-webpack-plugin')
+const HtmlInlinkChunkPlugin = require('html-webpack-inline-chunk-plugin')
 
 /*
  * We've enabled HtmlWebpackPlugin for you! This generates a html
@@ -41,6 +42,9 @@ module.exports = {
 
 	plugins: [
 		new webpack.ProgressPlugin(),
+		/*new HtmlInlinkChunkPlugin({
+			inlineChunks: ['manifest']
+		}),*/
 		new HtmlWebpackPlugin({
 			filename: 'index.html',
 			template: './src/index.html',
@@ -223,7 +227,18 @@ module.exports = {
                         	name: '[name]-[hash:5].[ext]',
                             publicPath: '',
                             outputPath: './image',
-                            useRelativePath: true
+                            useRelativePath: true//不同引用生成不同路径html/css
+						}
+                    }
+				]
+			},
+			{
+				test: /\.html$/,
+				use: [
+					{
+						loader: 'html-loader',
+                        options: {
+							attrs: ['img:src']
 						}
                     }
 				]
@@ -239,11 +254,12 @@ module.exports = {
 					test: /[\\/]node_modules[\\/]/
 				}
 			},
-
 			chunks: 'async',
+			//chunks: 'manifest',
 			minChunks: 1,
 			minSize: 30000,
 			name: true
+			//name: 'manifest'
 		}
 	},
 
