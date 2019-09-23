@@ -34,7 +34,7 @@ module.exports = {
 			filename: '[name].min.css'
 		}),
 		new webpack.HotModuleReplacementPlugin(),//热部署 刷新
-		new webpack.NamedModulesPlugin()
+		new webpack.NamedModulesPlugin() //打印日志
 		/*,
 	    new webpack.optimize.CommonsChunkPlugin({
 			name: 'common', //公共代码打包
