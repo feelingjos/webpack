@@ -46,8 +46,8 @@ module.exports = {
 		rules: [
 			{
 				//test: /.(js|jsx)$/,
-				//test: /\.js$/,
-                test: /\.m?js$/,
+				test: /\.js$/,
+                //test: /\.m?js$/,
 				//include: [],
 				//loaders: ['babel-loader'],
                 use: {
@@ -56,6 +56,12 @@ module.exports = {
                         plugins: ['syntax-dynamic-import'],
                     }*/
                 },
+				/*{
+					loader: 'eslint-loader',
+                    options: {
+						formatter: require('eslint-friendly-formatter')
+					}
+                },*/
                 //include: path.join(__dirname, 'src'),
                 exclude: '/node_modules/' /*,
                 options: {
