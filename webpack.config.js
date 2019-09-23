@@ -43,7 +43,7 @@ module.exports = {
 		new webpack.ProgressPlugin(),
 		new HtmlWebpackPlugin({
 			filename: 'index.html',
-			template: './index.html',
+			//template: 'index.html',
 			chunks: ['index'],//指定入口插入
 			minify: {
 				collapseWhitespace: true //压缩空格
