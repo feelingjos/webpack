@@ -3,6 +3,7 @@
   "description": "My webpack project",
   "scripts": {
     "pages": "npm run clean && webpack --config build/webpack.build.pages.js",
+    "single": "npm run clean && webpack --config build/webpack.build.single.js",
     "build": "npm run clean && webpack --env production --config build/webpack.common.conf.js",
     "start": "webpack-dev-server --env development --config build/webpack.common.conf.js",
     "clean": "shx rm -rf ./dist"
