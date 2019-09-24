@@ -147,7 +147,10 @@ const generateConfig = env => {
         },
         plugins: [
             extractLess,
-            new HtmlWebpackPlugin()
+            new HtmlWebpackPlugin({
+                filename: 'index.html',
+                template: './src/index.html',
+            })
         ]
     }
 }
