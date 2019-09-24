@@ -1,7 +1,6 @@
 const productionConfig = require('./webpack.prod.conf')
 const developmentConfig = require('./webpack.dev.conf')
 const path = require('path')
-
 const merge = require('webpack-merge')
 const ExtractTextWebpackPlugin = require('extract-text-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
