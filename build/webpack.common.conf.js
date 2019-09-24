@@ -72,7 +72,8 @@ const generateConfig = env => {
 
         output: {
             filename: '[name].[hash].js',
-            path: path.resolve(__dirname, 'dist')
+            publicPath: '',
+            path: path.resolve(__dirname, '../dist')
         },
 
         module: {
