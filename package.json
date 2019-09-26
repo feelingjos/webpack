@@ -2,10 +2,8 @@
   "version": "1.0.0",
   "description": "My webpack project",
   "scripts": {
-    "pages": "npm run clean && webpack --config build/webpack.build.pages.js",
-    "single": "npm run clean && webpack --config build/webpack.build.single.js",
-    "build": "npm run clean && webpack --env production --config build/webpack.common.conf.js",
-    "start": "webpack-dev-server --env development --config build/webpack.common.conf.js",
+    "build": "npm run clean && webpack --mode production --config webpack.config.js",
+    "start": "webpack-dev-server --mode development --config webpack.config.js",
     "clean": "shx rm -rf ./dist"
   },
   "devDependencies": {
@@ -18,6 +16,7 @@
     "autoprefixer": "^9.6.1",
     "awesome-typescript-loader": "^5.2.1",
     "babel-loader": "^8.0.6",
+    "copy-webpack-plugin": "^5.0.4",
     "css-loader": "^3.2.0",
     "cssnano": "^4.1.10",
     "eslint": "^6.4.0",

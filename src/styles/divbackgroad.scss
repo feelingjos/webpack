@@ -1,0 +1,17 @@
+$bgColor: red !default;
+body {
+  margin: 0;
+  padding: 0;
+}
+html {
+  background-color: $bgColor;
+}
+.img-1{
+  background: url("../images/sort_desc_disabled.png");
+}
+.img-2{
+  background: url("../images/sort_desc_disabled.png");
+}
+.img-3{
+  background: url("../images/sort_desc_disabled.png");
+}
