@@ -8,16 +8,19 @@ const func = () => {
 }
 func()
 
-function annotation(target) {
+
+const annotation = function(target,name,descriptor) {
     target.annotated = true
 }
 
 @annotation
 class User {
     constructor() {
+        //this.annotated = false
         console.log('new User')
     }
 }
+
 
 const user = new User()
 
@@ -33,3 +36,52 @@ console.log(a(10,1))
 
 console.log(new Persion('吴华豪',10,'男'))
 console.log(new Student('吴华豪','计算机专业','123456789'))
+
+console.log(Student.findstatic())
+
+@transform
+class IronMan {
+}
+
+const domdiv =document.getElementById('domdiv')
+
+const domtable =document.createElement('table')
+
+const tabletr = document.createElement('tr')
+const tabletr1 = document.createElement('tr')
+const tabletr2 = document.createElement('tr')
+
+const 自定义 =document.createElement("自定义")
+
+tabletr.innerText ='innertText'
+
+domtable.appendChild(tabletr)
+domtable.appendChild(tabletr1)
+domtable.appendChild(tabletr2)
+domtable.appendChild(自定义)
+
+var first=document.body.firstChild;//得到页面的第一个元素。
+
+console.log(first)
+
+const spandom =document.createElement('span')
+
+//document.body.insertBefore(spandom,domtable);//在得到的第一个元素之前插入
+
+function insertBefore(){
+
+}
+
+domtable.insertBefore(spandom,domtable.getChild[0])
+
+domtable.setAttribute('style','width:20px;height:20px;')
+
+domdiv.appendChild(domtable)
+
+console.log(domtable)
+
+function transform(target) {
+    target.weapon = 'laser'
+}
+
+console.log(IronMan) // laser

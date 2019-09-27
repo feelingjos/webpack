@@ -13,6 +13,12 @@ class Student {
         return `name: ${this.name};classes: ${this.classes}; cardNameber: ${this.cardNameber}`
     }
 
+    static findstatic(){
+        console.log('Student.findstatic()')
+        return "findstatic---"
+
+    }
+
 }
 
 class Persion {
@@ -33,7 +39,3 @@ export {
     Student,
     Persion
 }
-
-   //console.log(`定义了Persion`)
-
-//}())
