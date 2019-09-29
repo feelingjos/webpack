@@ -2,8 +2,9 @@
     "presets": [
         ["@babel/preset-env",
             {
+                "modules": false,
                 "targets": {
-                    "browsers": ["last 2 versions"]
+                    "browsers": ["last 30 versions", "> 2%", "Firefox >= 10", "ie 6-11"]
                 }
             }
         ]

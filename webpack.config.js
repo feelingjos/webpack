@@ -2,6 +2,7 @@ const path = require('path')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
 	mode: 'development',
@@ -10,11 +11,22 @@ module.exports = {
 	},
 
 	output: {
-		filename: '[name].[hash].js',
-		path: path.resolve(__dirname, 'dist/js')
+        filename: '[name].[hash].js',
+        path: path.resolve(__dirname, 'dist/js')
 	},
 
 	plugins: [
+        /*new HtmlWebpackPlugin({
+			template: "./example/index.html"
+		}),*/
+        new HtmlWebpackPlugin({
+            filename: '../index.html',
+            template: './index.html',
+            chunks: ['index'],
+            minify: {
+                collapseWhitespace: false //压缩空格
+            }
+        }),
 		new webpack.ProgressPlugin(),
 		new HtmlWebpackPlugin({
 			filename: '../example/index.html',
@@ -25,22 +37,17 @@ module.exports = {
 			}
 		}),
         new MiniCssExtractPlugin({
-            filename: '../css/[name].[chunkhash].css'
+            filename: '../css/[name].[hash].css'
 		}),
-		/*new CopyWebpackPlugin([
-			{
-			    from: 'example',
-			    to: ''
-		    },
-			{
-				from: 'src/scripts',
-				to: 'js'
-			}
-		]),*/
+        /*new CopyWebpackPlugin([
+            {
+                from : 'example',
+                to   : '../example',
+            }
+        ]),*/
 		new webpack.HotModuleReplacementPlugin(),//热部署 刷新
 		new webpack.NamedModulesPlugin() //打印日志
 	],
-
 	module: {
 		rules: [
 			{
@@ -112,30 +119,46 @@ module.exports = {
                 use: [
                     MiniCssExtractPlugin.loader,
 					"css-loader",
-					"sass-loader"
+                    {
+                        loader: "postcss-loader",
+                        options: {
+                            plugins: [
+                                require("autoprefixer") /*在这里添加*/
+                            ]
+                        }
+                    },
+                    "sass-loader"
                 ]
             }
 		]
 	},
 	optimization: {
-		splitChunks: {
-			cacheGroups: {
-				vendors: {
-					priority: -10,
-					test: /[\\/]node_modules[\\/]/
-				}
-			},
-			chunks: 'async',
-			minChunks: 1,
-			minSize: 30000,
-			name: true
-		}
+        splitChunks: {
+            cacheGroups: {
+                vendors: {
+                    priority: -10,
+                    test: /[\\/]node_modules[\\/]/
+                }
+            },
+
+            chunks: 'async',
+            minChunks: 1,
+            minSize: 30000,
+            name: true
+        }
 	},
-    devtool: 'eval',//SourceMap 功能
-	devServer: {
+    //devtool: 'eval',//SourceMap 功能
+    //devtool: 'source-map',//SourceMap 功能
+	/*devServer: {
+        //contentBase: '../dist',
 		open: true,
 		hot: true,
+        inline: true,
 		hotOnly: true,
+		port: 9001
+	}*/
+	devServer: {
+		open: true,
 		port: 9001
 	}
 };

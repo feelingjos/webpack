@@ -4,6 +4,7 @@
   "scripts": {
     "build": "npm run clean && webpack --mode production --config webpack.config.js",
     "start": "webpack-dev-server --mode development --config webpack.config.js",
+    "dev": "webpack-dev-server --config webpack.config.js --inline --port 9000 --open --content-base example/",
     "clean": "shx rm -rf ./dist"
   },
   "devDependencies": {

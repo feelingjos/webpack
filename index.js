@@ -1,6 +1,5 @@
 import {a} from './src/scripts/table.js'
-import './src/styles/divbackgroad.scss'
-import './src/styles/fonticon.scss'
+import './src/styles/index.scss'
 import {Persion,Student} from './src/scripts/actionone.js'
 
 const func = () => {
@@ -58,7 +57,6 @@ tabletr.innerText ='innertText'
 domtable.appendChild(tabletr)
 domtable.appendChild(tabletr1)
 domtable.appendChild(tabletr2)
-domtable.appendChild(自定义)
 
 var first=document.body.firstChild;//得到页面的第一个元素。
 
@@ -68,13 +66,8 @@ const spandom =document.createElement('span')
 
 //document.body.insertBefore(spandom,domtable);//在得到的第一个元素之前插入
 
-function insertBefore(){
 
-}
-
-domtable.insertBefore(spandom,domtable.getChild[0])
-
-domtable.setAttribute('style','width:20px;height:20px;')
+//domtable.setAttribute('style','width:20px;height:20px;')
 
 domdiv.appendChild(domtable)
 
