@@ -42,7 +42,7 @@ console.log(Student.findstatic())
 class IronMan {
 }
 
-const domdiv =document.getElementById('domdiv')
+const domdiv =document.body;
 
 const domtable =document.createElement('table')
 

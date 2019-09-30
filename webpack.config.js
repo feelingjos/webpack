@@ -11,8 +11,8 @@ module.exports = {
 	},
 
 	output: {
-        filename: '[name].[hash].js',
-        path: path.resolve(__dirname, 'dist/js')
+        filename: 'js/[name].[hash].js',
+        path: path.resolve(__dirname, 'dist')
 	},
 
 	plugins: [
@@ -20,24 +20,24 @@ module.exports = {
 			template: "./example/index.html"
 		}),*/
         new HtmlWebpackPlugin({
-            filename: '../index.html',
+            filename: 'index.html',
             template: './index.html',
             chunks: ['index'],
             minify: {
                 collapseWhitespace: false //压缩空格
             }
         }),
-		new webpack.ProgressPlugin(),
 		new HtmlWebpackPlugin({
-			filename: '../example/index.html',
-			template: 'example/index.html',
+			filename: 'example/index.html',
+			template: './example/index.html',
 			chunks: ['index'],
 			minify: {
 				collapseWhitespace: false //压缩空格
 			}
 		}),
+        new webpack.ProgressPlugin(),
         new MiniCssExtractPlugin({
-            filename: '../css/[name].[hash].css'
+            filename: 'css/[name].[hash].css'
 		}),
         /*new CopyWebpackPlugin([
             {
@@ -66,8 +66,8 @@ module.exports = {
 					{
 						loader: 'file-loader',
                         options: {
-                            publicPath: '',
-                            outputPath: '../image',
+							publicPath: '../image',
+                            outputPath: 'image',
                             useRelativePath: false
                         }
 					},
@@ -140,7 +140,6 @@ module.exports = {
                     test: /[\\/]node_modules[\\/]/
                 }
             },
-
             chunks: 'async',
             minChunks: 1,
             minSize: 30000,
