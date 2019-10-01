@@ -71,7 +71,7 @@ class IronMan {
 
 //domdiv.appendChild(domtable)
 
-console.log(domtable)
+//console.log(domtable)
 
 function transform(target) {
     target.weapon = 'laser'

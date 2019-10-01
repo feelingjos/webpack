@@ -3,16 +3,24 @@ html, body{
   width: 100%;
 }
 .table-body-container-feelj{
-  height: 500px;
-  width: 500px;
+  height: 700px;
+  width: 650px;
 }
 .table-header-line-column{
-  height: auto;
-  width: auto;
+  height: 52px;
+  width: 700px;
 }
 .table-body-tabulation{
-  height: auto;
+  height: 52px;
   width: auto;
+}
+.table-tabulation-cell-line{
+  float: left;
+  text-align: center;
+  line-height: 50px;
+  border: 1px solid #DFDFDF;
+  height: 50px;
+  width: 100px;
 }
 
 .table-header-call{
