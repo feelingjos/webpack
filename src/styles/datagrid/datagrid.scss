@@ -2,12 +2,27 @@ html, body{
   height: 100%;
   width: 100%;
 }
+.table-body-container-feelj{
+  height: 500px;
+  width: 500px;
+}
+.table-header-line-column{
+  height: auto;
+  width: auto;
+}
+.table-body-tabulation{
+  height: auto;
+  width: auto;
+}
 
 .table-header-call{
-
+  border: 1px solid #DFDFDF ;
+  text-align: center;
+  line-height: 50px;
   float: left;
   width: 100px;
+  height: 50px;
   overflow: hidden;
-  word-wrap:break-word
-
+  //word-wrap:break-word;//内容自适应
+  text-overflow: ellipsis;//超做内容省略
 }

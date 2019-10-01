@@ -42,34 +42,34 @@ console.log(Student.findstatic())
 class IronMan {
 }
 
-const domdiv =document.body;
+//const domdiv =document.body;
 
-const domtable =document.createElement('table')
+//const domtable =document.createElement('table')
 
-const tabletr = document.createElement('tr')
-const tabletr1 = document.createElement('tr')
-const tabletr2 = document.createElement('tr')
+//const tabletr = document.createElement('tr')
+//const tabletr1 = document.createElement('tr')
+//const tabletr2 = document.createElement('tr')
 
-const 自定义 =document.createElement("自定义")
+//const 自定义 =document.createElement("自定义")
 
-tabletr.innerText ='innertText'
+//tabletr.innerText ='innertText'
 
-domtable.appendChild(tabletr)
-domtable.appendChild(tabletr1)
-domtable.appendChild(tabletr2)
+//domtable.appendChild(tabletr)
+//domtable.appendChild(tabletr1)
+//domtable.appendChild(tabletr2)
 
-var first=document.body.firstChild;//得到页面的第一个元素。
+//var first=document.body.firstChild;//得到页面的第一个元素。
 
-console.log(first)
+//console.log(first)
 
-const spandom =document.createElement('span')
+//const spandom =document.createElement('span')
 
 //document.body.insertBefore(spandom,domtable);//在得到的第一个元素之前插入
 
 
 //domtable.setAttribute('style','width:20px;height:20px;')
 
-domdiv.appendChild(domtable)
+//domdiv.appendChild(domtable)
 
 console.log(domtable)
 
