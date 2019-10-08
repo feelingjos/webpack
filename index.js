@@ -1,8 +1,8 @@
-import {a} from './src/scripts/table.js'
+//import {a} from './src/scripts/table.js'
 import './src/styles/index.scss'
-import {Persion,Student} from './src/scripts/actionone.js'
+//import {Persion,Student} from './src/scripts/actionone.js'
 
-const func = () => {
+/*const func = () => {
     console.log('hello webpack')
 }
 func()
@@ -40,7 +40,7 @@ console.log(Student.findstatic())
 
 @transform
 class IronMan {
-}
+}*/
 
 //const domdiv =document.body;
 
@@ -73,8 +73,34 @@ class IronMan {
 
 //console.log(domtable)
 
-function transform(target) {
-    target.weapon = 'laser'
-}
+const tableheadercall = document.getElementsByClassName("table-header-call")
 
-console.log(IronMan) // laser
+const classsMultiple = document.getElementById('table-container')
+
+console.log(classsMultiple)
+
+const selectertableheader = document.querySelector('table-header-call')
+
+console.log(selectertableheader)
+
+console.log(classsMultiple.classList)
+console.log(classsMultiple.className)
+
+console.log(tableheadercall)
+
+
+//console.log(getstyleValue(classsMultiple,'height'))
+
+console.log('-------------------------------------------')
+
+/*const style_template = document.getElementById('style_template')
+
+const demo = window.getComputedStyle(style_template, null);
+
+console.log(demo)*/
+
+/*function transform(target) {
+    target.weapon = 'laser'
+}*/
+
+//console.log(IronMan) // laser
