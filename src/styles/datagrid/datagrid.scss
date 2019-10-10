@@ -38,7 +38,10 @@ html, body{
 
 //右边伸缩
 .table-header-right-resize{
-  position: absolute; right: 0; bottom: 0; cursor: se-resize;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  cursor: col-resize;
   width: 10px;
   height: 50px;
   line-height: 52px;

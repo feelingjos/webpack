@@ -1,17 +1,9 @@
-(function(){
+const table_cell_right_resize = (x) =>{
 
-    /*document.getElementById("divonclik").onclick= function () {
-        console.log("点击了")
-    }*//*document.getElementById("divonclik").onclick= function () {
-        console.log("点击了")
-    }*/
+    console.log(x)
 
-}())
-
-const a = (a,b) => {
-    return a - b
 }
 
 module.exports = {
-    a
+    table_cell_right_resize
 }
