@@ -8,24 +8,25 @@ export default (function(){
     for (var num = 0; num <= tableResize.length; num ++) {
         const doms = tableResize[0];
 
+        const parnt = doms.parentNode;
+
         //doms.onclick = table_cell_right_resize
 
         doms.onmousemove = function (ev){
 
-            var oEvent = ev || event
+            console.log('移动了')
 
-            console.log("哈哈")
 
-            //console.log('clientX',oEvent.clientX)
+        }
 
-            //console.log('offsetX',oEvent.offsetX)
+        doms.onmousedown = function(ev){
 
-            //console.log(ev)
+            console.log('停止了')
 
-            //doms.parentNode.style.width  += oEvent.offsetX
         }
 
         doms.onmouseup=function (ev) {
+
             console.log("呵呵")
         }
 
