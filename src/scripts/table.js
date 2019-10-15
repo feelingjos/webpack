@@ -8,10 +8,6 @@ const table_cell_right_resize = (x) =>{
 var mouseStart = {};
 var rightStart = {};
 
-
-
-
-
 module.exports = {
     table_cell_right_resize
 }
