@@ -51,7 +51,6 @@ export default (function(){
                 w = document.documentElement.clientWidth - parentdoms.offsetLeft - 2
             }
 
-
             for (var ci = 0 ; ci <= cells.length; ci ++){
                 if(ci < cells.length){
                     cells[ci].style.width = w + 'px'
