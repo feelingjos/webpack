@@ -157,6 +157,11 @@ module.exports = {
 		port: 9001
 	}*/
 	devServer: {
+        historyApiFallback :{
+            rewrites:[
+                {from:'/',to:'/example/table/tableinit/tableinit.html'}
+            ]
+        },
 		open: true,
 		port: 9001
 	}

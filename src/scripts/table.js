@@ -1,13 +1,118 @@
 //点击事件
-const table_cell_right_resize = (x) =>{
+const table_cell_right_resize = (x) => {
 
     console.log(x)
 
 }
 
-var mouseStart = {};
-var rightStart = {};
+class Table {
+    constructor(domId) {
+        this.dom = domId
+        initTable()
+    }
 
-module.exports = {
-    table_cell_right_resize
+    initTable() {
+        const ele = document.getElementById(dom)
+
+        ele.classList.add("table-body-container-feelj")
+
+        var inittables = `
+             <div class="table-header-line-column">
+
+            <div class="table-header-call" data="cell-1">
+                姓名
+                <div class="table-header-right-resize"></div>
+            </div>
+            <div class="table-header-call" >
+                年龄
+                <div class="table-header-right-resize"></div>
+            </div>
+            <div class="table-header-call">
+                性别
+                <div class="table-header-right-resize"></div>
+            </div>
+            <div class="table-header-call">
+                成绩
+            </div>
+            <div class="table-header-call">
+                年级
+            </div>
+            <div class="table-header-call">
+                科目
+            </div>
+
+        </div>
+             <div class="table-body-tabulation">
+            <div class="table-tabulation-cell-line" data="cell-1">
+                吴华豪
+            </div>
+            <div class="table-tabulation-cell-line">
+                吴华豪
+            </div>
+            <div class="table-tabulation-cell-line">
+                吴华豪
+            </div>
+            <div class="table-tabulation-cell-line">
+                吴华豪
+            </div>
+            <div class="table-tabulation-cell-line">
+                吴华豪
+            </div>
+            <div class="table-tabulation-cell-line">
+                吴华豪
+            </div>
+
+        </div>
+             <div class="table-body-tabulation">
+                <div class="table-tabulation-cell-line" data="cell-1">
+                    吴华豪
+                </div>
+                <div class="table-tabulation-cell-line">
+                    吴华豪
+                </div>
+                <div class="table-tabulation-cell-line">
+                    吴华豪
+                </div>
+                <div class="table-tabulation-cell-line">
+                    吴华豪
+                </div>
+                <div class="table-tabulation-cell-line">
+                    吴华豪
+                </div>
+                <div class="table-tabulation-cell-line">
+                    吴华豪
+                </div>
+    
+            </div>
+             <div class="table-body-tabulation">
+                <div class="table-tabulation-cell-line" data="cell-1">
+                    吴华豪
+                </div>
+                <div class="table-tabulation-cell-line">
+                    吴华豪
+                </div>
+                <div class="table-tabulation-cell-line">
+                    吴华豪
+                </div>
+                <div class="table-tabulation-cell-line">
+                    吴华豪
+                </div>
+                <div class="table-tabulation-cell-line">
+                    吴华豪
+                </div>
+                <div class="table-tabulation-cell-line">
+                    吴华豪
+                </div>
+    
+            </div>
+        `
+
+        ele.appendChild(inittables)
+
+    }
+}
+
+export {
+    table_cell_right_resize,
+    Table
 }

@@ -1,4 +1,4 @@
-import {table_cell_right_resize} from './src/scripts/table.js'
+import {table_cell_right_resize,Table} from './src/scripts/table.js'
 import './src/styles/index.scss'
 //import './src/index2'
 
