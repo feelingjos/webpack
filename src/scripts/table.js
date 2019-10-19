@@ -14,6 +14,8 @@ class Table {
     initTable() {
         const ele = document.getElementById(dom)
 
+        document.createElement("div")
+
         ele.classList.add("table-body-container-feelj")
 
         var inittables = `
