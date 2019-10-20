@@ -5,10 +5,20 @@ const table_cell_right_resize = (x) => {
 
 }
 
-class Table {
-    constructor(domId) {
+class TableGrid {
+    constructor(domId,columns) {
         this.dom = domId
-        initTable()
+        this.columns = columns
+        initHeader()
+    }
+
+    initHeader(){
+
+        console.log(this.columns)
+
+        for(var i = 0; i < this.columns.length; i ++){
+        }
+
     }
 
     initTable() {
@@ -113,8 +123,7 @@ class Table {
 
     }
 }
-
 export {
     table_cell_right_resize,
-    Table
+    TableGrid
 }

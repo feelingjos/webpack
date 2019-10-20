@@ -8,11 +8,23 @@
 
     <div id="tableinit"></div>
 
-<script>
-
-    new Table('inittables')
-
-</script>
-
 </body>
 </html>
+<script>
+
+    var data = [
+        { width: 200, id: "name"},
+        { width: 200, id: "age"},
+        { width: 200, id: "sex"},
+        { width: 200, id: "成绩"},
+        { width: 200, id: "年级"},
+        { width: 200, id: "科目"}
+    ]
+
+    window.onload = function () {
+        new TableGrid('tableinit',data)
+    }
+
+
+
+</script>

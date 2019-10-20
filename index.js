@@ -1,8 +1,8 @@
-import {table_cell_right_resize,Table} from './src/scripts/table.js'
+import TableGrid from './src/scripts/table.js'
 import './src/styles/index.scss'
 //import './src/index2'
 
-export default (function(){
+/*export default (function(){
 
     const tableResize = document.getElementsByClassName("table-header-right-resize")
 
@@ -77,5 +77,5 @@ export default (function(){
 
     }
 
-}())
+}())*/
 
