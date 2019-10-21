@@ -9,7 +9,8 @@ class TableGrid {
     constructor(domId,columns) {
         this.dom = domId
         this.columns = columns
-        initHeader()
+        this.initHeader()
+        this.initTable()
     }
 
     initHeader(){
@@ -22,7 +23,7 @@ class TableGrid {
     }
 
     initTable() {
-        const ele = document.getElementById(dom)
+        const ele = document.getElementById(this.dom)
 
         document.createElement("div")
 
@@ -118,12 +119,16 @@ class TableGrid {
     
             </div>
         `
+        var nodeinittables = document.createTextNode(inittables)
 
-        ele.appendChild(inittables)
+        ele.appendChild(nodeinittables)
 
     }
 }
+
+window.TableGrid = TableGrid
+
 export {
-    table_cell_right_resize,
-    TableGrid
+    TableGrid,
+    table_cell_right_resize
 }

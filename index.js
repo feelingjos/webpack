@@ -1,10 +1,24 @@
 import TableGrid from './src/scripts/table.js'
+import {Persion} from './src/scripts/actionone'
 import './src/styles/index.scss'
 //import './src/index2'
 
-/*export default (function(){
+export default (function(){
 
-    const tableResize = document.getElementsByClassName("table-header-right-resize")
+
+    /*var data = [
+        { width: 200, id: "name"},
+        { width: 200, id: "age"},
+        { width: 200, id: "sex"},
+        { width: 200, id: "成绩"},
+        { width: 200, id: "年级"},
+        { width: 200, id: "科目"}
+    ]
+
+    new TableGrid('tableinit',data)*/
+
+
+    /*const tableResize = document.getElementsByClassName("table-header-right-resize")
 
     const cells = document.querySelectorAll("[data~=cell-1]")
 
@@ -75,7 +89,7 @@ import './src/styles/index.scss'
         }
 
 
-    }
+    }*/
 
-}())*/
+}())
 
