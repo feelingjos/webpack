@@ -6,24 +6,49 @@ const table_cell_right_resize = (x) => {
 }
 
 class TableGrid {
-    constructor(domId,columns) {
-        this.dom = domId
+    constructor(el,columns) {
+        this.el = el
+
+        this.container = document.getElementById(el);
+
+        this.container.classList.add('table-body-container-feelj')
+
         this.columns = columns
         this.initHeader()
-        this.initTable()
+        //this.initTable()
     }
 
     initHeader(){
 
-        console.log(this.columns)
+        var header =  document.createElement('div')
+
+        header.classList.add('table-header-line-column')
 
         for(var i = 0; i < this.columns.length; i ++){
+
+            var column_content = this.columns[i]
+
+            var column = document.createElement('div')
+
+            column.classList.add('table-header-call')
+
+            var content = `${column_content.id}
+            <div class="table-header-right-resize"></div>`
+
+            column.innerHTML = content
+
+            header.appendChild(column)
+
+            console.log(header)
+
+            this.container.appendChild(header)
+
         }
 
     }
 
     initTable() {
-        const ele = document.getElementById(this.dom)
+        const ele = document.getElementById(this.el)
 
         document.createElement("div")
 
@@ -119,9 +144,7 @@ class TableGrid {
     
             </div>
         `
-        var nodeinittables = document.createTextNode(inittables)
-
-        ele.appendChild(nodeinittables)
+        ele.innerHTML = inittables
 
     }
 }
