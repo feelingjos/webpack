@@ -4,11 +4,13 @@ html, body{
 }
 .table-body-container-feelj{
   height: 700px;
-  width: 650px;
+  //width: 650px;
+  width: auto;
 }
 .table-header-line-column{
   height: 52px;
-  width: 700px;
+  width: auto;
+  //width: 700px;
 }
 .table-body-tabulation{
   height: 42px;
@@ -39,6 +41,7 @@ html, body{
 
 //右边伸缩
 .table-header-right-resize{
+  //text-align: center;
   background: #dfd33f;
   position: absolute;
   right: 0;

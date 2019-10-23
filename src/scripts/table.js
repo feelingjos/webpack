@@ -8,14 +8,10 @@ const table_cell_right_resize = (x) => {
 class TableGrid {
     constructor(el,columns) {
         this.el = el
-
         this.container = document.getElementById(el);
-
         this.container.classList.add('table-body-container-feelj')
-
         this.columns = columns
         this.initHeader()
-        //this.initTable()
     }
 
     initHeader(){
@@ -28,6 +24,8 @@ class TableGrid {
 
             var column_content = this.columns[i]
 
+            console.log(column_content)
+
             var column = document.createElement('div')
 
             column.classList.add('table-header-call')
@@ -36,6 +34,9 @@ class TableGrid {
             <div class="table-header-right-resize"></div>`
 
             column.innerHTML = content
+
+            column.style.width = column_content.width + 'px'
+            column.style.textAlign = column_content.align
 
             header.appendChild(column)
 
