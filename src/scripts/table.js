@@ -1,3 +1,5 @@
+import {genId} from './util/utils.js'
+
 //点击事件
 const table_cell_right_resize = (x) => {
 
@@ -9,9 +11,41 @@ class TableGrid {
     constructor(el,columns) {
         this.el = el
         this.container = document.getElementById(el);
-        this.container.classList.add('table-body-container-feelj')
+        //this.container.classList.add('table-body-container-feelj')
         this.columns = columns
+
+        this.calculatedsize()
+
         this.initHeader()
+
+        var ids = document.getElementById('ids')
+
+        ids.innerHTML = str
+    }
+
+    /**
+     * 计算大小
+     */
+    calculatedsize(){
+
+        var size = 0;
+
+        for(var sizei = 0; sizei < this.columns.length; sizei ++ ){
+
+            var header = this.columns[sizei];
+
+            size += header.width;
+
+        }
+
+
+        if(size > this.container.offsetWidth ){
+            this.container.style.overflow = 'auto'
+        }else{
+            console.log('没超过')
+        }
+
+
     }
 
     initHeader(){
@@ -23,8 +57,6 @@ class TableGrid {
         for(var i = 0; i < this.columns.length; i ++){
 
             var column_content = this.columns[i]
-
-            console.log(column_content)
 
             var column = document.createElement('div')
 
@@ -39,8 +71,6 @@ class TableGrid {
             column.style.textAlign = column_content.align
 
             header.appendChild(column)
-
-            console.log(header)
 
             this.container.appendChild(header)
 

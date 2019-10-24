@@ -1,4 +1,6 @@
 html, body{
+  padding: 0;
+  margin: 0;
   height: 100%;
   width: 100%;
 }
@@ -7,10 +9,13 @@ html, body{
   //width: 650px;
   width: auto;
 }
+
 .table-header-line-column{
   height: 52px;
-  width: auto;
-  //width: 700px;
+  overflow: auto;
+  width: 1500px;
+  //overflow: auto;
+  //width: 900px;
 }
 .table-body-tabulation{
   height: 42px;

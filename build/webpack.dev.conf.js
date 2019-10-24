@@ -15,24 +15,24 @@ module.exports = {
 
     plugins: [
         new HtmlWebpackPlugin({
-            filename: 'index.html',
-            template: './index.html',
-            chunks: ['index'],
-            minify: {
-                collapseWhitespace: false //压缩空格
-            }
-        }),
-        new HtmlWebpackPlugin({
-            filename: 'index.html',
-            template: './index.html',
-            chunks: ['index'],
-            minify: {
-                collapseWhitespace: false //压缩空格
-            }
-        }),
-        new HtmlWebpackPlugin({
             filename: 'example/table/tableinit/tableinit.html',
             template: './example/table/tableinit/tableinit.html',
+            chunks: ['index'],
+            minify: {
+                collapseWhitespace: false //压缩空格
+            }
+        }),
+        new HtmlWebpackPlugin({
+            filename: 'index.html',
+            template: './index.html',
+            chunks: ['index'],
+            minify: {
+                collapseWhitespace: false //压缩空格
+            }
+        }),
+        new HtmlWebpackPlugin({
+            filename: 'index.html',
+            template: './index.html',
             chunks: ['index'],
             minify: {
                 collapseWhitespace: false //压缩空格
@@ -95,6 +95,7 @@ module.exports = {
                     }
                 ]
             },
+            { test: /\.tsx?$/, loader: "awesome-typescript-loader" },
             {
                 test: /\.scss|\.sass$/,
                 use: [
@@ -111,7 +112,7 @@ module.exports = {
                     "sass-loader"
                 ]
             }
-        ]
+        ],
     },
     optimization: {
         splitChunks: {
@@ -128,12 +129,28 @@ module.exports = {
         }
     },
     devServer: {
-        historyApiFallback :{
+       /* historyApiFallback :{
             rewrites:[
                 {from:'/',to:'/example/table/tableinit/tableinit.html'}
             ]
-        },
+        },*/
         open: true,
-        port: 9001
+        port: 9001,
+        watchContentBase   : true,
+        disableHostCheck   : true, // [1]
+        overlay            : true,
+        stats: {
+            assets     : true,
+            children   : false,
+            chunks     : false,
+            hash       : false,
+            modules    : false,
+            publicPath : false,
+            timings    : true,
+            version    : false,
+            warnings   : true,
+            colors     : true,
+        },
     }
+
 };

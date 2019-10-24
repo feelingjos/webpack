@@ -15,11 +15,11 @@
         "webpackOptions": {
           "mode": "'development'",
           "entry": {
-            "y": "'./y.js'"
+            "index": "'./index.js'"
           },
           "output": {
             "filename": "'[name].[chunkhash].js'",
-            "path": "path.resolve(__dirname, 'y')"
+            "path": "path.resolve(__dirname, 'dist')"
           },
           "plugins": [
             "new webpack.ProgressPlugin()",
