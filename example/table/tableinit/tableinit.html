@@ -8,22 +8,50 @@
 
     <div id="tableinit" style="width: 700px;height: 500px;border: 1px solid #a0ff86"></div>
 
-    <div id="ids"></div>
-
 </body>
 </html>
 <script>
 
-    var data = [
-        { width: 1100,align: 'left', id: "name"},
-        { width: 200,align: 'center', id: "age"},
-        { width: 200,align: 'center', id: "sex"},
-        { width: 200,align: 'center', id: "成绩"},
-        { width: 200,align: 'center', id: "年级"},
-        { width: 200,align: 'center', id: "科目"}
+    var schema = [
+        { width: 200,align: 'left',text:"名字", id: "name"},
+        { width: 200,align: 'center',text:"年龄", id: "age"},
+        { width: 200,align: 'center',text:"性别", id: "sex"},
+        { width: 200,align: 'center',text:"成绩", id: "achievement"},
+        { width: 200,align: 'center',text:"年级", id: "grade"},
+        { width: 200,align: 'center',text:"科目", id: "subject"}
     ]
 
-    new TableGrid('tableinit',data)
+    var data = [
+        {
+            "name":"吴华豪",
+            "sex":"男",
+            "age":"30",
+            "achievement":"190",
+            "grade":"社会大学",
+            "subject":"骑马射箭"
+        },
+        {
+            "name":"倪坪雄",
+            "age":"30",
+            "sex":"男",
+            "achievement":"190",
+            "grade":"广东师范大学",
+            "subject":"数理化"
+        }
+
+    ]
+
+    window.onload = function(){
+
+        var tableGrid =  new fjcode.TableGrid('tableinit',schema,data)
+
+        tableGrid.initBody()
+
+    }
+
+
+
+
 
 
 

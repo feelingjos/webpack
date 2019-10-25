@@ -1,10 +1,14 @@
-import TableGrid from './src/scripts/table.js'
+import {TableGrid,Grid} from './src/scripts/table.js'
 import {Persion} from './src/scripts/actionone'
 import './src/styles/index.scss'
 //import './src/index2'
 
 export default (function(){
 
+    window.fjcode = {
+        TableGrid,
+        Grid
+    }
 
     /*var data = [
         { width: 200, id: "name"},

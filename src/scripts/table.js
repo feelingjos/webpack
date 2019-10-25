@@ -8,44 +8,13 @@ const table_cell_right_resize = (x) => {
 }
 
 class TableGrid {
-    constructor(el,columns) {
+    constructor(el,columns,data) {
         this.el = el
         this.container = document.getElementById(el);
-        //this.container.classList.add('table-body-container-feelj')
         this.columns = columns
-
-        this.calculatedsize()
-
+        this.data = data
         this.initHeader()
-
-        var ids = document.getElementById('ids')
-
-        ids.innerHTML = str
-    }
-
-    /**
-     * 计算大小
-     */
-    calculatedsize(){
-
-        var size = 0;
-
-        for(var sizei = 0; sizei < this.columns.length; sizei ++ ){
-
-            var header = this.columns[sizei];
-
-            size += header.width;
-
-        }
-
-
-        if(size > this.container.offsetWidth ){
-            this.container.style.overflow = 'auto'
-        }else{
-            console.log('没超过')
-        }
-
-
+        //this.initBody()
     }
 
     initHeader(){
@@ -54,15 +23,23 @@ class TableGrid {
 
         header.classList.add('table-header-line-column')
 
+        var header_width = 0
+
         for(var i = 0; i < this.columns.length; i ++){
 
+            //头内容
             var column_content = this.columns[i]
 
+            //头div
             var column = document.createElement('div')
 
             column.classList.add('table-header-call')
 
-            var content = `${column_content.id}
+            column.setAttribute('fieldindex',i)
+
+            column.setAttribute('field',column_content.id)
+
+            var content = `${column_content.text}
             <div class="table-header-right-resize"></div>`
 
             column.innerHTML = content
@@ -74,115 +51,82 @@ class TableGrid {
 
             this.container.appendChild(header)
 
+            header_width += column.offsetWidth
+
+        }
+
+        this.header = header
+        this.header_width = header_width
+
+        header.style.width = header_width + 'px'
+
+        if (this.container.offsetWidth < header.offsetWidth) {
+            this.container.style.overflow = 'auto'
+        }
+
+        var newdiv = document.createElement('div')
+
+        newdiv.id = 'daiaasdfasdfa'
+
+        header.appendChild(newdiv)
+
+    }
+
+    initBody(){
+
+        for (var i = 0; i < this.data.length ; i ++){
+
+            var div = document.createElement('div')
+
+            div.classList.add('table-body-tabulation')
+
+            div.style.width = this.header_width + 'px'
+
+            var datamap = this.data[i]
+            var data = []
+            for(var key in datamap){
+
+                var headerindex = document.querySelector(`[field='${key}']`)
+                //console.log(headerindex.getAttribute('fieldindex'))
+                data[headerindex.getAttribute('fieldindex')] = {
+                    id:datamap[key],
+                    width: headerindex.style.width
+                }
+
+            }
+
+            for(var d = 0; d < data.length; d ++){
+
+                var ddd =  document.createElement('div')
+
+                ddd.classList.add('table-tabulation-cell-line')
+
+                ddd.style.width = data[d].width
+
+                ddd.innerHTML = data[d].id
+
+
+                div.appendChild(ddd)
+            }
+
+            this.container.appendChild(div)
+
+
         }
 
     }
 
-    initTable() {
-        const ele = document.getElementById(this.el)
+}
 
-        document.createElement("div")
-
-        ele.classList.add("table-body-container-feelj")
-
-        var inittables = `
-             <div class="table-header-line-column">
-
-            <div class="table-header-call" data="cell-1">
-                姓名
-                <div class="table-header-right-resize"></div>
-            </div>
-            <div class="table-header-call" >
-                年龄
-                <div class="table-header-right-resize"></div>
-            </div>
-            <div class="table-header-call">
-                性别
-                <div class="table-header-right-resize"></div>
-            </div>
-            <div class="table-header-call">
-                成绩
-            </div>
-            <div class="table-header-call">
-                年级
-            </div>
-            <div class="table-header-call">
-                科目
-            </div>
-
-        </div>
-             <div class="table-body-tabulation">
-            <div class="table-tabulation-cell-line" data="cell-1">
-                吴华豪
-            </div>
-            <div class="table-tabulation-cell-line">
-                吴华豪
-            </div>
-            <div class="table-tabulation-cell-line">
-                吴华豪
-            </div>
-            <div class="table-tabulation-cell-line">
-                吴华豪
-            </div>
-            <div class="table-tabulation-cell-line">
-                吴华豪
-            </div>
-            <div class="table-tabulation-cell-line">
-                吴华豪
-            </div>
-
-        </div>
-             <div class="table-body-tabulation">
-                <div class="table-tabulation-cell-line" data="cell-1">
-                    吴华豪
-                </div>
-                <div class="table-tabulation-cell-line">
-                    吴华豪
-                </div>
-                <div class="table-tabulation-cell-line">
-                    吴华豪
-                </div>
-                <div class="table-tabulation-cell-line">
-                    吴华豪
-                </div>
-                <div class="table-tabulation-cell-line">
-                    吴华豪
-                </div>
-                <div class="table-tabulation-cell-line">
-                    吴华豪
-                </div>
-    
-            </div>
-             <div class="table-body-tabulation">
-                <div class="table-tabulation-cell-line" data="cell-1">
-                    吴华豪
-                </div>
-                <div class="table-tabulation-cell-line">
-                    吴华豪
-                </div>
-                <div class="table-tabulation-cell-line">
-                    吴华豪
-                </div>
-                <div class="table-tabulation-cell-line">
-                    吴华豪
-                </div>
-                <div class="table-tabulation-cell-line">
-                    吴华豪
-                </div>
-                <div class="table-tabulation-cell-line">
-                    吴华豪
-                </div>
-    
-            </div>
-        `
-        ele.innerHTML = inittables
-
+var Grid = {
+    set: function(data){
+        console.log(data)
+        return data + '-----'
     }
 }
 
-window.TableGrid = TableGrid
-
 export {
     TableGrid,
+    Grid,
     table_cell_right_resize
 }

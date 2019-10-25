@@ -12,10 +12,6 @@ html, body{
 
 .table-header-line-column{
   height: 52px;
-  overflow: auto;
-  width: 1500px;
-  //overflow: auto;
-  //width: 900px;
 }
 .table-body-tabulation{
   height: 42px;
@@ -46,7 +42,6 @@ html, body{
 
 //右边伸缩
 .table-header-right-resize{
-  //text-align: center;
   background: #dfd33f;
   position: absolute;
   right: 0;

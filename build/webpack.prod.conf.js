@@ -2,6 +2,7 @@ const path = require('path')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 module.exports = {
     mode: 'development',
@@ -42,6 +43,14 @@ module.exports = {
         new webpack.ProgressPlugin(),
         new MiniCssExtractPlugin({
             filename: 'css/[name].[hash].css'
+        }),
+        new UglifyJsPlugin({
+            sourceMap: true,
+            parallel: 4,
+            uglifyOptions: {
+                keep_classnames: true,
+                keep_fnames: true
+            }
         }),
         new webpack.NamedModulesPlugin() //打印日志
     ],
@@ -117,6 +126,7 @@ module.exports = {
             }
         ]
     },
+    devtool: 'source-map',
     optimization: {
         splitChunks: {
             cacheGroups: {
