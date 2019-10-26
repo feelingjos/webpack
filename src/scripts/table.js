@@ -14,7 +14,8 @@ class TableGrid {
         this.columns = columns
         this.data = data
         this.initHeader()
-        //this.initBody()
+        this.initBody()
+        this.on()
     }
 
     initHeader(){
@@ -40,7 +41,7 @@ class TableGrid {
             column.setAttribute('field',column_content.id)
 
             var content = `${column_content.text}
-            <div class="table-header-right-resize"></div>`
+            <div class="table-header-right-resize" resizefield=${column_content.id}></div>`
 
             column.innerHTML = content
 
@@ -64,12 +65,6 @@ class TableGrid {
             this.container.style.overflow = 'auto'
         }
 
-        var newdiv = document.createElement('div')
-
-        newdiv.id = 'daiaasdfasdfa'
-
-        header.appendChild(newdiv)
-
     }
 
     initBody(){
@@ -85,34 +80,74 @@ class TableGrid {
             var datamap = this.data[i]
             var data = []
             for(var key in datamap){
-
                 var headerindex = document.querySelector(`[field='${key}']`)
-                //console.log(headerindex.getAttribute('fieldindex'))
                 data[headerindex.getAttribute('fieldindex')] = {
-                    id:datamap[key],
-                    width: headerindex.style.width
+                    id: key,
+                    text:datamap[key],
+                    width: headerindex.style.width,
+                    textAlign: headerindex.style.textAlign
                 }
-
             }
+
+            var styletemlpate  =   ``
 
             for(var d = 0; d < data.length; d ++){
 
                 var ddd =  document.createElement('div')
 
-                ddd.classList.add('table-tabulation-cell-line')
+                ddd.classList.add(`table-tabulation-cell-line`,`cell-header-${data[d].id}`)
 
-                ddd.style.width = data[d].width
+                //console.log(data[d])
+
+                //ddd.classList.add('cell-header-'+ data[d] )
+
+                //ddd.style.width = data[d].width
+                //ddd.style.textAlign = data[d].textAlign
+
+                styletemlpate += `.cell-header-${data[d].id}{
+                    width: ${data[d].width} 
+                } \n`
 
                 ddd.innerHTML = data[d].id
 
+                //ddd.classList.add('text-width')
 
                 div.appendChild(ddd)
             }
 
+            //console.log(styletemlpate)
+
             this.container.appendChild(div)
 
+            var style = document.querySelector('style')
+
+            var sheet = style.sheet || style.styleSheet || {}
+            var rules = sheet.cssRules || sheet.rules;
+
+            for (var s = 0 ; s < rules.length; s ++){
+                var rule = rules[s]
+
+                //rule.style.width = 10000 + 'px'
+            }
+
+            var styles = document.createElement('style')
+
+            styles.setAttribute('easy','aa')
+
+            styles.innerHTML = styletemlpate
+
+            this.container.after(styles)
 
         }
+
+    }
+
+    on(){
+
+
+        var sytles = document.querySelectorAll("style[easy='aa']")
+
+        console.log(sytles)
 
     }
 
