@@ -67,7 +67,7 @@ export default (function(){
                 w = doms.offsetWidth
 
             }else if( w > document.documentElement.clientWidth - parentdoms.offsetLeft){
-                w = document.documentElement.clientWidth - parentdoms.offsetLeft - 2
+                w = document.documentElement.clientWidth
             }
 
             for (var ci = 0 ; ci <= cells.length; ci ++){

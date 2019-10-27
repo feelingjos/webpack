@@ -129,11 +129,11 @@ module.exports = {
         }
     },
     devServer: {
-       /* historyApiFallback :{
+        historyApiFallback :{
             rewrites:[
-                {from:'/',to:'/example/table/tableinit/tableinit.html'}
+                {from:'/example/table/tableinit/tableinit.html',to:'/'}
             ]
-        },*/
+        },
         open: true,
         port: 9001,
         watchContentBase   : true,

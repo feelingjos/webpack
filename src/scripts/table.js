@@ -13,9 +13,32 @@ class TableGrid {
         this.container = document.getElementById(el);
         this.columns = columns
         this.data = data
+        this.initHeaderStyle()
         this.initHeader()
         this.initBody()
         this.on()
+    }
+
+    initHeaderStyle(){
+
+        var template = ``
+
+        for(var i = 0; i < this.columns.length; i ++){
+            var styleheaderdata = this.columns[i]
+            template += `.cell-header-${styleheaderdata.id}{
+                width: ${styleheaderdata.width}px;
+                text-align: ${styleheaderdata.align};
+            }`
+        }
+
+        var myheaderstyle = document.createElement('style')
+
+        myheaderstyle.setAttribute('fj','headerStyle')
+
+        myheaderstyle.innerHTML = template
+
+        this.container.after(myheaderstyle)
+
     }
 
     initHeader(){
@@ -40,13 +63,26 @@ class TableGrid {
 
             column.setAttribute('field',column_content.id)
 
-            var content = `${column_content.text}
+           /* var content = `${column_content.text}
             <div class="table-header-right-resize" resizefield=${column_content.id}></div>`
 
-            column.innerHTML = content
+            column.innerHTML = content*/
 
-            column.style.width = column_content.width + 'px'
-            column.style.textAlign = column_content.align
+            column.innerHTML = column_content.text
+
+            var resize =  document.createElement('div')
+            resize.classList.add('table-header-right-resize')
+            resize.setAttribute('resizefield',column_content.id)
+
+            /*resize.onmousedown =function(){
+
+                console.log(resize)
+
+            }*/
+
+            column.appendChild(resize)
+
+            column.classList.add(`cell-header-${column_content.id}`)
 
             header.appendChild(column)
 
@@ -75,79 +111,124 @@ class TableGrid {
 
             div.classList.add('table-body-tabulation')
 
-            div.style.width = this.header_width + 'px'
+            for(var key in this.data[i]){
 
-            var datamap = this.data[i]
-            var data = []
-            for(var key in datamap){
-                var headerindex = document.querySelector(`[field='${key}']`)
-                data[headerindex.getAttribute('fieldindex')] = {
-                    id: key,
-                    text:datamap[key],
-                    width: headerindex.style.width,
-                    textAlign: headerindex.style.textAlign
-                }
+                var  table_header_call = document.createElement('div')
+
+                table_header_call.classList.add('table-tabulation-cell-line',`cell-header-${key}`)
+                table_header_call.innerHTML=this.data[i][key]
+                div.appendChild(table_header_call)
+
             }
 
-            var styletemlpate  =   ``
+            div.style.width = this.header_width + 'px'
 
-            for(var d = 0; d < data.length; d ++){
+            this.container.appendChild(div)
+
+            /*for(var d = 0; d < this.data.length; d ++){
 
                 var ddd =  document.createElement('div')
 
                 ddd.classList.add(`table-tabulation-cell-line`,`cell-header-${data[d].id}`)
 
-                //console.log(data[d])
-
-                //ddd.classList.add('cell-header-'+ data[d] )
-
-                //ddd.style.width = data[d].width
-                //ddd.style.textAlign = data[d].textAlign
-
-                styletemlpate += `.cell-header-${data[d].id}{
-                    width: ${data[d].width} 
-                } \n`
-
                 ddd.innerHTML = data[d].id
 
-                //ddd.classList.add('text-width')
-
                 div.appendChild(ddd)
-            }
+            }*/
 
-            //console.log(styletemlpate)
 
-            this.container.appendChild(div)
-
-            var style = document.querySelector('style')
+            /*var style = document.querySelector('style')
 
             var sheet = style.sheet || style.styleSheet || {}
             var rules = sheet.cssRules || sheet.rules;
 
             for (var s = 0 ; s < rules.length; s ++){
                 var rule = rules[s]
-
-                //rule.style.width = 10000 + 'px'
-            }
-
-            var styles = document.createElement('style')
-
-            styles.setAttribute('easy','aa')
-
-            styles.innerHTML = styletemlpate
-
-            this.container.after(styles)
-
+            }*/
         }
-
     }
 
     on(){
 
+        var sytles = document.querySelector("style[fj='headerStyle']")
 
-        var sytles = document.querySelectorAll("style[easy='aa']")
+        var sheet = sytles.sheet || sytles.styleSheet || {}
+        var rules = sheet.cssRules || sheet.rules;
 
-        console.log(sytles)
+        var resizeElements =  document.querySelectorAll(".table-header-right-resize")
+
+        for (var r = 0 ; r< resizeElements.length; r++){
+
+            var resizeElement = resizeElements[r]
+
+            /*var parent =  resizeElement.parentNode;
+
+
+            /!*console.log(style)
+            console.log(resizeElement)
+            console.log('-----------')*!/
+
+            var mouseStart = {}
+            var rightStart = {}
+
+            resizeElement.onmousedown = function(evdown){
+
+                evdown.stopPropagation()
+                evdown.preventDefault()
+
+                //console.log(evdown)
+
+                var oEvent = evdown || event
+                mouseStart.x = oEvent.clientX
+                mouseStart.y = oEvent.clientY
+                rightStart.x = resizeElement.offsetLeft
+
+                if(resizeElement.setCapture){
+                    resizeElement.onmousemove = doDrag1
+                    resizeElement.onmouseup = stopDrag1
+                    resizeElement.setCapture()
+                }else{
+                    document.addEventListener("mousemove",doDrag1,true)
+                    //document.addEventListener("mousemove",doDrag1,true)
+                    document.addEventListener("mouseup",stopDrag1,true)
+                }
+
+            }
+
+
+            function doDrag1(ev){
+
+                var oEvent = ev || event
+
+                console.log(resizeElement)
+
+                var l = oEvent.clientX - mouseStart.x + rightStart.x
+                var w = l + resizeElement.offsetWidth
+
+                if(w < resizeElement.offsetWidth){
+
+                    w = resizeElement.offsetWidth
+
+                }else if( w > document.documentElement.clientWidth - parent.offsetLeft){
+                    w = document.documentElement.clientWidth - parent.offsetLeft - 2
+                }
+
+                //style.style.width = w + "px"
+
+            }
+
+            function stopDrag1(){
+                if(resizeElement.releaseCapture){
+                    resizeElement.onmousemove = null
+                    resizeElement.onmouseup = null
+                    resizeElement.releaseCapture()
+                }else{
+                    document.removeEventListener("mousemove",doDrag1,true)
+                    document.removeEventListener("mouseup",stopDrag1,true)
+                }
+            }*/
+
+        }
 
     }
 
