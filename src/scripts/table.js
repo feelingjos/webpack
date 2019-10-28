@@ -37,7 +37,9 @@ class TableGrid {
 
         myheaderstyle.innerHTML = template
 
-        this.container.after(myheaderstyle)
+        //this.container.after(myheaderstyle)
+        //this.container.insertBefore(myheaderstyle)
+        this.container.append(myheaderstyle)
 
     }
 
@@ -82,6 +84,7 @@ class TableGrid {
 
             column.appendChild(resize)
 
+
             column.classList.add(`cell-header-${column_content.id}`)
 
             header.appendChild(column)
@@ -95,7 +98,7 @@ class TableGrid {
         this.header = header
         this.header_width = header_width
 
-        header.style.width = header_width + 'px'
+        header.style.width = header_width  + 'px'
 
         if (this.container.offsetWidth < header.offsetWidth) {
             this.container.style.overflow = 'auto'
@@ -157,16 +160,9 @@ class TableGrid {
 
         var resizeElements =  document.querySelectorAll(".table-header-right-resize")
 
-        for (var r = 0 ; r< resizeElements.length; r++){
+        for (var r = 0 ; r < resizeElements.length; r++){
 
             var resizeElement = resizeElements[r]
-
-            /*var parent =  resizeElement.parentNode;
-
-
-            /!*console.log(style)
-            console.log(resizeElement)
-            console.log('-----------')*!/
 
             var mouseStart = {}
             var rightStart = {}
@@ -176,70 +172,113 @@ class TableGrid {
                 evdown.stopPropagation()
                 evdown.preventDefault()
 
-                //console.log(evdown)
+                var that = this
 
                 var oEvent = evdown || event
+
                 mouseStart.x = oEvent.clientX
-                mouseStart.y = oEvent.clientY
-                rightStart.x = resizeElement.offsetLeft
+                rightStart.x = that.offsetLeft;
+
 
                 if(resizeElement.setCapture){
                     resizeElement.onmousemove = doDrag1
                     resizeElement.onmouseup = stopDrag1
                     resizeElement.setCapture()
                 }else{
-                    document.addEventListener("mousemove",doDrag1,true)
-                    //document.addEventListener("mousemove",doDrag1,true)
+
+                    document.addEventListener("mousemove",doDrag1.bind(this,that,that.getAttribute('resizefield')),true)
                     document.addEventListener("mouseup",stopDrag1,true)
                 }
 
             }
 
 
-            function doDrag1(ev){
+            function doDrag1(that,key){
 
-                var oEvent = ev || event
+                var oEvent = that || event
 
-                console.log(resizeElement)
+                var parent = oEvent.parentNode;
 
-                var l = oEvent.clientX - mouseStart.x + rightStart.x
-                var w = l + resizeElement.offsetWidth
+                var index = document.getElementById('index')
 
-                if(w < resizeElement.offsetWidth){
+                var l = oEvent.clientX - mouseStart.x ;
 
-                    w = resizeElement.offsetWidth
+                for(var re = 0; re < rules.length;re ++){
 
+                    var rule = rules[re]
+
+                    if(rule.selectorText == '.cell-header-'+key){
+                        //console.log(moveindex)
+
+                        var old = rule.style.width
+
+                        var olds = old.substr(0 , old.length - 2)
+
+                        //console.log(parseInt(parseInt(olds) + parseInt(moveindex)))
+
+                        //console.log(olds)
+
+                        rule.style.width = parseInt(parseInt(olds) + parseInt(moveindex)) + 'px'
+
+
+                    }
+
+                }
+
+                //var l = oEvent.clientX - mouseStart.x + rightStart.x
+                /*var l =  mouseStart.x + rightStart.x
+                var w = l + oEvent.offsetWidth
+
+                if(w < oEvent.offsetWidth){
+                    w = oEvent.offsetWidth
                 }else if( w > document.documentElement.clientWidth - parent.offsetLeft){
                     w = document.documentElement.clientWidth - parent.offsetLeft - 2
                 }
+
+                for (var sy = 0 ; sy < rules.length; sy ++){
+
+                    var indys = rules[sy]
+
+                    if(indys.selectorText == '.cell-header-'+ oEvent.getAttribute('resizefield')){
+                        //console.log(indys)
+                    }
+                }*/
 
                 //style.style.width = w + "px"
 
             }
 
-            function stopDrag1(){
-                if(resizeElement.releaseCapture){
-                    resizeElement.onmousemove = null
-                    resizeElement.onmouseup = null
-                    resizeElement.releaseCapture()
+            function stopDrag1(that){
+
+                if(that.releaseCapture){
+                    that.onmousemove = null
+                    that.onmouseup = null
+                    that.releaseCapture()
                 }else{
-                    document.removeEventListener("mousemove",doDrag1,true)
+                    document.removeEventListener("mousemove",doDrag1.bind(this,null,''),true)
                     document.removeEventListener("mouseup",stopDrag1,true)
                 }
-            }*/
-
+            }
         }
-
     }
 
 }
 
-var Grid = {
-    set: function(data){
-        console.log(data)
-        return data + '-----'
+var Grid = function () {
+    set: {
+
+    }
+    init: {
+
     }
 }
+
+Grid.prototype.inid = function () {
+
+    console.log("nimiedid");
+
+}
+
 
 export {
     TableGrid,
