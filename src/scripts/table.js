@@ -1,4 +1,5 @@
 import {genId} from './util/utils.js'
+import event from './util/event'
 
 //点击事件
 const table_cell_right_resize = (x) => {
@@ -16,7 +17,7 @@ class TableGrid {
         this.initHeaderStyle()
         this.initHeader()
         this.initBody()
-        this.on()
+        this.oneventObject()
     }
 
     initHeaderStyle(){
@@ -33,13 +34,15 @@ class TableGrid {
 
         var myheaderstyle = document.createElement('style')
 
-        myheaderstyle.setAttribute('fj','headerStyle')
+        myheaderstyle.id ='headerstyle'
+
+        //myheaderstyle.setAttribute('fj','headerStyle')
 
         myheaderstyle.innerHTML = template
 
-        //this.container.after(myheaderstyle)
+        this.container.after(myheaderstyle)
         //this.container.insertBefore(myheaderstyle)
-        this.container.append(myheaderstyle)
+        //this.container.append(myheaderstyle)
 
     }
 
@@ -151,9 +154,25 @@ class TableGrid {
         }
     }
 
+    oneventObject(){
+
+        console.log("呵呵")
+
+        event.on('mousemove',window,moves)
+
+        function moves(){
+
+            console.log('移动了')
+
+        }
+
+    }
+
     on(){
 
-        var sytles = document.querySelector("style[fj='headerStyle']")
+        console.log(event)
+
+        var sytles = document.getElementById('headerstyle')
 
         var sheet = sytles.sheet || sytles.styleSheet || {}
         var rules = sheet.cssRules || sheet.rules;
@@ -167,10 +186,156 @@ class TableGrid {
             var mouseStart = {}
             var rightStart = {}
 
+            var mocount = 0
+
             resizeElement.onmousedown = function(evdown){
+
 
                 evdown.stopPropagation()
                 evdown.preventDefault()
+
+                mocount = 1
+
+                var that = this
+
+                var oEvent = evdown || event
+
+                mouseStart.x = oEvent.clientX
+                rightStart.x = that.offsetLeft;
+
+
+                if(resizeElement.setCapture){
+                    resizeElement.onmousemove = doDrag1
+                    resizeElement.onmouseup = stopDrag1
+                    resizeElement.setCapture()
+                }else{
+
+                    document.addEventListener("mousemove",doDrag1.bind(this,that,that.getAttribute('resizefield')),true)
+                    document.addEventListener("mouseup",stopDrag1,true)
+                }
+
+            }
+
+
+            function doDrag1(that,key){
+
+                var oEvent = that || event
+
+                var moveindex = event.clientX - mouseStart.x + 200
+
+                var moveindexold = event.clientX - mouseStart.x
+
+                if(moveindex > document.documentElement.clientWidth ) {
+                    moveindex = document.documentElement.clientWidth
+                }
+
+                for(var re = 0; re < rules.length;re ++){
+
+                    var rule = rules[re]
+
+                    var domes = document.querySelector('.cell-header-'+key)
+
+                    if(rule.selectorText === '.cell-header-'+key){
+
+                        var old = rule.style.width
+
+                        var olds = old.substr(0 , old.length - 2)
+
+                        rule.style.width = moveindex + 'px'
+
+
+
+                        //rule.style.width = parseFloat(parseFloat(olds) + parseFloat(moveindexold)) + 'px'
+
+                        var index =  document.getElementById('index')
+
+                        /*index.append(`moveindex: ${moveindex} \n
+                            moveindexold: ${moveindexold} conut : ${parseFloat(olds) + parseFloat(moveindexold)}
+                            difference: ${parseFloat(parseFloat(moveindexold) -  parseFloat(parseFloat(olds) + parseFloat(moveindexold)))}
+                        `)*/
+                        index.innerHTML = `moveindex: ${moveindex}  
+                            moveindexold: ${parseFloat(olds) + parseFloat(moveindexold)}
+                        `
+
+                        /*console.log('moveindex',moveindex)
+
+                        console.log('moveindexold',moveindexold)*/
+
+
+                    }
+
+                }
+
+                //var l = oEvent.clientX - mouseStart.x + rightStart.x
+                /*var l =  mouseStart.x + rightStart.x
+                var w = l + oEvent.offsetWidth
+
+                if(w < oEvent.offsetWidth){
+                    w = oEvent.offsetWidth
+                }else if( w > document.documentElement.clientWidth - parent.offsetLeft){
+                    w = document.documentElement.clientWidth - parent.offsetLeft - 2
+                }
+
+                for (var sy = 0 ; sy < rules.length; sy ++){
+
+                    var indys = rules[sy]
+
+                    if(indys.selectorText == '.cell-header-'+ oEvent.getAttribute('resizefield')){
+                        //console.log(indys)
+                    }
+                }*/
+
+                //style.style.width = w + "px"
+
+            }
+
+            function stopDrag1(ev){
+
+                /*if(that.releaseCapture){
+                    that.onmousemove = null
+                    that.onmouseup = null
+                    that.releaseCapture()
+                }else{*/
+
+                console.log('解绑了')
+
+                document.removeEventListener("mousemove",doDrag1,true)
+                document.removeEventListener("mouseup",stopDrag1,true)
+
+                //}
+            }
+        }
+
+
+
+    }
+
+    onback(){
+
+        //var sytles = document.querySelector("style[fj='headerStyle']")
+        var sytles = document.getElementById('headerstyle')
+
+        var sheet = sytles.sheet || sytles.styleSheet || {}
+        var rules = sheet.cssRules || sheet.rules;
+
+        var resizeElements =  document.querySelectorAll(".table-header-right-resize")
+
+        for (var r = 0 ; r < resizeElements.length; r++){
+
+            var resizeElement = resizeElements[r]
+
+            var mouseStart = {}
+            var rightStart = {}
+
+            var mocount = 0
+
+            resizeElement.onmousedown = function(evdown){
+
+
+                evdown.stopPropagation()
+                evdown.preventDefault()
+
+                mocount = 1
 
                 var that = this
 
@@ -201,14 +366,19 @@ class TableGrid {
 
                 var index = document.getElementById('index')
 
-                var l = oEvent.clientX - mouseStart.x ;
+                var moveindex = event.clientX - mouseStart.x
 
                 for(var re = 0; re < rules.length;re ++){
 
                     var rule = rules[re]
 
-                    if(rule.selectorText == '.cell-header-'+key){
+                    var domes = document.querySelector('.cell-header-'+key)
+
+                    //console.log(domes)
+
+                    if(rule.selectorText === '.cell-header-'+key){
                         //console.log(moveindex)
+                        //console.log(rule)
 
                         var old = rule.style.width
 
@@ -216,10 +386,25 @@ class TableGrid {
 
                         //console.log(parseInt(parseInt(olds) + parseInt(moveindex)))
 
-                        //console.log(olds)
+                        //console.log(rule)
 
-                        rule.style.width = parseInt(parseInt(olds) + parseInt(moveindex)) + 'px'
+                        domes.style.width = parseInt(parseInt(olds) + parseInt(moveindex)) + 'px'
 
+                        //rule.style.width = parseFloat(parseFloat(olds) + parseFloat(moveindex) - 2) + 'px'
+
+                        //console.log(parseInt(olds) + parseInt(moveindex))
+
+                        //rule.style.width = parseFloat(parseFloat(olds) + 1) + 'px'
+
+                        //console.log(rule.style.width)
+
+                        console.log(rule.style.width)
+
+                        rule.style.width = (parseFloat(olds) + 1) + 'px'
+
+                        mocount ++
+
+                        console.log(mocount)
 
                     }
 
@@ -248,16 +433,27 @@ class TableGrid {
 
             }
 
-            function stopDrag1(that){
+            function stopDrag1(ev){
 
-                if(that.releaseCapture){
+
+                console.log('解绑了')
+
+                /*if(that.releaseCapture){
                     that.onmousemove = null
                     that.onmouseup = null
                     that.releaseCapture()
-                }else{
-                    document.removeEventListener("mousemove",doDrag1.bind(this,null,''),true)
-                    document.removeEventListener("mouseup",stopDrag1,true)
-                }
+                }else{*/
+
+                    document.onmousemove = null
+                    document.onmouseup = null
+
+                    window.onmousemove = null
+                    window.onmouseup = null
+
+                    //document.removeEventListener("mousemove",doDrag1,true)
+                    //document.removeEventListener("mouseup",stopDrag1,true)
+
+                //}
             }
         }
     }
