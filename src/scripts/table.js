@@ -1,5 +1,5 @@
 import {genId} from './util/utils.js'
-import event from './util/event'
+import Events from './util/index'
 
 //点击事件
 const table_cell_right_resize = (x) => {
@@ -158,13 +158,26 @@ class TableGrid {
 
         console.log("呵呵")
 
-        event.on('mousemove',window,moves)
-
-        function moves(){
-
-            console.log('移动了')
-
+        function myHandler(event) {
+            alert(event.data.foo);
         }
+        Events.on(document,"click", {foo: "bar"}, myHandler)
+
+
+        /*Events.on(document,"mousemove",function(){
+
+            console.log("操作")
+
+        })
+
+        Events.on(document,"mouseup",function () {
+            console.log("移除前")
+
+            Events.off(document,"mousemove")
+
+            console.log("移除后")
+
+        })*/
 
     }
 
