@@ -113,7 +113,6 @@
                   el.addEventListener(event, window[eid]);
               });*/
 
-              console.log("无选择器，有参数对象，调用data")
           }
 
         }

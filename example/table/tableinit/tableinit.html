@@ -6,28 +6,28 @@
 </head>
 <body>
 
-    <div id="tableinit" style="width: 700px;height: 500px;border: 1px solid #a0ff86"></div>
+    <div id="tableinit" style="width: 700px;height: 500px;border: 1px solid #a0ff86;overflow: auto"></div>
 
-    <div id="index"></div>
+    <button id="btn">操作</button>
 
 </body>
 </html>
 <script>
 
     var schema = [
-        { width: 200,align: 'left',text:"名字", id: "name"},
-        { width: 200,align: 'center',text:"年龄", id: "age"},
-        { width: 200,align: 'center',text:"性别", id: "sex"},
-        { width: 200,align: 'center',text:"成绩", id: "achievement"},
-        { width: 200,align: 'center',text:"年级", id: "grade"},
-        { width: 200,align: 'center',text:"科目", id: "subject"}
+        { width: 200, align: 'left',text:"名字", id: "name"},
+        { width: 200, align: 'center',text:"年龄", id: "age"},
+        { width: 200, align: 'center',text:"性别", id: "sex"},
+        { width: 200, align: 'center',text:"成绩", id: "achievement"},
+        { width: 200, align: 'center',text:"年级", id: "grade"},
+        { width: 200, align: 'center',text:"科目", id: "subject"}
     ]
 
     var data = [
         {
             "name":"吴华豪",
-            "sex":"男",
             "age":"30",
+            "sex":"男",
             "achievement":"190",
             "grade":"社会大学",
             "subject":"骑马射箭"
@@ -46,6 +46,12 @@
     window.onload = function(){
 
         var tableGrid =  new fjcode.TableGrid('tableinit',schema,data)
+
+        btn.onclick = function(){
+
+            tableGrid.getheaderwidth()
+
+        }
 
     }
 

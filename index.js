@@ -1,4 +1,4 @@
-import {TableGrid,Grid} from './src/scripts/table.js'
+import {TableGrid} from './src/scripts/table.js'
 import  './src/scripts/object'
 import {Persion} from './src/scripts/actionone'
 import './src/styles/index.scss'
@@ -7,8 +7,7 @@ import './src/styles/index.scss'
 export default (function(){
 
     window.fjcode = {
-        TableGrid,
-        Grid
+        TableGrid
     }
 
 

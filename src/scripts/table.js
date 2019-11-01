@@ -1,13 +1,5 @@
 import {genId} from './util/utils.js'
-import Events from './util/index'
 import './util/event'
-
-//点击事件
-const table_cell_right_resize = (x) => {
-
-    console.log(x)
-
-}
 
 class TableGrid {
     constructor(el,columns,data) {
@@ -18,13 +10,14 @@ class TableGrid {
         this.initHeaderStyle()
         this.initHeader()
         this.initBody()
-        this.on()
-        this.onevent()
+        this.onResize()
     }
 
     initHeaderStyle(){
 
         var template = ``
+
+        var headerallsize =  0
 
         for(var i = 0; i < this.columns.length; i ++){
             var styleheaderdata = this.columns[i]
@@ -32,7 +25,18 @@ class TableGrid {
                 width: ${styleheaderdata.width}px;
                 text-align: ${styleheaderdata.align};
             }`
+
+            headerallsize += styleheaderdata.width + 2
+
         }
+
+       /* var countsize = document.createElement("style")
+
+        countsize.id = 'countsize' */
+
+        template += `.header-cell{
+           width: ${headerallsize}px;
+        }`
 
         var myheaderstyle = document.createElement('style')
 
@@ -48,66 +52,11 @@ class TableGrid {
 
     }
 
-    onevent(){
-
-       /* console.log(tableinit)
-
-        console.log($('#tableinit')[0])*/
-
-
-        /*
-        $('#tableinit').on('mousemove','.table-header-call',myhandle)*/
-
-       /* $('#tableinit').test("click",".table-header-call",{da:"dd"},function (e) {
-            console.log(e.data)
-        })*/
-
-       var i = 0
-
-       function handle(e){
-           console.log(e.data)
-
-           i ++
-           if( i > 10){
-               events('#tableinit').off('click')
-           }
-       }
-
-        events('#tableinit').on('click','.table-header-call',handle)
-
-
-
-
-        /*function hadless(e){
-            console.log(e.data)
-        }
-
-        $('#tableinit').test("click", {asd:"asdd"},function (e) {
-            console.log(e.data)
-        })
-        //$('#tableinit').test("click", {asd:"asdd"},hadless)
-
-        $('#tableinit').off("click")*/
-
-
-
-        /*function myhandle(e){
-
-            console.log(e)
-
-        }
-
-        //$('#tableinit').on('mousemove','.table-header-call',myhandle)
-        $('#tableinit').on('click',myhandle)*/
-
-
-    }
-
     initHeader(){
 
         var header =  document.createElement('div')
 
-        header.classList.add('table-header-line-column')
+        header.classList.add('table-header-line-column','header-cell')
 
         var header_width = 0
 
@@ -155,10 +104,11 @@ class TableGrid {
 
         }
 
+
         this.header = header
         this.header_width = header_width
 
-        header.style.width = header_width  + 'px'
+        //header.style.width = header_width  + 'px'
 
         if (this.container.offsetWidth < header.offsetWidth) {
             this.container.style.overflow = 'auto'
@@ -172,7 +122,7 @@ class TableGrid {
 
             var div = document.createElement('div')
 
-            div.classList.add('table-body-tabulation')
+            div.classList.add('table-body-tabulation','header-cell')
 
             for(var key in this.data[i]){
 
@@ -184,341 +134,99 @@ class TableGrid {
 
             }
 
-            div.style.width = this.header_width + 'px'
+            //div.style.width = this.header_width + 'px'
 
             this.container.appendChild(div)
 
-            /*for(var d = 0; d < this.data.length; d ++){
-
-                var ddd =  document.createElement('div')
-
-                ddd.classList.add(`table-tabulation-cell-line`,`cell-header-${data[d].id}`)
-
-                ddd.innerHTML = data[d].id
-
-                div.appendChild(ddd)
-            }*/
-
-
-            /*var style = document.querySelector('style')
-
-            var sheet = style.sheet || style.styleSheet || {}
-            var rules = sheet.cssRules || sheet.rules;
-
-            for (var s = 0 ; s < rules.length; s ++){
-                var rule = rules[s]
-            }*/
         }
     }
 
-    on(){
+    getheaderwidth(){
+        console.log(this.header_width)
+        return this.header_width
+    }
+
+    onResize(){
 
         var sytles = document.getElementById('headerstyle')
 
         var sheet = sytles.sheet || sytles.styleSheet || {}
         var rules = sheet.cssRules || sheet.rules;
 
-        var resizeElements =  document.querySelectorAll(".table-header-right-resize")
+        var rulesheaders
 
-        for (var r = 0 ; r < resizeElements.length; r++){
-
-            var resizeElement = resizeElements[r]
-
-            var mouseStart = {}
-            var rightStart = {}
-
-            var mocount = 0
-
-            resizeElement.onmousedown = function(evdown){
-
-
-                evdown.stopPropagation()
-                evdown.preventDefault()
-
-                mocount = 1
-
-                var that = this
-
-                var oEvent = evdown || event
-
-                mouseStart.x = oEvent.clientX
-                rightStart.x = that.offsetLeft;
-
-
-                if(resizeElement.setCapture){
-                    resizeElement.onmousemove = doDrag1
-                    resizeElement.onmouseup = stopDrag1
-                    resizeElement.setCapture()
-                }else{
-
-                    document.addEventListener("mousemove",doDrag1.bind(this,that,that.getAttribute('resizefield')),true)
-                    document.addEventListener("mouseup",stopDrag1,true)
-                }
-
+        for(let dd = 0; dd<rules.length; dd++){
+            var ruleheaders = rules[dd]
+            if(ruleheaders.selectorText === '.header-cell'){
+                rulesheaders = ruleheaders
             }
+        }
 
+        var mouseStart = {}
+        var rightStart = {}
 
-            function doDrag1(that,key){
+        var Classez = this
 
-                var oEvent = that || event
+        function start(ev){
 
-                var moveindex = event.clientX - mouseStart.x + 200
+            ev.stopPropagation()
+            ev.preventDefault()
 
-                var moveindexold = event.clientX - mouseStart.x
+            var oEvent = ev || event
+
+            mouseStart.x = oEvent.clientX
+            rightStart.x = this.offsetLeft;
+            rightStart.width = this.offsetWidth;
+
+            var count = parseFloat(rulesheaders.style.width.substr(0 , rulesheaders.style.width.length - 2))
+
+            rightStart.header_width = count
+
+            var key = this.getAttribute('resizefield')
+
+            events("html").on('mousemove',{key:key},function(e){
+
+                var oEvent = e || event
+
+                var moveindex = oEvent.clientX - mouseStart.x
+
+                var headercell = moveindex + rightStart.x + rightStart.width
+
+                var headerindex = moveindex + rightStart.header_width
+
+                //Classez.header_width = headerindex
 
                 if(moveindex > document.documentElement.clientWidth ) {
                     moveindex = document.documentElement.clientWidth
                 }
 
                 for(var re = 0; re < rules.length;re ++){
-
                     var rule = rules[re]
-
-                    var domes = document.querySelector('.cell-header-'+key)
-
+                    if(rule.selectorText === '.header-cell'){
+                        rule.style.width = headerindex + 'px'
+                        //Classez.header_width = headerindex
+                        //console.log(countrules[0].style.width)
+                    }
                     if(rule.selectorText === '.cell-header-'+key){
-
-                        var old = rule.style.width
-
-                        var olds = old.substr(0 , old.length - 2)
-
-                        rule.style.width = moveindex + 'px'
-
-
-
-                        //rule.style.width = parseFloat(parseFloat(olds) + parseFloat(moveindexold)) + 'px'
-
-                        var index =  document.getElementById('index')
-
-                        /*index.append(`moveindex: ${moveindex} \n
-                            moveindexold: ${moveindexold} conut : ${parseFloat(olds) + parseFloat(moveindexold)}
-                            difference: ${parseFloat(parseFloat(moveindexold) -  parseFloat(parseFloat(olds) + parseFloat(moveindexold)))}
-                        `)*/
-                        index.innerHTML = `moveindex: ${moveindex}  
-                            moveindexold: ${parseFloat(olds) + parseFloat(moveindexold)}
-                        `
-
-                        /*console.log('moveindex',moveindex)
-
-                        console.log('moveindexold',moveindexold)*/
-
-
+                        rule.style.width = headercell + 'px'
                     }
-
                 }
 
-                //var l = oEvent.clientX - mouseStart.x + rightStart.x
-                /*var l =  mouseStart.x + rightStart.x
-                var w = l + oEvent.offsetWidth
+                //rightStart.header.style.width = headerindex + 'px'
 
-                if(w < oEvent.offsetWidth){
-                    w = oEvent.offsetWidth
-                }else if( w > document.documentElement.clientWidth - parent.offsetLeft){
-                    w = document.documentElement.clientWidth - parent.offsetLeft - 2
-                }
+            })
+            events("html").on('mouseup',function(e){
+                events("html").off("mousemove")
+                events("html").off("mouseup")
+            })
 
-                for (var sy = 0 ; sy < rules.length; sy ++){
-
-                    var indys = rules[sy]
-
-                    if(indys.selectorText == '.cell-header-'+ oEvent.getAttribute('resizefield')){
-                        //console.log(indys)
-                    }
-                }*/
-
-                //style.style.width = w + "px"
-
-            }
-
-            function stopDrag1(ev){
-
-                /*if(that.releaseCapture){
-                    that.onmousemove = null
-                    that.onmouseup = null
-                    that.releaseCapture()
-                }else{*/
-
-                console.log('解绑了')
-
-                document.removeEventListener("mousemove",doDrag1,true)
-                document.removeEventListener("mouseup",stopDrag1,true)
-
-                //}
-            }
         }
-
-
-
+        events(".table-header-right-resize").on("mousedown",start)
     }
 
-    onback(){
-
-        //var sytles = document.querySelector("style[fj='headerStyle']")
-        var sytles = document.getElementById('headerstyle')
-
-        var sheet = sytles.sheet || sytles.styleSheet || {}
-        var rules = sheet.cssRules || sheet.rules;
-
-        var resizeElements =  document.querySelectorAll(".table-header-right-resize")
-
-        for (var r = 0 ; r < resizeElements.length; r++){
-
-            var resizeElement = resizeElements[r]
-
-            var mouseStart = {}
-            var rightStart = {}
-
-            var mocount = 0
-
-            resizeElement.onmousedown = function(evdown){
-
-
-                evdown.stopPropagation()
-                evdown.preventDefault()
-
-                mocount = 1
-
-                var that = this
-
-                var oEvent = evdown || event
-
-                mouseStart.x = oEvent.clientX
-                rightStart.x = that.offsetLeft;
-
-
-                if(resizeElement.setCapture){
-                    resizeElement.onmousemove = doDrag1
-                    resizeElement.onmouseup = stopDrag1
-                    resizeElement.setCapture()
-                }else{
-
-                    document.addEventListener("mousemove",doDrag1.bind(this,that,that.getAttribute('resizefield')),true)
-                    document.addEventListener("mouseup",stopDrag1,true)
-                }
-
-            }
-
-
-            function doDrag1(that,key){
-
-                var oEvent = that || event
-
-                var parent = oEvent.parentNode;
-
-                var index = document.getElementById('index')
-
-                var moveindex = event.clientX - mouseStart.x
-
-                for(var re = 0; re < rules.length;re ++){
-
-                    var rule = rules[re]
-
-                    var domes = document.querySelector('.cell-header-'+key)
-
-                    //console.log(domes)
-
-                    if(rule.selectorText === '.cell-header-'+key){
-                        //console.log(moveindex)
-                        //console.log(rule)
-
-                        var old = rule.style.width
-
-                        var olds = old.substr(0 , old.length - 2)
-
-                        //console.log(parseInt(parseInt(olds) + parseInt(moveindex)))
-
-                        //console.log(rule)
-
-                        domes.style.width = parseInt(parseInt(olds) + parseInt(moveindex)) + 'px'
-
-                        //rule.style.width = parseFloat(parseFloat(olds) + parseFloat(moveindex) - 2) + 'px'
-
-                        //console.log(parseInt(olds) + parseInt(moveindex))
-
-                        //rule.style.width = parseFloat(parseFloat(olds) + 1) + 'px'
-
-                        //console.log(rule.style.width)
-
-                        console.log(rule.style.width)
-
-                        rule.style.width = (parseFloat(olds) + 1) + 'px'
-
-                        mocount ++
-
-                        console.log(mocount)
-
-                    }
-
-                }
-
-                //var l = oEvent.clientX - mouseStart.x + rightStart.x
-                /*var l =  mouseStart.x + rightStart.x
-                var w = l + oEvent.offsetWidth
-
-                if(w < oEvent.offsetWidth){
-                    w = oEvent.offsetWidth
-                }else if( w > document.documentElement.clientWidth - parent.offsetLeft){
-                    w = document.documentElement.clientWidth - parent.offsetLeft - 2
-                }
-
-                for (var sy = 0 ; sy < rules.length; sy ++){
-
-                    var indys = rules[sy]
-
-                    if(indys.selectorText == '.cell-header-'+ oEvent.getAttribute('resizefield')){
-                        //console.log(indys)
-                    }
-                }*/
-
-                //style.style.width = w + "px"
-
-            }
-
-            function stopDrag1(ev){
-
-
-                console.log('解绑了')
-
-                /*if(that.releaseCapture){
-                    that.onmousemove = null
-                    that.onmouseup = null
-                    that.releaseCapture()
-                }else{*/
-
-                    document.onmousemove = null
-                    document.onmouseup = null
-
-                    window.onmousemove = null
-                    window.onmouseup = null
-
-                    //document.removeEventListener("mousemove",doDrag1,true)
-                    //document.removeEventListener("mouseup",stopDrag1,true)
-
-                //}
-            }
-        }
-    }
 
 }
-
-var Grid = function () {
-    set: {
-
-    }
-    init: {
-
-    }
-}
-
-Grid.prototype.inid = function () {
-
-    console.log("nimiedid");
-
-}
-
 
 export {
-    TableGrid,
-    Grid,
-    table_cell_right_resize
+    TableGrid
 }

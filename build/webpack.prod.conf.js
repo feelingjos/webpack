@@ -25,14 +25,6 @@ module.exports = {
             }
         }),
         new HtmlWebpackPlugin({
-            filename: 'index.html',
-            template: './index.html',
-            chunks: ['index'],
-            minify: {
-                collapseWhitespace: false //压缩空格
-            }
-        }),
-        new HtmlWebpackPlugin({
             filename: 'example/table/tableinit/tableinit.html',
             template: './example/table/tableinit/tableinit.html',
             chunks: ['index'],

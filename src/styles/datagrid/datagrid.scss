@@ -16,7 +16,7 @@ html, body{
 }
 .table-body-tabulation{
   height: 42px;
-  width: auto;
+  //width: auto;
 }
 .table-tabulation-cell-line{
   float: left;
@@ -32,6 +32,7 @@ html, body{
   border: 1px solid #DFDFDF ;
   text-align: center;
   line-height: 50px;
+  //display: inline-block;
   float: left;
   //width: 100px;
   height: 50px;
