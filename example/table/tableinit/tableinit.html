@@ -6,9 +6,8 @@
 </head>
 <body>
 
-    <div id="tableinit" style="width: 700px;height: 500px;border: 1px solid #a0ff86;overflow: auto"></div>
+    <div id="tableinit" style="margin:0 auto;width: 700px;height: 500px;border: 1px solid #a0ff86;overflow: auto"></div>
 
-    <button id="btn">操作</button>
 
 </body>
 </html>
@@ -45,13 +44,12 @@
 
     window.onload = function(){
 
-        var tableGrid =  new fjcode.TableGrid('tableinit',schema,data)
+        var tableGrid =  new fjcode.TableGrid('tableinit',{
+            columns:schema,
+            data
+        })
 
-        btn.onclick = function(){
-
-            tableGrid.getheaderwidth()
-
-        }
+        tableGrid.test()
 
     }
 

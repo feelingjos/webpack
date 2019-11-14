@@ -2,11 +2,12 @@ import {genId} from './util/utils.js'
 import './util/event'
 
 class TableGrid {
-    constructor(el,columns,data) {
+
+    constructor(el,config) {
         this.el = el
         this.container = document.getElementById(el);
-        this.columns = columns
-        this.data = data
+        this.columns = config.columns
+        this.data = config.data
         this.initHeaderStyle()
         this.initHeader()
         this.initBody()
@@ -74,25 +75,13 @@ class TableGrid {
 
             column.setAttribute('field',column_content.id)
 
-           /* var content = `${column_content.text}
-            <div class="table-header-right-resize" resizefield=${column_content.id}></div>`
-
-            column.innerHTML = content*/
-
             column.innerHTML = column_content.text
 
             var resize =  document.createElement('div')
             resize.classList.add('table-header-right-resize')
             resize.setAttribute('resizefield',column_content.id)
 
-            /*resize.onmousedown =function(){
-
-                console.log(resize)
-
-            }*/
-
             column.appendChild(resize)
-
 
             column.classList.add(`cell-header-${column_content.id}`)
 
@@ -141,11 +130,6 @@ class TableGrid {
         }
     }
 
-    getheaderwidth(){
-        console.log(this.header_width)
-        return this.header_width
-    }
-
     onResize(){
 
         var sytles = document.getElementById('headerstyle')
@@ -164,8 +148,6 @@ class TableGrid {
 
         var mouseStart = {}
         var rightStart = {}
-
-        var Classez = this
 
         function start(ev){
 
@@ -224,8 +206,16 @@ class TableGrid {
         events(".table-header-right-resize").on("mousedown",start)
     }
 
+    test(a,asd){
+        var self = Array.prototype.slice.call(this)
+
+        console.log(self)
+
+    }
 
 }
+
+
 
 export {
     TableGrid

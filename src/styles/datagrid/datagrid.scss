@@ -20,11 +20,11 @@ html, body{
 }
 .table-tabulation-cell-line{
   float: left;
-  text-align: center;
+  //text-align: center;
+  overflow: hidden;
   line-height: 40px;
   border: 1px solid #DFDFDF;
   height: 40px;
-  width: 100px;
 }
 
 .table-header-call{
