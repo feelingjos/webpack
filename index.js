@@ -1,5 +1,6 @@
 import {TableGrid} from './src/scripts/table.js'
 import  './src/scripts/object'
+import './src/scripts/util/support'
 import {Persion} from './src/scripts/actionone'
 import './src/styles/index.scss'
 //import './src/index2'

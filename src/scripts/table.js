@@ -26,14 +26,8 @@ class TableGrid {
                 width: ${styleheaderdata.width}px;
                 text-align: ${styleheaderdata.align};
             }`
-
             headerallsize += styleheaderdata.width + 2
-
         }
-
-       /* var countsize = document.createElement("style")
-
-        countsize.id = 'countsize' */
 
         template += `.header-cell{
            width: ${headerallsize}px;
@@ -42,14 +36,9 @@ class TableGrid {
         var myheaderstyle = document.createElement('style')
 
         myheaderstyle.id ='headerstyle'
-
-        //myheaderstyle.setAttribute('fj','headerStyle')
-
         myheaderstyle.innerHTML = template
 
         this.container.after(myheaderstyle)
-        //this.container.insertBefore(myheaderstyle)
-        //this.container.append(myheaderstyle)
 
     }
 
@@ -60,6 +49,19 @@ class TableGrid {
         header.classList.add('table-header-line-column','header-cell')
 
         var header_width = 0
+
+        const adsf= `
+         <button>fasdf</button>
+        `
+
+        var  aasdf = adsf.aa()
+
+        this.container.appendChild(aasdf.documentElement)
+
+        aasdf.onclick = function () {
+            console.log("点击了")
+        }
+        
 
         for(var i = 0; i < this.columns.length; i ++){
 
@@ -206,12 +208,6 @@ class TableGrid {
         events(".table-header-right-resize").on("mousedown",start)
     }
 
-    test(a,asd){
-        var self = Array.prototype.slice.call(this)
-
-        console.log(self)
-
-    }
 
 }
 

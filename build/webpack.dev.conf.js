@@ -135,6 +135,7 @@ module.exports = {
             ]
         },
         open: true,
+        openPage:'/example/table/tableinit/tableinit.html',
         port: 9001,
         watchContentBase   : true,
         disableHostCheck   : true, // [1]
