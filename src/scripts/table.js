@@ -50,18 +50,7 @@ class TableGrid {
 
         var header_width = 0
 
-        const adsf= `
-         <button>fasdf</button>
-        `
-
-        var  aasdf = adsf.aa()
-
-        this.container.appendChild(aasdf.documentElement)
-
-        aasdf.onclick = function () {
-            console.log("点击了")
-        }
-        
+        console.log(document.all)
 
         for(var i = 0; i < this.columns.length; i ++){
 
