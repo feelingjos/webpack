@@ -12,6 +12,35 @@ class TableGrid {
         this.initHeader()
         this.initBody()
         this.onResize()
+        this.init(el,config)
+    }
+
+    init(el,config){
+
+        let elementById = document.getElementById(el)
+
+        //绘制头部
+        var columns = config.columns
+
+        var headerCssRules = ``
+
+        var headerContainer = `<div class="table-header-line-column header-cell">`
+
+        columns.forEach(function(item,index){
+
+            headerCssRules +=  `
+                .cell-header-${item.id}{
+                width: ${item.width}px;
+                text-align: ${item.align};
+            }`
+
+
+        })
+
+        headerContainer += `</div>`
+
+        console.log(headerCssRules)
+
     }
 
     initHeaderStyle(){
@@ -49,8 +78,6 @@ class TableGrid {
         header.classList.add('table-header-line-column','header-cell')
 
         var header_width = 0
-
-        console.log(document.all)
 
         for(var i = 0; i < this.columns.length; i ++){
 
