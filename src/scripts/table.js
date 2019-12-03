@@ -1,5 +1,5 @@
-import {genId} from './util/utils.js'
 import './util/event'
+import {Dom} from './util/dom.js'
 
 class TableGrid {
 
@@ -8,10 +8,10 @@ class TableGrid {
         this.container = document.getElementById(el);
         this.columns = config.columns
         this.data = config.data
-        this.initHeaderStyle()
-        this.initHeader()
-        this.initBody()
-        this.onResize()
+        //this.initHeaderStyle()
+        //this.initHeader()
+        //this.initBody()
+        //this.onResize()
         this.init(el,config)
     }
 
@@ -24,7 +24,11 @@ class TableGrid {
 
         var headerCssRules = ``
 
-        var headerContainer = `<div class="table-header-line-column header-cell">`
+        var headerContainer = `<div class="table-header-line-column header-cell container">`
+
+        var headerBody = `<div class="table-body-tabulation header-cell ">`
+
+        var cellSize = 0
 
         columns.forEach(function(item,index){
 
@@ -34,12 +38,32 @@ class TableGrid {
                 text-align: ${item.align};
             }`
 
+            cellSize += item.width + 2
+
+            headerContainer += `
+            <div class="table-header-call cell-header-${item.id}" fieldindex="${index}" field="${item.id}">
+            ${item.text}
+            <div class="table-header-right-resize" resizefield="${item.id}"/></div>
+            </div>
+            `
+
+            headerBody += `<div class="table-tabulation-cell-line cell-header-${item.id}">${item.text}</div>`
 
         })
-
         headerContainer += `</div>`
+        headerBody += `</div>`
 
-        console.log(headerCssRules)
+        var htmlStyleElement = document.createElement('style')
+
+        htmlStyleElement.innerHTML = headerCssRules
+
+        this.container.appendChild(Dom.strCastDom(headerContainer))
+        this.container.appendChild(Dom.strCastDom(headerBody))
+        this.container.appendChild(htmlStyleElement)
+
+        document.querySelector(".table-header-line-column").style.width = cellSize + 'px';
+        document.querySelector(".table-body-tabulation").style.width = cellSize + 'px';
+        console.log(this.container.offsetWidth);
 
     }
 
