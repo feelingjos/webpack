@@ -19,6 +19,8 @@ class TableGrid {
 
         let elementById = document.getElementById(el)
 
+        var self = this;
+
         //绘制头部
         var columns = config.columns
 
@@ -59,11 +61,36 @@ class TableGrid {
 
         this.container.appendChild(Dom.strCastDom(headerContainer))
         this.container.appendChild(Dom.strCastDom(headerBody))
+
+
+        //设置行的宽高
+        document.querySelector(".table-header-line-column").style.width = cellSize + 'px'
+        document.querySelector(".table-body-tabulation").style.width = cellSize + 'px'
+
+        config.data.forEach(function (item,index) {
+
+            var arr =new Array()
+
+            for(var cell in item){
+                //cell  -- key
+                //item[cell]   -- value
+                /*console.log(cell);
+                console.log(item[cell]);*/
+                var index =  document.querySelector(`.cell-header-${cell}`).getAttribute("fieldindex")
+                arr[index] = `<div class="table-tabulation-cell-line cell-header-${cell}">${item[cell]}</div>`
+            }
+
+            for (var cellBody in arr){
+
+                self.container.appendChild(Dom.strCastDom(arr[cellBody]))
+
+            }
+
+        })
+
+
         this.container.appendChild(htmlStyleElement)
 
-        document.querySelector(".table-header-line-column").style.width = cellSize + 'px';
-        document.querySelector(".table-body-tabulation").style.width = cellSize + 'px';
-        console.log(this.container.offsetWidth);
 
     }
 
