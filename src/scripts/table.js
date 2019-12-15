@@ -8,7 +8,7 @@ class TableGrid {
         this.container = document.getElementById(el);
         this.columns = config.columns;
         this.data = config.data;
-        //this.initHeaderStyle()
+        this.initHeaderStyle()
         //this.initHeader()
         //this.initBody()
         //this.onResize()
@@ -77,7 +77,14 @@ class TableGrid {
                 /*console.log(cell);
                 console.log(item[cell]);*/
                 var index =  document.querySelector(`.cell-header-${cell}`).getAttribute("fieldindex");
-                arr[index] = `<div class="table-tabulation-cell-line cell-header-${cell}">${item[cell]}</div>`
+                
+                var tableBodyTabulation = document.createElement("div");
+
+                tableBodyTabulation.classList.add("table-body-tabulation header-cell");
+
+                tableBodyTabulation.innerHTML = `<div class="table-tabulation-cell-line cell-header-${cell}">${item[cell]}</div>`
+                
+                arr[index] = tableBodyTabulation
             }
 
             for (var cellBody in arr){
