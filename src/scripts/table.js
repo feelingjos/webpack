@@ -77,23 +77,19 @@ class TableGrid {
                 /*console.log(cell);
                 console.log(item[cell]);*/
                 var index =  document.querySelector(`.cell-header-${cell}`).getAttribute("fieldindex");
-                
-                var tableBodyTabulation = document.createElement("div");
 
-                tableBodyTabulation.classList.add("table-body-tabulation header-cell");
-
-                tableBodyTabulation.innerHTML = `<div class="table-tabulation-cell-line cell-header-${cell}">${item[cell]}</div>`
-                
-                arr[index] = tableBodyTabulation
+                arr[index] =  `<div class="table-tabulation-cell-line cell-header-${cell}">${item[cell]}</div>`
             }
+            var tableBodyTabulation = document.createElement("div");
 
+            tableBodyTabulation.classList.add("table-body-tabulation","header-cell");
             for (var cellBody in arr){
 
-                self.container.appendChild(Dom.strCastDom(arr[cellBody]))
+                tableBodyTabulation.appendChild(Dom.strCastDom(arr[cellBody]))
 
             }
 
-
+            self.container.appendChild(tableBodyTabulation)
 
         });
 
