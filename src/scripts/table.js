@@ -17,8 +17,6 @@ class TableGrid {
 
     init(el,config){
 
-        let elementById = document.getElementById(el);
-
         var self = this;
 
         //绘制头部
@@ -26,7 +24,7 @@ class TableGrid {
 
         var headerCssRules = ``;
 
-        var headerContainer = `<div class="table-header-line-column header-cell container">`;
+        var headerContainer = `<div class="table-header-line-column header-cell">`;
 
         var headerBody = `<div class="table-body-tabulation header-cell ">`;
 
@@ -60,12 +58,12 @@ class TableGrid {
         htmlStyleElement.innerHTML = headerCssRules;
 
         this.container.appendChild(Dom.strCastDom(headerContainer));
+
         this.container.appendChild(Dom.strCastDom(headerBody));
 
-
         //设置行的宽高
-        document.querySelector(".table-header-line-column").style.width = cellSize + 'px';
-        document.querySelector(".table-body-tabulation").style.width = cellSize + 'px';
+        /*document.querySelector(".table-header-line-column").style.width = cellSize + 'px';
+        document.querySelector(".table-body-tabulation").style.width = cellSize + 'px';*/
 
         config.data.forEach(function (item,index) {
 
@@ -84,9 +82,7 @@ class TableGrid {
 
             tableBodyTabulation.classList.add("table-body-tabulation","header-cell");
             for (var cellBody in arr){
-
                 tableBodyTabulation.appendChild(Dom.strCastDom(arr[cellBody]))
-
             }
 
             self.container.appendChild(tableBodyTabulation)
