@@ -15,8 +15,10 @@ module.exports = {
 
     plugins: [
         new HtmlWebpackPlugin({
-            filename: 'example/table/tableinit/tableinit.html',
-            template: './example/table/tableinit/tableinit.html',
+            //filename: 'example/table/tableinit/tableinit.html',
+            //template: './example/table/tableinit/tableinit.html',
+            filename: 'example/table/tableinit/tableconfig.html',
+            template: './example/table/tableinit/tableconfig.html',
             chunks: ['index'],
             minify: {
                 collapseWhitespace: false //压缩空格
@@ -135,7 +137,7 @@ module.exports = {
             ]
         },
         open: true,
-        openPage:'example/table/tableinit/tableinit.html',
+        openPage:'example/table/tableinit/tableconfig.html',
         port: 9001,
         watchContentBase   : true,
         disableHostCheck   : true, // [1]

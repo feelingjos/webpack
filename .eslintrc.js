@@ -2,7 +2,9 @@ module.export = {
     root: true,
     extends: 'standard',
     plugins: ["prettier"],
+    parser: "babel-eslint",
     env: {
+        "es6": true,
         "browser": true,
         "node": true
     },
@@ -10,7 +12,7 @@ module.export = {
         indent: ['error', 4]
     },
     parserOptions: {
-        "ecmaVersion": 6,
+        "ecmaVersion": 2017,
         "sourceType": "module"
     }
 }

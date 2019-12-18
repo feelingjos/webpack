@@ -17,6 +17,8 @@ class TableGrid {
 
     init(el,config){
 
+        console.log(new Elevent());
+
         var self = this;
 
         //绘制头部
@@ -43,7 +45,7 @@ class TableGrid {
             headerContainer += `
             <div class="table-header-call cell-header-${item.id}" fieldindex="${index}" field="${item.id}">
             ${item.text}
-            <div class="table-header-right-resize" resizefield="${item.id}"/></div>
+            ${item.resize ? `<div class="table-header-right-resize" resizefield="${item.id}"/></div>` : ``}
             </div>
             `;
 
@@ -59,7 +61,7 @@ class TableGrid {
 
         this.container.appendChild(Dom.strCastDom(headerContainer));
 
-        this.container.appendChild(Dom.strCastDom(headerBody));
+        //this.container.appendChild(Dom.strCastDom(headerBody));
 
         //设置行的宽高
         /*document.querySelector(".table-header-line-column").style.width = cellSize + 'px';
