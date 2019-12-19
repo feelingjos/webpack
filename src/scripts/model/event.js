@@ -1,17 +1,24 @@
 
+(function(){
+
+
+
+}())
+
 class event {
-    constructor(){
+    constructor(){}
 
-        this.eel = Math.PI
+    on(elem,fn,data,useCapture){
+        var elementById = document.getElementById(elem);
 
-        this.da = function(){
-
-            console.log(this)
-
+        if(data){
+            console.log(data)
         }
 
 
+
     }
+
 }
 
 window.Elevent = event;

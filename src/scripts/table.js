@@ -12,12 +12,18 @@ class TableGrid {
         //this.initHeader()
         //this.initBody()
         //this.onResize()
+        this.elevent = []
         this.init(el,config)
     }
 
     init(el,config){
 
-        console.log(new Elevent());
+        /*var dataCahce1 = new dataCache();
+
+        dataCahce1.set("nihao","niguolai a ")
+
+        console.log(dataCahce1);*/
+
 
         var self = this;
 
