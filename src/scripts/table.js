@@ -67,6 +67,16 @@ class TableGrid {
 
         this.container.appendChild(Dom.strCastDom(headerContainer));
 
+        columns.forEach(function(item){
+
+            if(item["resize"]){
+
+
+
+            }
+
+        })
+
         //this.container.appendChild(Dom.strCastDom(headerBody));
 
         //设置行的宽高
@@ -99,7 +109,6 @@ class TableGrid {
 
 
         this.container.appendChild(htmlStyleElement)
-
 
     }
 

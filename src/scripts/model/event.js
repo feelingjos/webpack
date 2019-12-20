@@ -15,8 +15,6 @@ class event {
             console.log(data)
         }
 
-
-
     }
 
 }
