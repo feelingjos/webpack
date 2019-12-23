@@ -68,7 +68,7 @@
 
 
 
-    Element.prototype.clearEventListeners = function(a){
+    /**Element.prototype.clearEventListeners = function(a){
         if(!this.eventListenerList)
             this.eventListenerList = {};
         if(a==undefined){
@@ -82,6 +82,6 @@
             var ev = el[i];
             this.removeEventListener(a, ev.listener, ev.useCapture);
         }
-    };
+    }; **/
 
 })();
