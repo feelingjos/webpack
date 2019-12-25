@@ -11,7 +11,12 @@
      * @param {[type]}  listener   [description]
      * @param {Boolean} useCapture [description]
      */
-    Element.prototype.addEventListener = function(type,listener,useCapture = false) {
+    Element.prototype.addEventListener = function(type,data,listener,useCapture) {
+
+        if(data){
+
+        }
+
         // declare listener
         this._addEventListener(type,listener,useCapture);
 
@@ -68,7 +73,7 @@
 
 
 
-    /**Element.prototype.clearEventListeners = function(a){
+    Element.prototype.clearEventListeners = function(a){
         if(!this.eventListenerList)
             this.eventListenerList = {};
         if(a==undefined){
@@ -82,6 +87,6 @@
             var ev = el[i];
             this.removeEventListener(a, ev.listener, ev.useCapture);
         }
-    }; **/
+    };
 
 })();
