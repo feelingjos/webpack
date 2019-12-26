@@ -11,20 +11,67 @@
      * @param {[type]}  listener   [description]
      * @param {Boolean} useCapture [description]
      */
-    Element.prototype.addEventListener = function(type,data,listener,useCapture) {
+    Element.prototype.addEventListener = function(type,reslut,listener,useCapture) {
 
-        if(data){
+        var handler , data
 
+        if(typeof  reslut === "object"){
+
+            handler = function (e) {
+                e.data = reslut
+                listener && listener.call(this,e)
+            }
+            data = reslut
+            useCapture = useCapture || false
+        }else {
+            handler = reslut
+            data = {}
+            useCapture = listener || false
         }
 
         // declare listener
-        this._addEventListener(type,listener,useCapture);
+        this._addEventListener(type,handler,useCapture);
 
         if(!this.eventListenerList) this.eventListenerList = {};
         if(!this.eventListenerList[type]) this.eventListenerList[type] = [];
 
         // add listener to  event tracking list
         this.eventListenerList[type].push( {type, listener, useCapture} );
+
+        /*
+        console.log(type)
+        console.log(data)
+        console.log(listener)
+        console.log(useCapture)*/
+
+       /* if(typeof data !== "function"){
+            function handler(e){
+                e.data = data
+                console.log(this)
+                listener && listener.apply(this,e)
+            }
+
+            data = handler;
+            // declare listener
+            this._addEventListener(type,data,useCapture);
+
+            if(!this.eventListenerList) this.eventListenerList = {};
+            if(!this.eventListenerList[type]) this.eventListenerList[type] = [];
+
+            // add listener to  event tracking list
+            this.eventListenerList[type].push( {type, data, useCapture} );
+        }else{
+            // declare listener
+            this._addEventListener(type,listener,useCapture);
+
+            if(!this.eventListenerList) this.eventListenerList = {};
+            if(!this.eventListenerList[type]) this.eventListenerList[type] = [];
+
+            // add listener to  event tracking list
+            this.eventListenerList[type].push( {type, listener, useCapture} );
+        }*/
+
+
     };
 
     /**
@@ -37,8 +84,6 @@
     Element.prototype.removeEventListener = function(type,listener,useCapture=false) {
         // remove listener
         this._removeEventListener(type,listener,useCapture);
-
-        console.log(type)
 
         if(!this.eventListenerList) this.eventListenerList = {};
         if(!this.eventListenerList[type]) this.eventListenerList[type] = [];

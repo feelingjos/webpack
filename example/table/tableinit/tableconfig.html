@@ -142,11 +142,9 @@
 
         var elementById = document.getElementById("addeventList");
 
-        elementById.addEventListener("click",function () {
-            console.log("nihao")
+        elementById.addEventListener("click",{a:10},function (e) {
+            console.log(e.data)
         })
-
-        console.log(elementById.getEventListeners());
 
         //console.log(tableGrid);
 
