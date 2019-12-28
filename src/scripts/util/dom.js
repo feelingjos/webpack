@@ -7,7 +7,7 @@ class Dom {
         将字符串对象转换成dom对象
      */
     static strCastDom(template){
-        return document.createRange().createContextualFragment(template)
+        return document.createRange().createContextualFragment(template).firstChild
     }
 }
 export {

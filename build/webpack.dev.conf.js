@@ -138,7 +138,7 @@ module.exports = {
         },
         open: true,
         openPage:'example/table/tableinit/tableconfig.html',
-        port: 9001,
+        port: 9002,
         watchContentBase   : true,
         disableHostCheck   : true, // [1]
         overlay            : true,

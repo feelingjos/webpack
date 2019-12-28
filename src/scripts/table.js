@@ -8,22 +8,13 @@ class TableGrid {
         this.container = document.getElementById(el);
         this.columns = config.columns;
         this.data = config.data;
-        this.initHeaderStyle()
+        //this.initHeaderStyle()
         //this.initHeader()
         //this.initBody()
-        //this.onResize()
-        this.elevent = []
         this.init(el,config)
     }
 
     init(el,config){
-
-        /*var dataCahce1 = new dataCache();
-
-        dataCahce1.set("nihao","niguolai a ")
-
-        console.log(dataCahce1);*/
-
 
         var self = this;
 
@@ -60,18 +51,112 @@ class TableGrid {
         });
         headerContainer += `</div>`;
         headerBody += `</div>`;
+        headerCssRules += `
+            .header-cell{
+           width: ${cellSize}px;
+            }
+        `
 
         var htmlStyleElement = document.createElement('style');
+
+        /*htmlStyleElement.setAttribute("content","handler-" + el)
+        htmlStyleElement.type  = 'text/css'*/
 
         htmlStyleElement.innerHTML = headerCssRules;
 
         this.container.appendChild(Dom.strCastDom(headerContainer));
 
+        this.container.appendChild(htmlStyleElement)
+
+
         columns.forEach(function(item){
 
             if(item["resize"]){
 
+                var querySelector = document.querySelector(`[resizefield=${item["id"]}]`);
 
+                var sheet = htmlStyleElement.sheet || htmlStyleElement.styleSheet || {}
+                var rules = sheet.cssRules || sheet.rules;
+
+                var rulesheaders
+
+                for(let dd = 0; dd < rules.length; dd ++ ){
+                    var ruleheaders = rules[dd]
+                    if(ruleheaders.selectorText === '.header-cell'){
+                        rulesheaders = ruleheaders
+                    }
+                }
+
+                var mouseStart = {}
+                var rightStart = {}
+
+                function start(ev){
+
+                    ev.stopPropagation()
+                    ev.preventDefault()
+
+                    var oEvent = ev || event
+
+                    mouseStart.x = oEvent.clientX
+                    rightStart.x = this.offsetLeft;
+                    rightStart.width = this.offsetWidth;
+
+                    var count = parseFloat(rulesheaders.style.width.substr(0 , rulesheaders.style.width.length - 2))
+
+                    rightStart.header_width = count
+
+                    var key = this.getAttribute('resizefield')
+
+                    document.body.addEventListener("mousemove",function (e) {
+                        var oEvent = e || event
+
+                        var moveindex = oEvent.clientX - mouseStart.x
+
+                        var headercell = moveindex + rightStart.x + rightStart.width
+
+                        var headerindex = moveindex + rightStart.header_width
+
+                        //Classez.header_width = headerindex
+
+                        if(moveindex > document.documentElement.clientWidth ) {
+                            moveindex = document.documentElement.clientWidth
+                        }
+
+
+
+                        for(var re = 0; re < rules.length;re ++){
+                            var rule = rules[re]
+                            if(rule.selectorText === '.header-cell'){
+                                rule.style.width = headerindex + 'px'
+                                //Classez.header_width = headerindex
+                                //console.log(countrules[0].style.width)
+                            }
+                            if(rule.selectorText === '.cell-header-'+key){
+                                rule.style.width = headercell + 'px'
+                            }
+                        }
+                    })
+
+                    events("html").on('mousemove',{key:key},function(e){
+
+
+
+                        //rightStart.header.style.width = headerindex + 'px'
+
+                    })
+                    /*events("html").on('mouseup',function(e){
+                        events("html").off("mousemove")
+                        events("html").off("mouseup")
+                    })*/
+
+                    document.body.addEventListener("mouseup",function () {
+                        document.body.clearEventListeners("mousemove")
+                        document.body.clearEventListeners("mouseup")
+                    })
+
+                }
+
+                querySelector.addEventListener("mousedown",start)
 
             }
 
@@ -79,19 +164,11 @@ class TableGrid {
 
         //this.container.appendChild(Dom.strCastDom(headerBody));
 
-        //设置行的宽高
-        /*document.querySelector(".table-header-line-column").style.width = cellSize + 'px';
-        document.querySelector(".table-body-tabulation").style.width = cellSize + 'px';*/
-
         config.data.forEach(function (item,index) {
 
             var arr =[];
 
             for(var cell in item){
-                //cell  -- key
-                //item[cell]   -- value
-                /*console.log(cell);
-                console.log(item[cell]);*/
                 var index =  document.querySelector(`.cell-header-${cell}`).getAttribute("fieldindex");
 
                 arr[index] =  `<div class="table-tabulation-cell-line cell-header-${cell}">${item[cell]}</div>`
@@ -103,12 +180,15 @@ class TableGrid {
                 tableBodyTabulation.appendChild(Dom.strCastDom(arr[cellBody]))
             }
 
+
             self.container.appendChild(tableBodyTabulation)
 
         });
 
 
-        this.container.appendChild(htmlStyleElement)
+        //设置行的宽高
+        /*document.querySelector(".table-header-line-column").style.width = cellSize + 'px';
+        document.querySelector(".table-body-tabulation").style.width = cellSize + 'px';*/
 
     }
 
@@ -215,82 +295,6 @@ class TableGrid {
             this.container.appendChild(div)
 
         }
-    }
-
-    onResize(){
-
-        var sytles = document.getElementById('headerstyle');
-
-        var sheet = sytles.sheet || sytles.styleSheet || {};
-        var rules = sheet.cssRules || sheet.rules;
-
-        var rulesheaders;
-
-        for(let dd = 0; dd<rules.length; dd++){
-            var ruleheaders = rules[dd];
-            if(ruleheaders.selectorText === '.header-cell'){
-                rulesheaders = ruleheaders
-            }
-        }
-
-        var mouseStart = {};
-        var rightStart = {};
-
-        function start(ev){
-
-            ev.stopPropagation();
-            ev.preventDefault();
-
-            var oEvent = ev || event;
-
-            mouseStart.x = oEvent.clientX;
-            rightStart.x = this.offsetLeft;
-            rightStart.width = this.offsetWidth;
-
-            var count = parseFloat(rulesheaders.style.width.substr(0 , rulesheaders.style.width.length - 2));
-
-            rightStart.header_width = count;
-
-            var key = this.getAttribute('resizefield');
-
-            events("html").on('mousemove',{key:key},function(e){
-
-                var oEvent = e || event;
-
-                var moveindex = oEvent.clientX - mouseStart.x;
-
-                var headercell = moveindex + rightStart.x + rightStart.width;
-
-                var headerindex = moveindex + rightStart.header_width;
-
-                //Classez.header_width = headerindex
-
-                if(moveindex > document.documentElement.clientWidth ) {
-                    moveindex = document.documentElement.clientWidth
-                }
-
-                for(var re = 0; re < rules.length;re ++){
-                    var rule = rules[re];
-                    if(rule.selectorText === '.header-cell'){
-                        rule.style.width = headerindex + 'px'
-                        //Classez.header_width = headerindex
-                        //console.log(countrules[0].style.width)
-                    }
-                    if(rule.selectorText === '.cell-header-'+key){
-                        rule.style.width = headercell + 'px'
-                    }
-                }
-
-                //rightStart.header.style.width = headerindex + 'px'
-
-            });
-            events("html").on('mouseup',function(e){
-                events("html").off("mousemove");
-                events("html").off("mouseup")
-            })
-
-        }
-        events(".table-header-right-resize").on("mousedown",start)
     }
 
 

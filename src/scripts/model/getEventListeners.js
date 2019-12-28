@@ -36,41 +36,7 @@
         if(!this.eventListenerList[type]) this.eventListenerList[type] = [];
 
         // add listener to  event tracking list
-        this.eventListenerList[type].push( {type, listener, useCapture} );
-
-        /*
-        console.log(type)
-        console.log(data)
-        console.log(listener)
-        console.log(useCapture)*/
-
-       /* if(typeof data !== "function"){
-            function handler(e){
-                e.data = data
-                console.log(this)
-                listener && listener.apply(this,e)
-            }
-
-            data = handler;
-            // declare listener
-            this._addEventListener(type,data,useCapture);
-
-            if(!this.eventListenerList) this.eventListenerList = {};
-            if(!this.eventListenerList[type]) this.eventListenerList[type] = [];
-
-            // add listener to  event tracking list
-            this.eventListenerList[type].push( {type, data, useCapture} );
-        }else{
-            // declare listener
-            this._addEventListener(type,listener,useCapture);
-
-            if(!this.eventListenerList) this.eventListenerList = {};
-            if(!this.eventListenerList[type]) this.eventListenerList[type] = [];
-
-            // add listener to  event tracking list
-            this.eventListenerList[type].push( {type, listener, useCapture} );
-        }*/
-
+        this.eventListenerList[type].push( {type, handler, useCapture} );
 
     };
 
@@ -81,8 +47,9 @@
      * @param  {Boolean} useCapture [description]
      * @return {[type]}             [description]
      */
-    Element.prototype.removeEventListener = function(type,listener,useCapture=false) {
+    Element.prototype.removeEventListener = function(type,listener,useCapture) {
         // remove listener
+
         this._removeEventListener(type,listener,useCapture);
 
         if(!this.eventListenerList) this.eventListenerList = {};
@@ -93,7 +60,7 @@
         // a capturing listener does not affect a non-capturing version of the
         // same listener, and vice versa.
         for(let i=0; i<this.eventListenerList[type].length; i++){
-            if( this.eventListenerList[type][i].listener===listener && this.eventListenerList[type][i].useCapture===useCapture){
+            if( this.eventListenerList[type][i].handler === listener && this.eventListenerList[type][i].useCapture===useCapture){
                 this.eventListenerList[type].splice(i, 1);
                 break;
             }
@@ -117,11 +84,10 @@
     };
 
 
-
     Element.prototype.clearEventListeners = function(a){
         if(!this.eventListenerList)
             this.eventListenerList = {};
-        if(a==undefined){
+        if(a == undefined){
             for(var x in (this.getEventListeners())) this.clearEventListeners(x);
             return;
         }
@@ -130,7 +96,7 @@
             return;
         for(var i = el.length - 1; i >= 0; --i) {
             var ev = el[i];
-            this.removeEventListener(a, ev.listener, ev.useCapture);
+            this.removeEventListener(a, ev.handler, ev.useCapture);
         }
     };
 

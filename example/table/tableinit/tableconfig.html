@@ -8,15 +8,13 @@
 
     <div id="tableinit" style="margin:0 auto;width: 700px;height: 500px;border: 1px solid #a0ff86;overflow: auto"></div>
 
-    <div id="addeventList" style="width: 100px;height: 100px;background-color: aqua"></div>
-
 </body>
 </html>
 <script>
 
     var schema = [
         { width: 200, align: 'left',text:"名字", id: "name",resize:true},
-        { width: 200, align: 'center',text:"年龄", id: "age"},
+        { width: 200, align: 'center',text:"年龄", id: "age",resize:true},
         { width: 200, align: 'center',text:"性别", id: "sex"},
         { width: 200, align: 'center',text:"成绩", id: "achievement"},
         { width: 200, align: 'center',text:"年级", id: "grade"},
@@ -86,51 +84,6 @@
             "grade":"社会大学",
             "subject":"骑马射箭"
         }
-        ,
-        {
-            "age":"30",
-            "sex":"男",
-            "achievement":"190",
-            "name":"吴华豪--",
-            "grade":"社会大学",
-            "subject":"骑马射箭"
-        }
-        ,
-        {
-            "age":"30",
-            "sex":"男",
-            "achievement":"190",
-            "name":"吴华豪--",
-            "grade":"社会大学",
-            "subject":"骑马射箭"
-        }
-        ,
-        {
-            "age":"30",
-            "sex":"男",
-            "achievement":"190",
-            "name":"吴华豪--",
-            "grade":"社会大学",
-            "subject":"骑马射箭"
-        }
-        ,
-        {
-            "age":"30",
-            "sex":"男",
-            "achievement":"190",
-            "name":"吴华豪--",
-            "grade":"社会大学",
-            "subject":"骑马射箭"
-        }
-        ,
-        {
-            "age":"30",
-            "name":"吴华豪-",
-            "sex":"男",
-            "achievement":"190",
-            "grade":"社会大学",
-            "subject":"骑马射箭"
-        }
     ]
 
     window.onload = function(){
@@ -140,13 +93,9 @@
             data
         })
 
-        var elementById = document.getElementById("addeventList");
 
-        elementById.addEventListener("click",{a:10},function (e) {
-            console.log(e.data)
-        })
 
-        //console.log(tableGrid);
+        //var tableGrid =  new fjcode.TableGrid('tableinit',schema,data)
 
     }
 
