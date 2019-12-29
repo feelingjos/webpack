@@ -1,5 +1,4 @@
 import {TableGrid} from './src/scripts/table.js'
-import './src/scripts/model/event'
 import './src/scripts/model/getEventListeners'
 import './src/scripts/model/other'
 import './src/scripts/model/data'

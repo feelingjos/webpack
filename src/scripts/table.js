@@ -68,7 +68,6 @@ class TableGrid {
 
         this.container.appendChild(htmlStyleElement)
 
-
         columns.forEach(function(item){
 
             if(item["resize"]){
@@ -107,7 +106,7 @@ class TableGrid {
 
                     var key = this.getAttribute('resizefield')
 
-                    document.body.addEventListener("mousemove",function (e) {
+                    document.documentElement.addEventListener("mousemove",function (e) {
                         var oEvent = e || event
 
                         var moveindex = oEvent.clientX - mouseStart.x
@@ -122,8 +121,6 @@ class TableGrid {
                             moveindex = document.documentElement.clientWidth
                         }
 
-
-
                         for(var re = 0; re < rules.length;re ++){
                             var rule = rules[re]
                             if(rule.selectorText === '.header-cell'){
@@ -131,27 +128,25 @@ class TableGrid {
                                 //Classez.header_width = headerindex
                                 //console.log(countrules[0].style.width)
                             }
-                            if(rule.selectorText === '.cell-header-'+key){
+
+                            if(rule.selectorText === '.cell-header-'+ key){
                                 rule.style.width = headercell + 'px'
                             }
                         }
                     })
 
-                    events("html").on('mousemove',{key:key},function(e){
-
-
-
+                    /*events("html").on('mousemove',{key:key},function(e){
                         //rightStart.header.style.width = headerindex + 'px'
 
-                    })
+                    })*/
                     /*events("html").on('mouseup',function(e){
                         events("html").off("mousemove")
                         events("html").off("mouseup")
                     })*/
 
-                    document.body.addEventListener("mouseup",function () {
-                        document.body.clearEventListeners("mousemove")
-                        document.body.clearEventListeners("mouseup")
+                    document.documentElement.addEventListener("mouseup",function () {
+                        document.documentElement.clearEventListeners("mousemove")
+                        document.documentElement.clearEventListeners("mouseup")
                     })
 
                 }
