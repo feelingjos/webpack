@@ -29,6 +29,8 @@ class TableGrid {
 
         var cellSize = 0;
 
+        var resize
+
         columns.forEach(function(item,index){
 
             headerCssRules +=  `
@@ -46,7 +48,7 @@ class TableGrid {
             </div>
             `;
 
-            headerBody += `<div class="table-tabulation-cell-line cell-header-${item.id}">${item.text}</div>`
+            headerBody += `<div class="table-tabulation-cell-line cell-header-${item.id}" >${item.text}</div>`
 
         });
         headerContainer += `</div>`;
@@ -77,6 +79,10 @@ class TableGrid {
                 var sheet = htmlStyleElement.sheet || htmlStyleElement.styleSheet || {}
                 var rules = sheet.cssRules || sheet.rules;
 
+                sheet.delete(0)
+
+                console.log(rules)
+
                 var rulesheaders
 
                 for(let dd = 0; dd < rules.length; dd ++ ){
@@ -91,7 +97,7 @@ class TableGrid {
 
                 function start(ev){
 
-                    ev.stopPropagation()
+                    //ev.stopPropagation()
                     ev.preventDefault()
 
                     var oEvent = ev || event
@@ -106,6 +112,8 @@ class TableGrid {
 
                     var key = this.getAttribute('resizefield')
 
+                    //var dragelem = document.querySelector(`[field=${key}]`);
+
                     document.documentElement.addEventListener("mousemove",function (e) {
                         var oEvent = e || event
 
@@ -115,34 +123,29 @@ class TableGrid {
 
                         var headerindex = moveindex + rightStart.header_width
 
-                        //Classez.header_width = headerindex
-
-                        if(moveindex > document.documentElement.clientWidth ) {
+                        /*if(moveindex > document.documentElement.clientWidth ) {
                             moveindex = document.documentElement.clientWidth
-                        }
+                        }*/
+
+                        console.log(rules.length);
 
                         for(var re = 0; re < rules.length;re ++){
                             var rule = rules[re]
-                            if(rule.selectorText === '.header-cell'){
-                                rule.style.width = headerindex + 'px'
-                                //Classez.header_width = headerindex
-                                //console.log(countrules[0].style.width)
-                            }
-
                             if(rule.selectorText === '.cell-header-'+ key){
+                                if(headercell < 100){
+                                    headercell = 100
+                                    headerindex = headercell + rightStart.header_width
+                                }
                                 rule.style.width = headercell + 'px'
                             }
+
+                            if(rule.selectorText === '.header-cell'){
+                                headerindex = headercell + rightStart.header_width
+                                rule.style.width = headerindex + 'px'
+                            }
                         }
+
                     })
-
-                    /*events("html").on('mousemove',{key:key},function(e){
-                        //rightStart.header.style.width = headerindex + 'px'
-
-                    })*/
-                    /*events("html").on('mouseup',function(e){
-                        events("html").off("mousemove")
-                        events("html").off("mouseup")
-                    })*/
 
                     document.documentElement.addEventListener("mouseup",function () {
                         document.documentElement.clearEventListeners("mousemove")
@@ -164,22 +167,22 @@ class TableGrid {
             var arr =[];
 
             for(var cell in item){
-                var index =  document.querySelector(`.cell-header-${cell}`).getAttribute("fieldindex");
+                let index =  document.querySelector(`.cell-header-${cell}`).getAttribute("fieldindex");
 
-                arr[index] =  `<div class="table-tabulation-cell-line cell-header-${cell}">${item[cell]}</div>`
+                arr[index] =  `<div class="table-tabulation-cell-line cell-header-${cell}" >${item[cell]}</div>`
             }
             var tableBodyTabulation = document.createElement("div");
+
+            tableBodyTabulation.setAttribute("data-index",index)
 
             tableBodyTabulation.classList.add("table-body-tabulation","header-cell");
             for (var cellBody in arr){
                 tableBodyTabulation.appendChild(Dom.strCastDom(arr[cellBody]))
             }
 
-
             self.container.appendChild(tableBodyTabulation)
 
         });
-
 
         //设置行的宽高
         /*document.querySelector(".table-header-line-column").style.width = cellSize + 'px';
