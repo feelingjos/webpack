@@ -53,11 +53,16 @@ class TableGrid {
         });
         headerContainer += `</div>`;
         headerBody += `</div>`;
-        headerCssRules += `
+        /*headerCssRules += `
             .header-cell{
            width: ${cellSize}px;
             }
-        `
+        `*/
+        headerCssRules = `
+            .header-cell{
+           width: ${cellSize}px;
+            }
+        ` + headerCssRules
 
         var htmlStyleElement = document.createElement('style');
 
@@ -70,18 +75,33 @@ class TableGrid {
 
         this.container.appendChild(htmlStyleElement)
 
+        //console.log(document.styleSheets);
+
+        var sheet = htmlStyleElement.sheet || htmlStyleElement.styleSheet || {}
+        var rules = sheet.cssRules || sheet.rules;
+
         columns.forEach(function(item){
 
             if(item["resize"]){
 
                 var querySelector = document.querySelector(`[resizefield=${item["id"]}]`);
 
-                var sheet = htmlStyleElement.sheet || htmlStyleElement.styleSheet || {}
-                var rules = sheet.cssRules || sheet.rules;
+                var  miniWidth = item["miniWidth"] || 100
 
-                sheet.delete(0)
+                //console.log(rules)
 
-                console.log(rules)
+                /*console.log("删除前:----", sheet);
+
+                console.log(sheet.deleteRule(0));
+
+                if (sheet.deleteRule) {
+
+                    console.log("成功")
+
+                    sheet.deleteRule(0);
+                }
+
+                console.log("删除后:----" , sheet);*/
 
                 var rulesheaders
 
@@ -89,6 +109,7 @@ class TableGrid {
                     var ruleheaders = rules[dd]
                     if(ruleheaders.selectorText === '.header-cell'){
                         rulesheaders = ruleheaders
+                        break
                     }
                 }
 
@@ -102,13 +123,20 @@ class TableGrid {
 
                     var oEvent = ev || event
 
+                    //console.log("that",this)
+
                     mouseStart.x = oEvent.clientX
                     rightStart.x = this.offsetLeft;
                     rightStart.width = this.offsetWidth;
 
-                    var count = parseFloat(rulesheaders.style.width.substr(0 , rulesheaders.style.width.length - 2))
+                    //var count = parseFloat(rulesheaders.style.width.substr(0 , rulesheaders.style.width.length - 2))
+                    //var count = cellSize
 
-                    rightStart.header_width = count
+                    rightStart.header_width = parseFloat(rulesheaders.style.width.substr(0 , rulesheaders.style.width.length - 2))
+
+                    /*console.log("cellSize",cellSize);
+
+                    console.log(rightStart);*/
 
                     var key = this.getAttribute('resizefield')
 
@@ -117,39 +145,59 @@ class TableGrid {
                     document.documentElement.addEventListener("mousemove",function (e) {
                         var oEvent = e || event
 
+                        /*console.log("oEvent",oEvent.clientX);
+                        console.log("mouseStart",mouseStart.x)*/
+
+                        //console.log("move-index",oEvent.clientX - mouseStart.x)
+
                         var moveindex = oEvent.clientX - mouseStart.x
 
                         var headercell = moveindex + rightStart.x + rightStart.width
 
                         var headerindex = moveindex + rightStart.header_width
 
-                        /*if(moveindex > document.documentElement.clientWidth ) {
-                            moveindex = document.documentElement.clientWidth
-                        }*/
+                        //if(moveindex > document.documentElement.clientWidth ) {
+                        //  moveindex = document.documentElement.clientWidth
+                        //}
 
-                        console.log(rules.length);
+                        //console.log(rules);
 
-                        for(var re = 0; re < rules.length;re ++){
-                            var rule = rules[re]
+                        for(let re = 0; re < rules.length;re ++){
+                            let rule = rules[re]
                             if(rule.selectorText === '.cell-header-'+ key){
-                                if(headercell < 100){
-                                    headercell = 100
-                                    headerindex = headercell + rightStart.header_width
+                                if(headercell < miniWidth){
+                                    headercell = miniWidth
                                 }
                                 rule.style.width = headercell + 'px'
+                                break;
                             }
+                        }
 
+                        for(let re = 0; re < rules.length;re ++){
+                            let rule = rules[re]
                             if(rule.selectorText === '.header-cell'){
-                                headerindex = headercell + rightStart.header_width
+                                headerindex = headercell + rightStart.header_width - rightStart.width  - rightStart.x
+                                //headerindex = moveindex + rightStart.header_width
+                                /*console.log("headerindex",headerindex);
+                                console.log("rightStart.header_width",rightStart.header_width)
+                                console.log("headercell",headercell)*/
                                 rule.style.width = headerindex + 'px'
+                                break;
                             }
                         }
 
                     })
 
                     document.documentElement.addEventListener("mouseup",function () {
+
+                        //console.log("mouseup",rulesheaders.style.width);
+
                         document.documentElement.clearEventListeners("mousemove")
                         document.documentElement.clearEventListeners("mouseup")
+
+                        mouseStart = {}
+                        rightStart = {}
+
                     })
 
                 }
@@ -159,6 +207,15 @@ class TableGrid {
             }
 
         })
+
+        for(let dd = 0; dd < rules.length; dd ++ ){
+            let ruleheaders = rules[dd]
+            if(ruleheaders.selectorText === '.header-cell'){
+
+                //console.log(ruleheaders.style.width);
+                break
+            }
+        }
 
         //this.container.appendChild(Dom.strCastDom(headerBody));
 
