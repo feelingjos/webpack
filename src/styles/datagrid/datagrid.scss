@@ -44,7 +44,7 @@ html, body{
 
 //右边伸缩
 .table-header-right-resize{
-  background: #dfd33f;
+  //background: #dfd33f;
   position: absolute;
   right: 0;
   bottom: 0;
@@ -52,4 +52,12 @@ html, body{
   width: 10px;
   height: 50px;
   line-height: 52px;
+}
+
+.cell-content-string{
+  margin: 0 5px;
+  /*white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space: breakall;*/
 }

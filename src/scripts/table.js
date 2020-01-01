@@ -41,9 +41,11 @@ class TableGrid {
 
             cellSize += item.width + 2;
 
+
+
             headerContainer += `
             <div class="table-header-call cell-header-${item.id}" fieldindex="${index}" field="${item.id}">
-            ${item.text}
+                ${item.text}
             ${item.resize ? `<div class="table-header-right-resize" resizefield="${item.id}"/></div>` : ``}
             </div>
             `;
