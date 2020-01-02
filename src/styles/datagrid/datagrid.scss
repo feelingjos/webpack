@@ -3,6 +3,7 @@ html, body{
   margin: 0;
   height: 100%;
   width: 100%;
+  //font-size: 20px;
 }
 .table-body-container-feelj{
   height: 700px;
@@ -10,14 +11,14 @@ html, body{
   width: auto;
 }
 
-.table-header-line-column{
+/*.table-header-line-column{
   height: 52px;
   //width: auto;
 }
 .table-body-tabulation{
   height: 42px;
   //width: auto;
-}
+}*/
 .table-tabulation-cell-line{
   float: left;
   //text-align: center;
@@ -30,16 +31,16 @@ html, body{
 .table-header-call{
   position:relative;
   border: 1px solid #DFDFDF ;
-  text-align: center;
-  line-height: 50px;
+  //text-align: right;
+  //line-height: 50px;
   //display: inline-block;
   float: left;
   //width: 100px;
-  height: 50px;
-  overflow: hidden;
+  //height: 50px;
+  //overflow: hidden;
   //cursor: row-resize;
   //word-wrap:break-word;//内容自适应
-  text-overflow: ellipsis;//超做内容省略
+  //text-overflow: ellipsis;//超做内容省略
 }
 
 //右边伸缩
@@ -50,14 +51,16 @@ html, body{
   bottom: 0;
   cursor: col-resize;
   width: 10px;
-  height: 50px;
+  //height: 50px;
+  height: 100%;
   line-height: 52px;
 }
 
-.cell-content-string{
-  margin: 0 5px;
-  /*white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space: breakall;*/
+.hide-surplus-text{
+  -webkit-box-orient: vertical;
+  word-break:break-all;
+  overflow : hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
 }
+

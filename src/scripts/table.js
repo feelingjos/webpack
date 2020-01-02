@@ -16,7 +16,15 @@ class TableGrid {
 
     init(el,config){
 
-        var self = this;
+        var self = this, lineheight = 10,defualt = 50;
+
+        var maxline = 1
+
+        config.columns.forEach(function(item){
+            if(item.dataformat && item.dataformat.line && maxline < item.dataformat.line){
+                maxline = item.dataformat.line
+            }
+        })
 
         //绘制头部
         var columns = config.columns;
@@ -29,23 +37,24 @@ class TableGrid {
 
         var cellSize = 0;
 
-        var resize
-
         columns.forEach(function(item,index){
 
             headerCssRules +=  `
                 .cell-header-${item.id}{
                 width: ${item.width}px;
                 text-align: ${item.align};
+                height: ${lineheight + defualt}px;
+                -webkit-line-clamp: 2;
+                line-height: ${index === 1 ? 50 : (10 + 50) / 2}px;
             }`;
 
             cellSize += item.width + 2;
 
-
-
             headerContainer += `
-            <div class="table-header-call cell-header-${item.id}" fieldindex="${index}" field="${item.id}">
+            <div class="table-header-call" >
+               <div class="cell-header-${item.id} hide-surplus-text" fieldindex="${index}" field="${item.id}">
                 ${item.text}
+               </div>
             ${item.resize ? `<div class="table-header-right-resize" resizefield="${item.id}"/></div>` : ``}
             </div>
             `;
@@ -62,7 +71,7 @@ class TableGrid {
         `*/
         headerCssRules = `
             .header-cell{
-           width: ${cellSize}px;
+             width: ${cellSize}px;
             }
         ` + headerCssRules
 
@@ -226,6 +235,7 @@ class TableGrid {
             var arr =[];
 
             for(var cell in item){
+
                 let index =  document.querySelector(`.cell-header-${cell}`).getAttribute("fieldindex");
 
                 arr[index] =  `<div class="table-tabulation-cell-line cell-header-${cell}" >${item[cell]}</div>`
@@ -248,6 +258,8 @@ class TableGrid {
         document.querySelector(".table-body-tabulation").style.width = cellSize + 'px';*/
 
     }
+
+
 
     initHeaderStyle(){
 
