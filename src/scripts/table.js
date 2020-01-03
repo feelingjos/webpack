@@ -39,13 +39,17 @@ class TableGrid {
 
         columns.forEach(function(item,index){
 
+            var dataformat =  item.dataformat || {line:1}
+
+            console.log(dataformat);
+
             headerCssRules +=  `
                 .cell-header-${item.id}{
                 width: ${item.width}px;
                 text-align: ${item.align};
-                height: ${lineheight + defualt}px;
-                -webkit-line-clamp: 2;
-                line-height: ${index === 1 ? 50 : (10 + 50) / 2}px;
+                height: ${defualt + ( maxline - 1 ) * lineheight}px;
+                -webkit-line-clamp: ${dataformat.line};
+                line-height: ${(defualt + ( maxline - 1 ) * lineheight) / dataformat.line}px;
             }`;
 
             cellSize += item.width + 2;
