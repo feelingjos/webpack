@@ -16,7 +16,7 @@ class TableGrid {
 
     init(el,config){
 
-        var self = this, lineheight = 10,defualt = 50;
+        var self = this, lineheight = 10,defualt = 40;
 
         var maxline = 1
 
@@ -41,8 +41,6 @@ class TableGrid {
 
             var dataformat =  item.dataformat || {line:1}
 
-            console.log(dataformat);
-
             headerCssRules +=  `
                 .cell-header-${item.id}{
                 width: ${item.width}px;
@@ -50,7 +48,16 @@ class TableGrid {
                 height: ${defualt + ( maxline - 1 ) * lineheight}px;
                 -webkit-line-clamp: ${dataformat.line};
                 line-height: ${(defualt + ( maxline - 1 ) * lineheight) / dataformat.line}px;
-            }`;
+            }`
+
+            /*headerCssRules +=  `
+                .cell-header-${item.id}{
+                width: ${item.width}px;
+                text-align: ${item.align};
+                height: auto;
+                -webkit-line-clamp: ${dataformat.line};
+                line-height: auto;
+            }`;*/
 
             cellSize += item.width + 2;
 
@@ -239,6 +246,8 @@ class TableGrid {
             var arr =[];
 
             for(var cell in item){
+
+                console.log(`.cell-header-${cell}`)
 
                 let index =  document.querySelector(`.cell-header-${cell}`).getAttribute("fieldindex");
 
