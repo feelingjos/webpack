@@ -8,10 +8,8 @@ class TableGrid {
         this.container = document.getElementById(el);
         this.columns = config.columns;
         this.data = config.data;
-        //this.initHeaderStyle()
-        //this.initHeader()
-        //this.initBody()
         this.init(el,config)
+        this.test()
     }
 
     init(el,config){
@@ -40,6 +38,8 @@ class TableGrid {
         columns.forEach(function(item,index){
 
             var dataformat =  item.dataformat || {line:1}
+
+            console.log(((maxline - 1) * lineheight ) + defualt);
 
             headerCssRules +=  `
                 .cell-header-${item.id}{
@@ -83,6 +83,7 @@ class TableGrid {
         headerCssRules = `
             .header-cell{
              width: ${cellSize}px;
+             font-size: 16px;
             }
         ` + headerCssRules
 
@@ -247,8 +248,6 @@ class TableGrid {
 
             for(var cell in item){
 
-                console.log(`.cell-header-${cell}`)
-
                 let index =  document.querySelector(`.cell-header-${cell}`).getAttribute("fieldindex");
 
                 arr[index] =  `<div class="table-tabulation-cell-line cell-header-${cell}" >${item[cell]}</div>`
@@ -272,113 +271,12 @@ class TableGrid {
 
     }
 
+    test(){
 
+        var querySelector = document.querySelector(".cell-header-name");
 
-    initHeaderStyle(){
-
-        var template = ``;
-
-        var headerallsize =  0;
-
-        for(var i = 0; i < this.columns.length; i ++){
-            var styleheaderdata = this.columns[i];
-            template += `.cell-header-${styleheaderdata.id}{
-                width: ${styleheaderdata.width}px;
-                text-align: ${styleheaderdata.align};
-            }`;
-            headerallsize += styleheaderdata.width + 2
-        }
-
-        template += `.header-cell{
-           width: ${headerallsize}px;
-        }`;
-
-        var myheaderstyle = document.createElement('style');
-
-        myheaderstyle.id ='headerstyle';
-        myheaderstyle.innerHTML = template;
-
-        this.container.after(myheaderstyle)
 
     }
-
-    initHeader(){
-
-        var header =  document.createElement('div');
-
-        header.classList.add('table-header-line-column','header-cell');
-
-        var header_width = 0;
-
-        for(var i = 0; i < this.columns.length; i ++){
-
-            //头内容
-            var column_content = this.columns[i];
-
-            //头div
-            var column = document.createElement('div');
-
-            column.classList.add('table-header-call');
-
-            column.setAttribute('fieldindex',i);
-
-            column.setAttribute('field',column_content.id);
-
-            column.innerHTML = column_content.text;
-
-            var resize =  document.createElement('div');
-            resize.classList.add('table-header-right-resize');
-            resize.setAttribute('resizefield',column_content.id);
-
-            column.appendChild(resize);
-
-            column.classList.add(`cell-header-${column_content.id}`);
-
-            header.appendChild(column);
-
-            this.container.appendChild(header);
-
-            header_width += column.offsetWidth
-
-        }
-
-
-        this.header = header;
-        this.header_width = header_width;
-
-        //header.style.width = header_width  + 'px'
-
-        if (this.container.offsetWidth < header.offsetWidth) {
-            this.container.style.overflow = 'auto'
-        }
-
-    }
-
-    initBody(){
-
-        for (var i = 0; i < this.data.length ; i ++){
-
-            var div = document.createElement('div');
-
-            div.classList.add('table-body-tabulation','header-cell');
-
-            for(var key in this.data[i]){
-
-                var  table_header_call = document.createElement('div');
-
-                table_header_call.classList.add('table-tabulation-cell-line',`cell-header-${key}`);
-                table_header_call.innerHTML=this.data[i][key];
-                div.appendChild(table_header_call)
-
-            }
-
-            //div.style.width = this.header_width + 'px'
-
-            this.container.appendChild(div)
-
-        }
-    }
-
 
 }
 

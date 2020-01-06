@@ -56,11 +56,21 @@ html, body{
   line-height: 52px;
 }
 
+//多余隐藏
 .hide-surplus-text{
   -webkit-box-orient: vertical;
   word-break:break-all;
   overflow : hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
+}
+
+//计算宽度
+.textDimensionCalculation {
+  position: absolute;
+  visibility: hidden;
+  height: auto;
+  width: auto;
+  white-space: nowrap;
 }
 
