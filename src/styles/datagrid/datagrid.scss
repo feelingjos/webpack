@@ -58,12 +58,26 @@ html, body{
 
 //多余隐藏
 .hide-surplus-text{
+  //white-space: nowrap;
   -webkit-box-orient: vertical;
   word-break:break-all;
   overflow : hidden;
-  text-overflow: ellipsis;
   display: -webkit-box;
+  -o-text-overflow: ellipsis; /* for Opera */
+  text-overflow: ellipsis; /* for IE */
 }
+
+/*.hide-surplus-text::after{
+  content: "...";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding-left: 40px;
+  background: -webkit-linear-gradient(left, transparent, #fff 55%);
+  background: -o-linear-gradient(right, transparent, #fff 55%);
+  background: -moz-linear-gradient(right, transparent, #fff 55%);
+  background: linear-gradient(to right, transparent, #fff 55%);
+}*/
 
 //计算宽度
 .textDimensionCalculation {

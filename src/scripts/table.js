@@ -39,27 +39,25 @@ class TableGrid {
 
             var dataformat =  item.dataformat || {line:1}
 
-            console.log(((maxline - 1) * lineheight ) + defualt);
+            var contentLen = Math.ceil(item.text.width("hide-surplus-text").width / item.width)
+
+            /*if(contentLen > dataformat.line){
+                dataformat.line = maxline
+            }else if(contentLen < dataformat.line){
+                dataformat.line = contentLen
+            }*/
 
             headerCssRules +=  `
-                .cell-header-${item.id}{
-                width: ${item.width}px;
-                text-align: ${item.align};
-                height: ${defualt + ( maxline - 1 ) * lineheight}px;
-                -webkit-line-clamp: ${dataformat.line};
-                line-height: ${(defualt + ( maxline - 1 ) * lineheight) / dataformat.line}px;
+            .cell-header-${item.id}{
+                 width: ${item.width}px;
+                 text-align: ${item.align};
+                 height: ${defualt + ( maxline - 1 ) * lineheight}px;
+                 -webkit-line-clamp: ${dataformat.line};
+                 line-clamp: ${dataformat.line};
+                 line-height: ${(defualt + ( maxline - 1 ) * lineheight) / dataformat.line}px;
             }`
 
-            /*headerCssRules +=  `
-                .cell-header-${item.id}{
-                width: ${item.width}px;
-                text-align: ${item.align};
-                height: auto;
-                -webkit-line-clamp: ${dataformat.line};
-                line-height: auto;
-            }`;*/
-
-            cellSize += item.width + 2;
+            cellSize += item.width + 10;
 
             headerContainer += `
             <div class="table-header-call" >

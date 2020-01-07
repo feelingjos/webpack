@@ -3,7 +3,7 @@
   "description": "My webpack project",
   "scripts": {
     "build": "npm run clean && webpack --mode production --config ./build/webpack.prod.conf.js",
-    "start": "webpack-dev-server --mode development --config ./build/webpack.dev.conf.js",
+    "start": "webpack-dev-server --inline --host 0.0.0.0 --mode development --config ./build/webpack.dev.conf.js",
     "clean": "shx rm -rf ./dist"
   },
   "devDependencies": {
