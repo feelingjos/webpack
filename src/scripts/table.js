@@ -14,6 +14,8 @@ class TableGrid {
 
     init(el,config){
 
+
+
         var self = this, lineheight = 10,defualt = 40;
 
         var maxline = 1
@@ -272,6 +274,14 @@ class TableGrid {
     test(){
 
         var querySelector = document.querySelector(".cell-header-name");
+
+        var re = new RegExp(/^<.*[/>|>]/)
+
+        var re2 = new RegExp(/(^<.*?>){1,?}/)
+
+        var exec = re.exec("asdfasd");
+
+        console.log(exec)
 
 
     }
