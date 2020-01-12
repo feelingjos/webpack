@@ -273,16 +273,11 @@ class TableGrid {
 
     test(){
 
-        var querySelector = document.querySelector(".cell-header-name");
+        var doms = `<div class="admin" style="width: 100px;" title="nihao ">你好正则表达式</div>`
 
-        var re = new RegExp(/^<.*[/>|>]/)
+        var reg = new RegExp('^<.*?\\s')
 
-        var re2 = new RegExp(/(^<.*?>){1,?}/)
-
-        var exec = re.exec("asdfasd");
-
-        console.log(exec)
-
+        console.log(reg.exec(doms));
 
     }
 
