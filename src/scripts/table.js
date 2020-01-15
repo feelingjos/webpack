@@ -9,7 +9,7 @@ class TableGrid {
         this.columns = config.columns;
         this.data = config.data;
         this.init(el,config)
-        this.test()
+        this.teset()
     }
 
     init(el,config){
@@ -271,15 +271,59 @@ class TableGrid {
 
     }
 
-    test(){
+    teset(){
 
-        var doms = `<div class="admin" style="width: 100px;" title="nihao ">你好正则表达式</div>`
+        var doms = `
+            <div>
+              <p class="p1">你好</p>
+              <a class="a1">海</a>
+              <div class="div11">
+                 <span class="span1"></span>
+              </div>
+            </div 呵呵>
+        `
+        console.log(Dom.strCastNative(doms));
 
-        var reg = new RegExp('^<.*?\\s')
 
-        console.log(reg.exec(doms));
+        //获取domBody
+        /*var getDomBody = new RegExp("^(\s*<\s*\/?\s*[a-zA-z_]([^>]*?[\"][^\"]*[\"])*[^>\"]*>)|\s*(<\s*\/?\s*[a-zA-z_]([^>]*?[\"][^\"]*[\"])*[^>\"]*>)$","g")
+
+        var getDomContent = new RegExp("^(s*<s*!/?s*[a-zA-z_]([^>]*?[\"][^\"]*[\"])*[^>\"]*>)","g")
+        
+        var getdomName = new RegExp("(?<=<)\\s*.*?(?=\\s.*?\\W)","g")
+
+        //获取dom属性上下文
+        var getDomAttr = new RegExp("\\s.*[^>]","g");
+
+        var getAttrContent = new RegExp("[a-zA-Z]*\\s*=\\s*\".*?\"","g")
+
+        var dombody = doms.trim().replace(getDomBody,"")
+
+        var headercontent = doms.trim().match(getDomContent)[0]
+
+        var dom = headercontent.match(getdomName)[0];
+
+        //容器
+        var domContainer = document.createElement(dom.trim());
+
+        var domAttrContent = headercontent.match(getDomAttr)[0];
+
+        var attrs = domAttrContent.match(getAttrContent)
+
+        for (let i = 0;i < attrs.length;i ++){
+            
+            let attrVal = attrs[i].split("=")
+
+            domContainer.setAttribute(attrVal[0],attrVal[1].replace(/\"/g,""))
+
+        }
+
+        domContainer.innerHTML = dombody
+
+        return domContainer*/
 
     }
+
 
 }
 
