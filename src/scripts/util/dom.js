@@ -7,9 +7,9 @@ class Dom {
         将字符串对象转换成dom对象
      */
     static strCastDom(template){
-        if(DocumentFragment){
+        /*if(DocumentFragment){
             return document.createRange().createContextualFragment(template).firstChild
-        }
+        }*/
         return Dom.strCastNative(template)
     }
 
@@ -20,7 +20,7 @@ class Dom {
 
         var getDomContent = new RegExp("^(s*<s*/?s*[a-zA-z_]([^>]*?[\"][^\"]*[\"])*[^>\"]*>)","g")
 
-        var getdomName = new RegExp("(?<=<)\\s*.*?(?=>*\\s*?\\W)","g")
+        var getdomName = /(?<=<)\s*.*?(?=>*\s*?\W)/
 
         //获取dom属性上下文
         var getDomAttr = new RegExp("\\s.*[^>]","g");

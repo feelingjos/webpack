@@ -9,11 +9,10 @@ class TableGrid {
         this.columns = config.columns;
         this.data = config.data;
         this.init(el,config)
-        this.teset()
+        //this.teset()
     }
 
     init(el,config){
-
 
 
         var self = this, lineheight = 10,defualt = 40;
@@ -95,6 +94,10 @@ class TableGrid {
         htmlStyleElement.innerHTML = headerCssRules;
 
         this.container.appendChild(Dom.strCastDom(headerContainer));
+
+        //console.log(Dom.strCastNative(headerContainer));
+
+        //console.log(htmlStyleElement);
 
         this.container.appendChild(htmlStyleElement)
 
@@ -256,7 +259,9 @@ class TableGrid {
 
             tableBodyTabulation.setAttribute("data-index",index)
 
-            tableBodyTabulation.classList.add("table-body-tabulation","header-cell");
+            tableBodyTabulation.classList.add("table-body-tabulation")
+            tableBodyTabulation.classList.add("header-cell")
+            
             for (var cellBody in arr){
                 tableBodyTabulation.appendChild(Dom.strCastDom(arr[cellBody]))
             }
@@ -282,7 +287,10 @@ class TableGrid {
               </div>
             </div 呵呵>
         `
-        console.log(Dom.strCastNative(doms));
+
+        //console.log( new AesUtil())
+
+        //console.log(Dom.strCastNative(doms));
 
 
         //获取domBody
@@ -326,7 +334,6 @@ class TableGrid {
 
 
 }
-
 
 
 export {

@@ -23,6 +23,9 @@
             width : htmlDivElement.offsetWidth,
             height : htmlDivElement.offsetHeight
         };
+
+        htmlDivElement.parentNode.removeChild(htmlDivElement)
+
         return result;
     }
 
