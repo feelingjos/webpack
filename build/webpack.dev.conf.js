@@ -1,6 +1,7 @@
 const path = require('path')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 module.exports = {
     mode: 'development',
@@ -117,6 +118,13 @@ module.exports = {
         ],
     },
     optimization: {
+        minimizer: [
+            new UglifyJsPlugin({
+                uglifyOptions: {
+                    ie8: true
+                }
+            })
+        ],
         splitChunks: {
             cacheGroups: {
                 vendors: {

@@ -6,21 +6,32 @@ class Dom {
     /*
         将字符串对象转换成dom对象
      */
-    static strCastDom(template){
+    static strCastDom(template,parent){
+        var htmlElement = document.createElement("div");
         /*if(DocumentFragment){
             return document.createRange().createContextualFragment(template).firstChild
+        }else {
+            const  parser = new DOMParser()
+            const doc = parser.parseFromString(template, 'text/html')
+            return doc;
         }*/
-        return Dom.strCastNative(template)
+        htmlElement.innerHTML = template
+
+        for (let i = 0 ; i < htmlElement.children.length; i ++){
+            parent.appendChild(htmlElement.children[i]);
+        }
+
     }
 
-    static strCastNative(template){
+    /*static strCastNative(template){
 
         //获取domBody
         var getDomBody = new RegExp("^(\s*<\s*\/?\s*[a-zA-z_]([^>]*?[\"][^\"]*[\"])*[^>\"]*>)|\s*(<\s*\/?\s*[a-zA-z_]([^>]*?[\"][^\"]*[\"])*[^>\"]*>)$","g")
 
-        var getDomContent = new RegExp("^(s*<s*/?s*[a-zA-z_]([^>]*?[\"][^\"]*[\"])*[^>\"]*>)","g")
+        var getDomContent = new RegExp("^(s*<s*!/?s*[a-zA-z_]([^>]*?[\"][^\"]*[\"])*[^>\"]*>)","g")
 
         var getdomName = /(?<=<)\s*.*?(?=>*\s*?\W)/
+        //var getdomName = new RegExp("(?<=<)\\s*.*?(?=>*\\s*?\\W)","g")
 
         //获取dom属性上下文
         var getDomAttr = new RegExp("\\s.*[^>]","g");
@@ -50,7 +61,7 @@ class Dom {
 
         return domContainer
 
-    }
+    }*/
 }
 export {
     Dom

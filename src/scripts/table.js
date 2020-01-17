@@ -58,7 +58,7 @@ class TableGrid {
                  line-height: ${(defualt + ( maxline - 1 ) * lineheight) / dataformat.line}px;
             }`
 
-            cellSize += item.width + 10;
+            cellSize += item.width + 2;
 
             headerContainer += `
             <div class="table-header-call" >
@@ -93,7 +93,7 @@ class TableGrid {
 
         htmlStyleElement.innerHTML = headerCssRules;
 
-        this.container.appendChild(Dom.strCastDom(headerContainer));
+        Dom.strCastDom(headerContainer,this.container)
 
         //console.log(Dom.strCastNative(headerContainer));
 
@@ -263,7 +263,7 @@ class TableGrid {
             tableBodyTabulation.classList.add("header-cell")
             
             for (var cellBody in arr){
-                tableBodyTabulation.appendChild(Dom.strCastDom(arr[cellBody]))
+                Dom.strCastDom(arr[cellBody],tableBodyTabulation)
             }
 
             self.container.appendChild(tableBodyTabulation)
