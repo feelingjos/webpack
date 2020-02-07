@@ -1,4 +1,5 @@
 import './util/event'
+import {genId} from './util/utils'
 import {Dom} from './util/dom.js'
 
 class TableGrid {
@@ -9,15 +10,13 @@ class TableGrid {
         this.columns = config.columns;
         this.data = config.data;
         this.init(el,config)
-        //this.teset()
     }
 
     init(el,config){
 
-
-        var self = this, lineheight = 10,defualt = 40;
-
-        var maxline = 1
+        var self = this, lineheight = 10,defualt = 30 ,sort = {desc: ">",asc: "<"},
+            maxline = 1 ,//绘制头部
+         columns = config.columns,headerCssRules = ``,dataResult = {};
 
         config.columns.forEach(function(item){
             if(item.dataformat && item.dataformat.line && maxline < item.dataformat.line){
@@ -25,16 +24,21 @@ class TableGrid {
             }
         })
 
-        //绘制头部
-        var columns = config.columns;
-
-        var headerCssRules = ``;
-
         var headerContainer = `<div class="table-header-line-column header-cell">`;
 
-        var headerBody = `<div class="table-body-tabulation header-cell ">`;
+        var cellSize = 2;
 
-        var cellSize = 0;
+        if(config.checkbox){
+
+            cellSize += 30
+
+            headerContainer += `<div class="checkbox-header table-header-call"/>
+                <span class="iconfont checkbox-true">&#xec58;</span>
+                </div>`
+
+        }
+
+       // var headerBody = `<div class="table-body-tabulation header-cell ">`;
 
         columns.forEach(function(item,index){
 
@@ -42,11 +46,11 @@ class TableGrid {
 
             var contentLen = Math.ceil(item.text.width("hide-surplus-text").width / item.width)
 
-            /*if(contentLen > dataformat.line){
+            if(contentLen > dataformat.line && contentLen > maxline) {
                 dataformat.line = maxline
-            }else if(contentLen < dataformat.line){
+            }else{
                 dataformat.line = contentLen
-            }*/
+            }
 
             headerCssRules +=  `
             .cell-header-${item.id}{
@@ -54,31 +58,30 @@ class TableGrid {
                  text-align: ${item.align};
                  height: ${defualt + ( maxline - 1 ) * lineheight}px;
                  -webkit-line-clamp: ${dataformat.line};
-                 line-clamp: ${dataformat.line};
                  line-height: ${(defualt + ( maxline - 1 ) * lineheight) / dataformat.line}px;
             }`
 
-            cellSize += item.width + 2;
+            //6 边块框
+            cellSize += item.width + 6;
 
             headerContainer += `
             <div class="table-header-call" >
                <div class="cell-header-${item.id} hide-surplus-text" fieldindex="${index}" field="${item.id}">
+               ${item.sort ? `<div class="header-sort-desc" sortfield="${item.id}"/>
+                <span class="iconfont">&#xe6a1;</span>
+                </div>` : ``}
                 ${item.text}
                </div>
             ${item.resize ? `<div class="table-header-right-resize" resizefield="${item.id}"/></div>` : ``}
             </div>
             `;
 
-            headerBody += `<div class="table-tabulation-cell-line cell-header-${item.id}" >${item.text}</div>`
+            //headerBody += `<div class="table-tabulation-cell-line cell-header-${item.id}" >${item.text}</div>`
 
         });
         headerContainer += `</div>`;
-        headerBody += `</div>`;
-        /*headerCssRules += `
-            .header-cell{
-           width: ${cellSize}px;
-            }
-        `*/
+       // headerBody += `</div>`;
+
         headerCssRules = `
             .header-cell{
              width: ${cellSize}px;
@@ -88,23 +91,24 @@ class TableGrid {
 
         var htmlStyleElement = document.createElement('style');
 
-        /*htmlStyleElement.setAttribute("content","handler-" + el)
-        htmlStyleElement.type  = 'text/css'*/
-
         htmlStyleElement.innerHTML = headerCssRules;
 
         Dom.strCastDom(headerContainer,this.container)
 
-        //console.log(Dom.strCastNative(headerContainer));
-
-        //console.log(htmlStyleElement);
-
-        this.container.appendChild(htmlStyleElement)
-
-        //console.log(document.styleSheets);
+        document.head.appendChild(htmlStyleElement)
 
         var sheet = htmlStyleElement.sheet || htmlStyleElement.styleSheet || {}
         var rules = sheet.cssRules || sheet.rules;
+
+        var rulesheaders
+
+        for(let dd = 0; dd < rules.length; dd ++ ){
+            var ruleheaders = rules[dd]
+            if(ruleheaders.selectorText === '.header-cell'){
+                rulesheaders = ruleheaders
+                break
+            }
+        }
 
         columns.forEach(function(item){
 
@@ -114,27 +118,12 @@ class TableGrid {
 
                 var  miniWidth = item["miniWidth"] || 100
 
-                //console.log(rules)
-
-                /*console.log("删除前:----", sheet);
-
-                console.log(sheet.deleteRule(0));
-
-                if (sheet.deleteRule) {
-
-                    console.log("成功")
-
-                    sheet.deleteRule(0);
-                }
-
-                console.log("删除后:----" , sheet);*/
-
-                var rulesheaders
+                var ruleThat
 
                 for(let dd = 0; dd < rules.length; dd ++ ){
                     var ruleheaders = rules[dd]
-                    if(ruleheaders.selectorText === '.header-cell'){
-                        rulesheaders = ruleheaders
+                    if(ruleheaders.selectorText === '.cell-header-'+ item.id){
+                        ruleThat = ruleheaders
                         break
                     }
                 }
@@ -144,79 +133,46 @@ class TableGrid {
 
                 function start(ev){
 
-                    //ev.stopPropagation()
+                    ev.stopPropagation()
                     ev.preventDefault()
 
                     var oEvent = ev || event
-
-                    //console.log("that",this)
 
                     mouseStart.x = oEvent.clientX
                     rightStart.x = this.offsetLeft;
                     rightStart.width = this.offsetWidth;
 
-                    //var count = parseFloat(rulesheaders.style.width.substr(0 , rulesheaders.style.width.length - 2))
-                    //var count = cellSize
-
                     rightStart.header_width = parseFloat(rulesheaders.style.width.substr(0 , rulesheaders.style.width.length - 2))
 
-                    /*console.log("cellSize",cellSize);
-
-                    console.log(rightStart);*/
-
-                    var key = this.getAttribute('resizefield')
-
-                    //var dragelem = document.querySelector(`[field=${key}]`);
-
                     document.documentElement.addEventListener("mousemove",function (e) {
+
+                        e.stopPropagation()
+                        e.preventDefault()
+
                         var oEvent = e || event
-
-                        /*console.log("oEvent",oEvent.clientX);
-                        console.log("mouseStart",mouseStart.x)*/
-
-                        //console.log("move-index",oEvent.clientX - mouseStart.x)
 
                         var moveindex = oEvent.clientX - mouseStart.x
 
                         var headercell = moveindex + rightStart.x + rightStart.width
 
-                        var headerindex = moveindex + rightStart.header_width
-
-                        //if(moveindex > document.documentElement.clientWidth ) {
-                        //  moveindex = document.documentElement.clientWidth
-                        //}
-
-                        //console.log(rules);
-
-                        for(let re = 0; re < rules.length;re ++){
-                            let rule = rules[re]
-                            if(rule.selectorText === '.cell-header-'+ key){
-                                if(headercell < miniWidth){
-                                    headercell = miniWidth
-                                }
-                                rule.style.width = headercell + 'px'
-                                break;
-                            }
+                        if(headercell < miniWidth){
+                            headercell = miniWidth
                         }
+                        ruleThat.style.width = headercell + 'px'
 
-                        for(let re = 0; re < rules.length;re ++){
-                            let rule = rules[re]
-                            if(rule.selectorText === '.header-cell'){
-                                headerindex = headercell + rightStart.header_width - rightStart.width  - rightStart.x
-                                //headerindex = moveindex + rightStart.header_width
-                                /*console.log("headerindex",headerindex);
-                                console.log("rightStart.header_width",rightStart.header_width)
-                                console.log("headercell",headercell)*/
-                                rule.style.width = headerindex + 'px'
-                                break;
-                            }
-                        }
+                        var headerindex = headercell + rightStart.header_width - rightStart.width  - rightStart.x
+
+                        //容错处理
+                        let faultTolerant = 6
+
+                        rulesheaders.style.width = headerindex + faultTolerant + 'px'
 
                     })
 
-                    document.documentElement.addEventListener("mouseup",function () {
+                    document.documentElement.addEventListener("mouseup",function (event) {
 
-                        //console.log("mouseup",rulesheaders.style.width);
+                        event.stopPropagation()
+                        event.preventDefault()
 
                         document.documentElement.clearEventListeners("mousemove")
                         document.documentElement.clearEventListeners("mouseup")
@@ -231,62 +187,144 @@ class TableGrid {
                 querySelector.addEventListener("mousedown",start)
 
             }
+            if(item["sort"]){
 
+                var sortFieldDOM = document.querySelector(`[sortfield=${item.id}]`);
+
+                sortFieldDOM.addEventListener("click",function (e) {
+
+                    var dome = []
+
+                    var dafasf = []
+
+                    for (let i = 0; i < config.data.length;i ++){
+                        if(typeof dataResult[i][item.id] === "number"){//内容为数字
+                            dome[i] = {[i]:dataResult[i][item.id]}
+                        }else {
+                            dome[i] = {[i]:dataResult[i][item.id].length}
+                        }
+                    }
+
+                    var descorasc = '>'
+
+                    if(sortFieldDOM.classList.contains("desc")){
+                        descorasc = '>'
+                        sortFieldDOM.querySelector(".iconfont").innerHTML = '&#xe6a1;'
+                        sortFieldDOM.classList.remove("desc")
+                        sortFieldDOM.classList.add("asc")
+                    }else{
+                        descorasc = "<"
+                        sortFieldDOM.querySelector(".iconfont").innerHTML = '&#xe751;'
+                        sortFieldDOM.classList.add("desc")
+                        sortFieldDOM.classList.remove("asc")
+                    }
+
+                    for (var i = 0; i < dome.length - 1; i++) {
+                        // 内层循环,控制比较的次数，并且判断两个数的大小
+                        for (var j = 0; j < dome.length - 1 - i; j++) {
+                            // 白话解释：如果前面的数大，放到后面(当然是从小到大的冒泡排序)
+                            if ( eval(Object.values(dome[j])[0] + descorasc + Object.values(dome[j + 1])[0])) {
+                                let temp = dome[j];
+                                dome[j] = dome[j + 1];
+                                dome[j + 1] = temp;
+                            }
+                        }
+                    }
+
+                    for(let i = 0 ; i < dome.length ; i ++){
+                        dafasf[i] = document.querySelector(`[data-index="${Object.keys(dome[i])[0]}"]`)
+                        self.container.removeChild(document.querySelector(`[data-index="${Object.keys(dome[i])[0]}"]`))
+                    }
+
+                    for (let i = 0 ; i < dafasf.length ; i ++) {
+                        self.container.appendChild(dafasf[i])
+                    }
+                })
+            }
+            return true
         })
 
-        for(let dd = 0; dd < rules.length; dd ++ ){
-            let ruleheaders = rules[dd]
-            if(ruleheaders.selectorText === '.header-cell'){
+        var configItems = {}
 
-                //console.log(ruleheaders.style.width);
-                break
+        config.columns.forEach(function(item){
+            configItems[item.id] = item
+        })
+
+        if(config.sort){
+            for (var i = 0; i < config.data.length - 1; i++) {
+                // 内层循环,控制比较的次数，并且判断两个数的大小
+                for (var j = 0; j < config.data.length - 1 - i; j++) {
+                    // 白话解释：如果前面的数大，放到后面(当然是从小到大的冒泡排序)
+                    if(typeof config.data[j][config.sort.field] === "number"){
+                        if(eval(config.data[j][config.sort.field] + sort[config.sort.type || "desc"] + config.data[j + 1][config.sort.field])){
+                            let temp = config.data[j];
+                            config.data[j] = config.data[j + 1];
+                            config.data[j + 1] = temp;
+                        }
+                    }else{
+                        if(eval(config.data[j][config.sort.field].length + sort[config.sort.type || "desc"] + config.data[j + 1][config.sort.field].length)){
+                            let temp = config.data[j];
+                            config.data[j] = config.data[j + 1];
+                            config.data[j + 1] = temp;
+                        }
+                    }
+
+                }
             }
         }
 
-        //this.container.appendChild(Dom.strCastDom(headerBody));
-
         config.data.forEach(function (item,index) {
 
-            var arr =[];
+            var arr = {};
 
             for(var cell in item){
 
-                let index =  document.querySelector(`.cell-header-${cell}`).getAttribute("fieldindex");
+                var domCell =  `<div class="table-tabulation-cell-line cell-header-${cell} hide-surplus-text" >`
 
-                arr[index] =  `<div class="table-tabulation-cell-line cell-header-${cell}" >${item[cell]}</div>`
+                if(configItems[cell].replace && typeof configItems[cell].replace === "function"){
+                    domCell += typeof configItems[cell].replace(item[cell]) === "string" ? configItems[cell].replace(item[cell]) :item[cell]
+                }else{
+                    domCell += item[cell]
+                }
+
+                domCell += `</div>`
+
+                Object.defineProperty(arr, cell, {
+                    value: domCell,
+                    writable: true // 是否可以改变
+                })
+
             }
+
             var tableBodyTabulation = document.createElement("div");
 
             tableBodyTabulation.setAttribute("data-index",index)
 
+            dataResult[index] = item
+
             tableBodyTabulation.classList.add("table-body-tabulation")
             tableBodyTabulation.classList.add("header-cell")
-            
-            for (var cellBody in arr){
-                Dom.strCastDom(arr[cellBody],tableBodyTabulation)
-            }
 
+            for (let configItemsKey in configItems) {
+                if(arr[configItemsKey]){
+                    Dom.strCastDom(arr[configItemsKey],tableBodyTabulation)
+                }else{
+                    let domCell =  `<div class="table-tabulation-cell-line cell-header-${configItemsKey} hide-surplus-text" >
+                    </div>`
+                    Dom.strCastDom(domCell,tableBodyTabulation)
+                }
+            }
+            
             self.container.appendChild(tableBodyTabulation)
 
         });
-
-        //设置行的宽高
-        /*document.querySelector(".table-header-line-column").style.width = cellSize + 'px';
-        document.querySelector(".table-body-tabulation").style.width = cellSize + 'px';*/
 
     }
 
     teset(){
 
-        var doms = `
-            <div>
-              <p class="p1">你好</p>
-              <a class="a1">海</a>
-              <div class="div11">
-                 <span class="span1"></span>
-              </div>
-            </div 呵呵>
-        `
+        //console.log(defineProperty[ddd]);
+
 
         //console.log( new AesUtil())
 
@@ -297,7 +335,7 @@ class TableGrid {
         /*var getDomBody = new RegExp("^(\s*<\s*\/?\s*[a-zA-z_]([^>]*?[\"][^\"]*[\"])*[^>\"]*>)|\s*(<\s*\/?\s*[a-zA-z_]([^>]*?[\"][^\"]*[\"])*[^>\"]*>)$","g")
 
         var getDomContent = new RegExp("^(s*<s*!/?s*[a-zA-z_]([^>]*?[\"][^\"]*[\"])*[^>\"]*>)","g")
-        
+
         var getdomName = new RegExp("(?<=<)\\s*.*?(?=\\s.*?\\W)","g")
 
         //获取dom属性上下文
@@ -319,7 +357,7 @@ class TableGrid {
         var attrs = domAttrContent.match(getAttrContent)
 
         for (let i = 0;i < attrs.length;i ++){
-            
+
             let attrVal = attrs[i].split("=")
 
             domContainer.setAttribute(attrVal[0],attrVal[1].replace(/\"/g,""))

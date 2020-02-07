@@ -2,25 +2,31 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Table</title>
 </head>
 <body>
 
     <div id="tableinit" style="margin:0 auto;width: 700px;height: 500px;border: 1px solid #a0ff86;overflow: auto"></div>
+
 </body>
 </html>
 <script>
 
     var schema = [
-        { width: 200, align: 'right',text:"Aasdfasdfasdfasdfasdfasdfasdfasdfasd",id:"name"
+        { width: 200, align: 'right',text:"lishi",id:"name"
             ,dataformat:{
-               line : 3
+               line : 1
+            },
+            replace:function(text){
+                return text + "呵呵"
             },
             resize:true
         },
-        { width: 200, align: 'center',text:"遵asdfasdfsafasdfasdfasdfasdf------------", id: "age",resize:true,dataformat:{
-            line: 1
-            }},
+        { width: 200, align: 'center',text:"王五", id: "age",resize:true,
+            dataformat:{
+                line: 1
+            }
+        },
         { width: 200, align: 'center',text:"1", id: "sex"},
         { width: 200, align: 'center',text:".", id: "achievement"},
         { width: 200, align: 'center',text:"/", id: "grade"},
@@ -29,8 +35,8 @@
 
     var data = [
         {
-            "age":"30",
-            "name":"吴华豪-",
+            "age":"asfd",
+            "name":"Aasdfasdfasdfasdfasdfasdfasdfasdfasdgdgsdfgsdfgsdfgsdfgsdfgsdfggsdfgsdfgsdfgsdfgsdfgsdfgsdf-",
             "sex":"男",
             "achievement": "100",
             "grade":"一年级",
@@ -84,6 +90,15 @@
         ,
         {
             "age":"30",
+            "sex":"男",
+            "name":"吴华豪-",
+            "achievement": 100,
+            "grade":"一年级---",
+            "subject":"100d"
+        }
+        ,
+        {
+            "age":"30aa",
             "sex":"男",
             "name":"吴华豪-",
             "achievement": 100,

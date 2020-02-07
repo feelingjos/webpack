@@ -3,7 +3,7 @@
   "description": "My webpack project",
   "scripts": {
     "build": "npm run clean && webpack --mode production --config ./build/webpack.prod.conf.js",
-    "start": "webpack-dev-server --inline --host 0.0.0.0 --progress --mode development --config ./build/webpack.dev.conf.js",
+    "start": "webpack-dev-server --inline --progress --mode development --config ./build/webpack.dev.conf.js",
     "clean": "shx rm -rf ./dist"
   },
   "devDependencies": {
@@ -13,6 +13,7 @@
     "@babel/preset-env": "^7.8.3",
     "@babel/runtime": "^7.8.3",
     "@babel/runtime-corejs2": "^7.8.3",
+    "@babel/runtime-corejs3": "^7.8.3",
     "autoprefixer": "^9.6.1",
     "awesome-typescript-loader": "^5.2.1",
     "babel-loader": "^8.0.6",

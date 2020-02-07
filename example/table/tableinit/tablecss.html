@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+    <div id="tablecss" style="width: 100px;height: 100px;"></div>
+
+</body>
+
+    <script type="text/javascript">
+
+        var schema = [
+            { width: 200,text:"list",id:"name"
+                ,dataformat:{
+                    line : 3
+                },
+                sort: true,
+                replace:function(text){
+                    return text + "呵呵"
+                },
+                resize:true
+            },
+            { width: 200, align: 'center',text:"王五", id: "age",resize:true,
+                dataformat:{
+                    line: 1
+                },
+                sort: true
+            },
+            { width: 200, align: 'center',text:"1", id: "sex"},
+            { width: 200, align: 'center',text:".", id: "achievement",sort:true},
+            { width: 200, align: 'center',text:"/", id: "grade"},
+            { width: 200, align: 'center',text:"。", id: "subject"}
+        ]
+
+        var data = [
+            {
+                "age":"asfd",
+                "name":"Aasdfasdfasdfasdfasdfasdfasdfasdfasdgdgsdfgsdfgsdfgsdfgsdfgsdfggsdfgsdfgsdfgsdfgsdfgsdfgsdf-",
+                "sex":"男",
+                "achievement": 99,
+                "grade":"一年级",
+                "subject":"100"
+            }
+            ,
+            {
+                "age":"3051655",
+                "name":"吴华豪-ddddddddddddddddd",
+                "sex":"男4",
+                "achievement": 258,
+                "grade":"一年级",
+                "subject":"100"
+            }
+            ,
+            {
+                "age":"30",
+                "sex":"男adfasfddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+                "name":"吴华豪-",
+                "achievement": 999,
+                "grade":"一年级",
+                "subject":"100"
+            }
+            ,
+            {
+                "age":"30",
+                "sex":"男ccccccccccc",
+                "name":"吴华豪-",
+                "achievement": 10025,
+                "grade":"一年级ff",
+                "subject":"100"
+            }
+            ,
+            {
+                "age":"30",
+                "sex":"男",
+                "name":"吴华豪-",
+                "achievement": 0.001,
+                "grade":"一年级ee",
+                "subject":"100"
+            }
+            ,
+            {
+                "age":"30",
+                "sex":"男bbbbbbbbbbbb",
+                "name":"吴华豪-",
+                "achievement": 0.2,
+                "grade":"一年级cc",
+                "subject":"100"
+            }
+            ,
+            {
+                "age":"30",
+                "sex":"男",
+                "name":"吴华豪-ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+                "achievement": 1555,
+                "grade":"一年级---",
+                "subject":"100d"
+            }
+            ,
+            {
+                "age":"30aa",
+                "sex":"男",
+                "name":"吴华豪-dddddddddddddddddddddddddddddddddddddddddd",
+                "achievement": 2,
+                "grade":"一年级---",
+                "subject":"100d"
+            }
+        ]
+
+
+        window.onload = function(){
+
+
+            var tableGrid =  new fjcode.TableGrid('tablecss',{
+                columns:schema,
+                data:data,
+                sort:{
+                    field:"achievement",
+                    type: "asc"
+                },
+                checkbox: true
+            })
+
+
+            //var tableGrid =  new fjcode.TableGrid('tableinit',schema,data)
+
+        }
+
+    </script>
+
+</html>

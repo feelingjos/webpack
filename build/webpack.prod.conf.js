@@ -120,13 +120,13 @@ module.exports = {
     },
     devtool: 'source-map',
     optimization: {
-        minimizer: [
+        /*minimizer: [
             new UglifyJsPlugin({
                 uglifyOptions: {
                     ie8: true
                 }
             })
-        ],
+        ],*/
         splitChunks: {
             cacheGroups: {
                 vendors: {
