@@ -11,44 +11,65 @@ html, body{
   width: auto;
 }
 
-/*.table-header-line-column{
-  height: 52px;
-  //width: auto;
-}
-.table-body-tabulation{
-  height: 42px;
-  //width: auto;
-}*/
 .table-body-tabulation{
   height: auto;
   overflow: hidden;
+  position: relative;
 }
 .table-header-line-column{
-  height: auto;
+  //height: auto;
+  //justify-content:center;//子元素水平居中
+  //align-items:center;//子元素垂直居中
+  //display:-webkit-flex;
   overflow: hidden;
   background-color: #f1f1f1;
+  position: relative;
 }
 .header-cell:hover{
   background-color: #f1f1f1;
 }
+
 .table-tabulation-cell-line{
   float: left;
   //text-align: center;
   overflow: hidden;
-  line-height: 40px;
   border: 1px solid #DFDFDF;
+}
+.one-line-fixed-height{
+  line-height: 40px;
   height: 40px;
+  -webkit-line-clamp: 1;
+}
+.height-fill-parant{
+  height: 100%;
 }
 .header-sort-desc{
-  display: inline-block;
+  //background-color: #a0ff86;
+  //left: -15px;
+  top: 0;
+  position: absolute;
   cursor: pointer;
-  width: 24px;
-  height: auto;
+  //margin-top: 10px;
+  opacity: 0;
+  //background-color: #dfd33f;
+}
+.one-sort-sign{
+  top: 40%;
+  left: 0;
+}
+.header-sort-desc:hover{
+  border: 1px none;
+  opacity: 2;
+  z-index: 1000;
+  //background-color: #ffffff;
+  //padding: 2px;
+  //background-color: #f1f1f1;
 }
 
 .table-header-call{
   font-weight: bold;
-  position:relative;
+  /*position:relative;*/
+  /*height: 100%;*/
   //border: 1px solid #DFDFDF ;
   //text-align: right;
   //line-height: 50px;
@@ -62,6 +83,12 @@ html, body{
   //text-overflow: ellipsis;//超做内容省略
 }
 
+.horizontally{
+  align-items:center;
+  justify-content:center;
+  display:-webkit-flex;
+}
+
 //右边伸缩
 .table-header-right-resize{
   //background: #dfd33f;
@@ -72,18 +99,23 @@ html, body{
   width: 10px;
   //height: 50px;
   height: 100%;
-  line-height: 52px;
 }
-
+.space-nowrap{
+  white-space: nowrap;
+}
+.word-break-all{
+  word-break:break-all;
+}
 //多余隐藏
 .hide-surplus-text{
+  -webkit-box-sizing:border-box;
+  -moz-box-sizing: border-box;
   border: 1px solid #DFDFDF ;
-  margin: 4px 2px;
-  //white-space: nowrap;
+  //margin: 4px 2px;
+  box-sizing: border-box;
   -webkit-box-orient: vertical;
-  word-break:break-all;
   overflow : hidden;
-  display: -webkit-box;
+  //display: -webkit-box;
   -o-text-overflow: ellipsis; /* for Opera */
   text-overflow: ellipsis; /* for IE */
 }
@@ -115,10 +147,19 @@ html, body{
   text-overflow: ellipsis; /* for IE */
 }
 
+.heightRelative{
+  position:relative;
+}
+.heightAbsolute{
+  position: absolute;
+}
+
 .checkbox-true{
   cursor:pointer;
 }
 .checkbox-true:hover{
 
 }
+
+
 

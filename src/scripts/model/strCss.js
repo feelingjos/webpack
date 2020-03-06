@@ -5,11 +5,12 @@
 
         if(classes){
             var arr = classes.split(',');
-            classes = arr.join(" ");//转化成class
+            for (let arrKey in arr) {
+                htmlDivElement.classList.add(arr[arrKey]);
+            }
         }
 
-        htmlDivElement.classList.add(classes);
-        htmlDivElement.classList.add("textDimensionCalculation")
+        //htmlDivElement.classList.add("textDimensionCalculation")
 
         if(styles){
             htmlDivElement.setAttribute("style",styles)

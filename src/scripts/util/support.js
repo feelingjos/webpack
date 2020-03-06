@@ -81,6 +81,20 @@
         })
     }
 
+    /*Object.prototype.findKe = function(key){
+        console.log(this,key);
+    }*/
+
+    Object.defineProperty(Object.prototype, "findKey", {
+        value: function(value, compare = (a, b) => a === b) {
+            if(value){
+                return Object.keys(this).find(k => compare(this[k], value))
+            }
+            return Object.keys(this)[0]
+        },
+        writable: true // 是否可以改变
+    })
+
     /*String.prototype.aa = function () {
         const parser = new DOMParser()
         const doc = parser.parseFromString(this.trim(), 'text/xml')
