@@ -26,18 +26,20 @@ class TableGrid {
             columns.forEach(function(item){
                 headerWidth[item.id] = item.width
                 LengthMap.header[[item.id]] = {
-                    heightLength:item.text.width("hide-surplus-text,horizontally",`width:${item.width}px`).height,
+                    heightLength:item.text.width("hide-surplus-text,horizontally,word-break-all",`width:${item.width}px`).height,
                     heightAbsolute:true,
                     heightRelative:false,
                 }
-                if(item.text.width("hide-surplus-text,horizontally",`width:${item.width}px`).height > Object.keys(maxValue)[0]){
+                if(item.text.width("hide-surplus-text,horizontally,word-break-all",`width:${item.width}px`).height > Object.keys(maxValue)[0]){
                     maxValue = {}
-                    maxValue[item.text.width("hide-surplus-text,horizontally",`width:${item.width}px`).height] = item.id
+                    maxValue[item.text.width("hide-surplus-text,horizontally,word-break-all",`width:${item.width}px`).height] = item.id
                 }
             })
             LengthMap.header[Object.values(maxValue)[0]].heightAbsolute = !LengthMap.header[Object.values(maxValue)[0]].heightAbsolute
             LengthMap.header[Object.values(maxValue)[0]].heightRelative = !LengthMap.header[Object.values(maxValue)[0]].heightRelative
         }
+
+        console.log(LengthMap.header);
 
         var headerContainer = `<div class="table-header-line-column header-cell 
                 ${linemodel === "auto" ? `heightRelative` : ``}">`;
@@ -205,7 +207,7 @@ class TableGrid {
                         if(linemodel === "auto"){
                             for (let dataLengthKey in dataLength) {
                                 if(dataLength[dataLengthKey][item.id].heightRelative
-                                    && dataLength[dataLengthKey][item.id].text.width("hide-surplus-text,horizontally",`width: ${headercell}px;`).height
+                                    && dataLength[dataLengthKey][item.id].text.toString().width("hide-surplus-text,horizontally,word-break-all",`width: ${headercell}px;`).height
                                     <  parseInt(Object.keys(dataLength[dataLengthKey].maxItem)[0])){
 
                                     var temp,min;
@@ -229,7 +231,7 @@ class TableGrid {
                                     dataLength[dataLengthKey].maxItem = {}
                                     dataLength[dataLengthKey].maxItem = {[dataLength[dataLengthKey][keyMap[1]].heightLength] : keyMap[1]}
 
-                                    dataLength[dataLengthKey][item.id].heightLength = dataLength[dataLengthKey][item.id].text.width("hide-surplus-text,horizontally",`width: ${headercell}px;`).height
+                                    dataLength[dataLengthKey][item.id].heightLength = dataLength[dataLengthKey][item.id].text.toString().width("hide-surplus-text,horizontally,word-break-all",`width: ${headercell}px;`).height
 
                                     dataLength[dataLengthKey][item.id].heightRelative = !dataLength[dataLengthKey][item.id].heightRelative
                                     dataLength[dataLengthKey][item.id].heightAbsolute = !dataLength[dataLengthKey][item.id].heightAbsolute
@@ -253,10 +255,10 @@ class TableGrid {
                                 }else{
 
                                     if( dataLength[dataLengthKey][item.id].heightAbsolute
-                                        && dataLength[dataLengthKey][item.id].text.width("hide-surplus-text,horizontally",`width: ${headercell}px;`).height
+                                        && dataLength[dataLengthKey][item.id].text.toString().width("hide-surplus-text,horizontally,word-break-all",`width: ${headercell}px;`).height
                                         > parseInt(Object.keys(dataLength[dataLengthKey].maxItem)[0]) ){
 
-                                        dataLength[dataLengthKey][item.id].heightLength = item.text.width("hide-surplus-text,horizontally",`width: ${headercell}px;`).height
+                                        dataLength[dataLengthKey][item.id].heightLength = item.text.width("hide-surplus-text,horizontally,word-break-all",`width: ${headercell}px;`).height
 
                                         dataLength[dataLengthKey][item.id].heightRelative = !dataLength[dataLengthKey][item.id].heightRelative
                                         dataLength[dataLengthKey][item.id].heightAbsolute = !dataLength[dataLengthKey][item.id].heightAbsolute
@@ -279,7 +281,7 @@ class TableGrid {
 
                                         dataLength[dataLengthKey].maxItem = {}
                                         dataLength[dataLengthKey].maxItem = {
-                                            [dataLength[dataLengthKey][item.id].text.width("hide-surplus-text,horizontally",`width: ${headercell}px;`).height]: item.id
+                                            [dataLength[dataLengthKey][item.id].text.toString().width("hide-surplus-text,horizontally,word-break-all",`width: ${headercell}px;`).height]: item.id
                                         }
 
 
@@ -289,7 +291,7 @@ class TableGrid {
                             }
 
                             if(LengthMap.header[item.id].heightRelative
-                                && item.text.width("hide-surplus-text,horizontally",`width: ${headercell}px;`).height < Object.keys(maxValue)[0]){
+                                && item.text.width("hide-surplus-text,horizontally,word-break-all",`width: ${headercell}px;`).height < Object.keys(maxValue)[0]){
 
                                 var temp,min;
 
@@ -309,7 +311,7 @@ class TableGrid {
                                 maxValue = {}
                                 maxValue[LengthMap.header[keyMap[1]].heightLength] = keyMap[1]
 
-                                LengthMap.header[item.id].heightLength = item.text.width("hide-surplus-text,horizontally",`width: ${headercell}px;`).height
+                                LengthMap.header[item.id].heightLength = item.text.width("hide-surplus-text,horizontally,word-break-all",`width: ${headercell}px;`).height
 
                                 LengthMap.header[item.id].heightRelative = !LengthMap.header[item.id].heightRelative
                                 LengthMap.header[item.id].heightAbsolute = !LengthMap.header[item.id].heightAbsolute
@@ -330,9 +332,9 @@ class TableGrid {
                             }else{
 
                                 if( LengthMap.header[item.id].heightAbsolute
-                                    && item.text.width("hide-surplus-text,horizontally",`width: ${headercell}px;`).height > Object.keys(maxValue)[0]){
+                                    && item.text.width("hide-surplus-text,horizontally,word-break-all",`width: ${headercell}px;`).height > Object.keys(maxValue)[0]){
 
-                                    LengthMap.header[item.id].heightLength = item.text.width("hide-surplus-text,horizontally",`width: ${headercell}px;`).height
+                                    LengthMap.header[item.id].heightLength = item.text.width("hide-surplus-text,horizontally,word-break-all",`width: ${headercell}px;`).height
 
                                     LengthMap.header[item.id].heightRelative = !LengthMap.header[item.id].heightRelative
                                     LengthMap.header[item.id].heightAbsolute = !LengthMap.header[item.id].heightAbsolute
@@ -351,7 +353,7 @@ class TableGrid {
                                     LengthMap.header[Object.values(maxValue)[0]].heightAbsolute = !LengthMap.header[Object.values(maxValue)[0]].heightAbsolute
 
                                     maxValue = {}
-                                    maxValue[item.text.width("hide-surplus-text,horizontally",`width: ${headercell}px;`).height] = item.id
+                                    maxValue[item.text.width("hide-surplus-text,horizontally,word-break-all",`width: ${headercell}px;`).height] = item.id
                                 }
                             }
                         }
@@ -496,14 +498,14 @@ class TableGrid {
 
                 for (let itemKey in item) {
 
-                    if(item[itemKey].toString().width("hide-surplus-text,horizontally",`width:${headerWidth[itemKey]}px`).height > Object.keys(LentMaxValue)[0]){
+                    if(item[itemKey].toString().width("hide-surplus-text,horizontally,word-break-all",`width:${headerWidth[itemKey]}px`).height > Object.keys(LentMaxValue)[0]){
                         LentMaxValue = {}
-                        LentMaxValue[item[itemKey].toString().width("hide-surplus-text,horizontally",`width:${headerWidth[itemKey]}px`).height] = itemKey
+                        LentMaxValue[item[itemKey].toString().width("hide-surplus-text,horizontally,word-break-all",`width:${headerWidth[itemKey]}px`).height] = itemKey
                     }
 
                     dataLength[random][itemKey] = {
                         text:item[itemKey],
-                        heightLength: item[itemKey].toString().width(`hide-surplus-text,horizontally`,`width:${headerWidth[itemKey]}px`).height,
+                        heightLength: item[itemKey].toString().width(`hide-surplus-text,horizontally,word-break-all`,`width:${headerWidth[itemKey]}px`).height,
                         heightAbsolute:true,
                         heightRelative:false,
                     };
