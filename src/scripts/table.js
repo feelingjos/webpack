@@ -39,8 +39,6 @@ class TableGrid {
             LengthMap.header[Object.values(maxValue)[0]].heightRelative = !LengthMap.header[Object.values(maxValue)[0]].heightRelative
         }
 
-        console.log(LengthMap.header);
-
         var headerContainer = `<div class="table-header-line-column header-cell 
                 ${linemodel === "auto" ? `heightRelative` : ``}">`;
 
@@ -148,6 +146,21 @@ class TableGrid {
                     }
                 }
 
+                var temp,min;
+
+                var keyMapHeader = Object.keys(LengthMap.header);
+
+                for(var i = 0 ;i < keyMapHeader.length - 1 ; i ++){
+                    min = i;
+                    for(var j = i + 1;j < keyMapHeader.length; j ++){
+                        if(LengthMap.header[keyMapHeader[j]].heightLength > LengthMap.header[keyMapHeader[i]].heightLength ){
+                            temp= keyMapHeader[i];
+                            keyMapHeader[i] = keyMapHeader[j];
+                            keyMapHeader[j] = temp;
+                        }
+                    }
+                }
+
                 var mouseStart = {}
                 var rightStart = {}
 
@@ -204,11 +217,9 @@ class TableGrid {
                             moveindex = headercell  - (rightStart.x + rightStart.width)
                         }
 
-                        LengthMap.header[item.id].heightLength = item.text.width("hide-surplus-text,horizontally,word-break-all,table-header-call",`width: ${headercell}px;`).height
-
-
-
                         if(linemodel === "auto"){
+                            LengthMap.header[item.id].heightLength = item.text.width("hide-surplus-text,horizontally,word-break-all,table-header-call",`width: ${headercell}px;`).height
+
                             for (let dataLengthKey in dataLength) {
                                 dataLength[dataLengthKey][item.id].heightLength = dataLength[dataLengthKey][item.id].text.toString().width("hide-surplus-text,horizontally,word-break-all,table-header-call",`width: ${headercell}px;`).height
 
@@ -216,23 +227,6 @@ class TableGrid {
                                     && dataLength[dataLengthKey][item.id].text.toString().width("hide-surplus-text,horizontally,word-break-all,table-header-call",`width: ${headercell}px;`).height
                                     <  parseInt(Object.keys(dataLength[dataLengthKey].maxItem)[0])){
 
-                                    var temp,min;
-
-                                    var keyMap = Object.keys(dataLength[dataLengthKey]);
-
-                                    for(var i = 0 ;i < keyMap.length - 1 ; i ++){
-                                        min = i;
-                                        for(var j = i + 1;j < keyMap.length; j ++){
-                                            if(keyMap[j]  === "maxItem" || keyMap[i]  === "maxItem"){
-                                                continue
-                                            }
-                                            if(dataLength[dataLengthKey][keyMap[j]].heightLength > dataLength[dataLengthKey][keyMap[i]].heightLength ){
-                                                temp= keyMap[i];
-                                                keyMap[i] = keyMap[j];
-                                                keyMap[j] = temp;
-                                            }
-                                        }
-                                    }
 
                                     dataLength[dataLengthKey].maxItem = {}
                                     if([dataLength[dataLengthKey][keyMap[1]].heightLength] > [dataLength[dataLengthKey][keyMap[0]].heightLength]){
@@ -289,7 +283,6 @@ class TableGrid {
                                         dataLength[dataLengthKey][Object.values(dataLength[dataLengthKey].maxItem)[0]].heightRelative = !dataLength[dataLengthKey][Object.values(dataLength[dataLengthKey].maxItem)[0]].heightRelative
                                         dataLength[dataLengthKey][Object.values(dataLength[dataLengthKey].maxItem)[0]].heightAbsolute = !dataLength[dataLengthKey][Object.values(dataLength[dataLengthKey].maxItem)[0]].heightAbsolute
 
-
                                         dataLength[dataLengthKey].maxItem = {}
                                         dataLength[dataLengthKey].maxItem = {
                                             [dataLength[dataLengthKey][item.id].text.toString().width("hide-surplus-text,horizontally,word-break-all,table-header-call",`width: ${headercell}px;`).height]: item.id
@@ -304,27 +297,11 @@ class TableGrid {
                             if(LengthMap.header[item.id].heightRelative
                                 && item.text.width("hide-surplus-text,horizontally,word-break-all,table-header-call",`width: ${headercell}px;`).height < Object.keys(maxValue)[0]){
 
-                                var temp,min;
-
-                                var keyMap = Object.keys(LengthMap.header);
-
-                                for(var i = 0 ;i < keyMap.length - 1 ; i ++){
-                                    min = i;
-                                    for(var j = i + 1;j < keyMap.length; j ++){
-                                        if(LengthMap.header[keyMap[j]].heightLength > LengthMap.header[keyMap[i]].heightLength ){
-                                            temp= keyMap[i];
-                                            keyMap[i] = keyMap[j];
-                                            keyMap[j] = temp;
-                                        }
-                                    }
-                                }
-
-                                if(LengthMap.header[keyMap[1]].heightLength > LengthMap.header[keyMap[0]].heightLength){
-                                    maxValue = {}
-                                    maxValue[LengthMap.header[keyMap[1]].heightLength] = keyMap[1]
+                                maxValue = {}
+                                if(LengthMap.header[keyMapHeader[1]].heightLength > LengthMap.header[keyMapHeader[0]].heightLength){
+                                    maxValue[LengthMap.header[keyMapHeader[1]].heightLength] = keyMapHeader[1]
                                 }else{
-                                    maxValue = {}
-                                    maxValue[LengthMap.header[keyMap[0]].heightLength] = keyMap[0]
+                                    maxValue[LengthMap.header[keyMapHeader[0]].heightLength] = keyMapHeader[0]
                                 }
                                 //maxValue = {}
                                 //maxValue[LengthMap.header[keyMap[1]].heightLength] = keyMap[1]
@@ -406,9 +383,6 @@ class TableGrid {
 
                         document.documentElement.clearEventListeners("mousemove")
                         document.documentElement.clearEventListeners("mouseup")
-
-                        console.log(LengthMap.header);
-                        console.log(maxValue);
 
                         mouseStart = {}
                         rightStart = {}
