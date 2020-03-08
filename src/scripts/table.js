@@ -161,6 +161,8 @@ class TableGrid {
                     }
                 }
 
+
+
                 var mouseStart = {}
                 var rightStart = {}
 
@@ -227,12 +229,29 @@ class TableGrid {
                                     && dataLength[dataLengthKey][item.id].text.toString().width("hide-surplus-text,horizontally,word-break-all,table-header-call",`width: ${headercell}px;`).height
                                     <  parseInt(Object.keys(dataLength[dataLengthKey].maxItem)[0])){
 
+                                    //var temp,min;
+
+                                    var keyMapCell = Object.keys(dataLength[dataLengthKey]);
+
+                                    for(var i = 0 ;i < keyMapCell.length - 1 ; i ++){
+                                        min = i;
+                                        for(var j = i + 1;j < keyMapCell.length; j ++){
+                                            if(keyMapCell[j]  === "maxItem" || keyMapCell[i]  === "maxItem"){
+                                                continue
+                                            }
+                                            if(dataLength[dataLengthKey][keyMapCell[j]].heightLength > dataLength[dataLengthKey][keyMapCell[i]].heightLength ){
+                                                temp= keyMapCell[i];
+                                                keyMapCell[i] = keyMapCell[j];
+                                                keyMapCell[j] = temp;
+                                            }
+                                        }
+                                    }
 
                                     dataLength[dataLengthKey].maxItem = {}
-                                    if([dataLength[dataLengthKey][keyMap[1]].heightLength] > [dataLength[dataLengthKey][keyMap[0]].heightLength]){
-                                        dataLength[dataLengthKey].maxItem = {[dataLength[dataLengthKey][keyMap[1]].heightLength] : keyMap[1]}
+                                    if([dataLength[dataLengthKey][keyMapCell[1]].heightLength] > [dataLength[dataLengthKey][keyMapCell[0]].heightLength]){
+                                        dataLength[dataLengthKey].maxItem = {[dataLength[dataLengthKey][keyMapCell[1]].heightLength] : keyMapCell[1]}
                                     }else{
-                                        dataLength[dataLengthKey].maxItem = {[dataLength[dataLengthKey][keyMap[0]].heightLength] : keyMap[0]}
+                                        dataLength[dataLengthKey].maxItem = {[dataLength[dataLengthKey][keyMapCell[0]].heightLength] : keyMapCell[0]}
                                     }
 
 
@@ -282,6 +301,7 @@ class TableGrid {
 
                                         dataLength[dataLengthKey][Object.values(dataLength[dataLengthKey].maxItem)[0]].heightRelative = !dataLength[dataLengthKey][Object.values(dataLength[dataLengthKey].maxItem)[0]].heightRelative
                                         dataLength[dataLengthKey][Object.values(dataLength[dataLengthKey].maxItem)[0]].heightAbsolute = !dataLength[dataLengthKey][Object.values(dataLength[dataLengthKey].maxItem)[0]].heightAbsolute
+
 
                                         dataLength[dataLengthKey].maxItem = {}
                                         dataLength[dataLengthKey].maxItem = {
@@ -417,12 +437,16 @@ class TableGrid {
 
                     if(sortFieldDOM.classList.contains("desc")){
                         descorasc = '>'
-                        sortFieldDOM.querySelector(".iconfont").innerHTML = '&#xe6a1;'
+                        //sortFieldDOM.querySelector(".iconfont").innerHTML = '&#xe6a1;'
+                        sortFieldDOM.classList.remove("iconshengxu1")
+                        sortFieldDOM.classList.add("iconjiangxu")
                         sortFieldDOM.classList.remove("desc")
                         sortFieldDOM.classList.add("asc")
                     }else{
                         descorasc = "<"
-                        sortFieldDOM.querySelector(".iconfont").innerHTML = '&#xe751;'
+                        //sortFieldDOM.querySelector(".iconfont").innerHTML = '&#xe751;'
+                        sortFieldDOM.classList.add("iconshengxu1")
+                        sortFieldDOM.classList.remove("iconjiangxu")
                         sortFieldDOM.classList.add("desc")
                         sortFieldDOM.classList.remove("asc")
                     }
