@@ -226,41 +226,42 @@ class TableGrid {
                                 dataLength[dataLengthKey][item.id].heightLength = dataLength[dataLengthKey][item.id].text.toString().width("hide-surplus-text,horizontally,word-break-all,table-header-call",`width: ${headercell}px;`).height
 
                                 if(dataLength[dataLengthKey][item.id].heightRelative
-                                    && dataLength[dataLengthKey][item.id].text.toString().width("hide-surplus-text,horizontally,word-break-all,table-header-call",`width: ${headercell}px;`).height
+                                    && dataLength[dataLengthKey][item.id].text.toString().width("hide-surplus-text,horizontally,word-break-all,table-tabulation-cell-line",`width: ${headercell}px;`).height
                                     <  parseInt(Object.keys(dataLength[dataLengthKey].maxItem)[0])){
 
-                                    //var temp,min;
+                                    var tempCell,minCell;
 
                                     var keyMapCell = Object.keys(dataLength[dataLengthKey]);
 
+                                    var index = keyMapCell.indexOf("maxItem");
+                                    keyMapCell.splice(index, 1);
+
                                     for(var i = 0 ;i < keyMapCell.length - 1 ; i ++){
-                                        min = i;
+                                        minCell = i;
                                         for(var j = i + 1;j < keyMapCell.length; j ++){
                                             if(keyMapCell[j]  === "maxItem" || keyMapCell[i]  === "maxItem"){
                                                 continue
                                             }
                                             if(dataLength[dataLengthKey][keyMapCell[j]].heightLength > dataLength[dataLengthKey][keyMapCell[i]].heightLength ){
-                                                temp= keyMapCell[i];
+                                                tempCell = keyMapCell[i];
                                                 keyMapCell[i] = keyMapCell[j];
-                                                keyMapCell[j] = temp;
+                                                keyMapCell[j] = tempCell;
                                             }
                                         }
                                     }
-
                                     dataLength[dataLengthKey].maxItem = {}
-                                    if([dataLength[dataLengthKey][keyMapCell[1]].heightLength] > [dataLength[dataLengthKey][keyMapCell[0]].heightLength]){
+
+                                    if(dataLength[dataLengthKey][keyMapCell[1]].heightLength > dataLength[dataLengthKey][keyMapCell[0]].heightLength){
                                         dataLength[dataLengthKey].maxItem = {[dataLength[dataLengthKey][keyMapCell[1]].heightLength] : keyMapCell[1]}
                                     }else{
                                         dataLength[dataLengthKey].maxItem = {[dataLength[dataLengthKey][keyMapCell[0]].heightLength] : keyMapCell[0]}
                                     }
 
-
-                                    dataLength[dataLengthKey][item.id].heightLength = dataLength[dataLengthKey][item.id].text.toString().width("hide-surplus-text,horizontally,word-break-all",`width: ${headercell}px;`).height
+                                    dataLength[dataLengthKey][item.id].heightLength = dataLength[dataLengthKey][item.id].text.toString().width("hide-surplus-text,horizontally,word-break-all,table-tabulation-cell-line",`width: ${headercell}px;`).height
 
                                     dataLength[dataLengthKey][item.id].heightRelative = !dataLength[dataLengthKey][item.id].heightRelative
                                     dataLength[dataLengthKey][item.id].heightAbsolute = !dataLength[dataLengthKey][item.id].heightAbsolute
 
-                                    //console.log(dataLength[dataLengthKey].maxItem);
                                     dataLength[dataLengthKey][Object.values(dataLength[dataLengthKey].maxItem)[0]].heightRelative = !dataLength[dataLengthKey][Object.values(dataLength[dataLengthKey].maxItem)[0]].heightRelative
                                     dataLength[dataLengthKey][Object.values(dataLength[dataLengthKey].maxItem)[0]].heightAbsolute = !dataLength[dataLengthKey][Object.values(dataLength[dataLengthKey].maxItem)[0]].heightAbsolute
 
@@ -276,13 +277,15 @@ class TableGrid {
                                     querySelector2.classList.add("heightRelative")
                                     querySelector2.classList.remove("heightAbsolute")
 
+                                    console.log(dataLength[dataLengthKey].maxItem);
+
                                 }else{
 
                                     if( dataLength[dataLengthKey][item.id].heightAbsolute
-                                        && dataLength[dataLengthKey][item.id].text.toString().width("hide-surplus-text,horizontally,word-break-all,table-header-call",`width: ${headercell}px;`).height
+                                        && dataLength[dataLengthKey][item.id].text.toString().width("hide-surplus-text,horizontally,word-break-all,table-tabulation-cell-line",`width: ${headercell}px;`).height
                                         > parseInt(Object.keys(dataLength[dataLengthKey].maxItem)[0]) ){
 
-                                        dataLength[dataLengthKey][item.id].heightLength = item.text.width("hide-surplus-text,horizontally,word-break-all,table-header-call",`width: ${headercell}px;`).height
+                                        dataLength[dataLengthKey][item.id].heightLength = item.text.width("hide-surplus-text,horizontally,word-break-all,table-tabulation-cell-line",`width: ${headercell}px;`).height
 
                                         dataLength[dataLengthKey][item.id].heightRelative = !dataLength[dataLengthKey][item.id].heightRelative
                                         dataLength[dataLengthKey][item.id].heightAbsolute = !dataLength[dataLengthKey][item.id].heightAbsolute
@@ -302,12 +305,10 @@ class TableGrid {
                                         dataLength[dataLengthKey][Object.values(dataLength[dataLengthKey].maxItem)[0]].heightRelative = !dataLength[dataLengthKey][Object.values(dataLength[dataLengthKey].maxItem)[0]].heightRelative
                                         dataLength[dataLengthKey][Object.values(dataLength[dataLengthKey].maxItem)[0]].heightAbsolute = !dataLength[dataLengthKey][Object.values(dataLength[dataLengthKey].maxItem)[0]].heightAbsolute
 
-
                                         dataLength[dataLengthKey].maxItem = {}
                                         dataLength[dataLengthKey].maxItem = {
-                                            [dataLength[dataLengthKey][item.id].text.toString().width("hide-surplus-text,horizontally,word-break-all,table-header-call",`width: ${headercell}px;`).height]: item.id
+                                            [dataLength[dataLengthKey][item.id].text.toString().width("hide-surplus-text,horizontally,word-break-all,table-tabulation-cell-line",`width: ${headercell}px;`).height]: item.id
                                         }
-
 
                                     }
                                 }
@@ -323,11 +324,6 @@ class TableGrid {
                                 }else{
                                     maxValue[LengthMap.header[keyMapHeader[0]].heightLength] = keyMapHeader[0]
                                 }
-                                //maxValue = {}
-                                //maxValue[LengthMap.header[keyMap[1]].heightLength] = keyMap[1]
-                                //maxValue[item.text.toString().width("hide-surplus-text,horizontally,word-break-all,table-header-call",`width: ${headercell}px;`).height] = keyMap[1]
-                                //maxValue[item.text.toString().width("hide-surplus-text,horizontally,word-break-all,table-header-call",`width: ${headercell}px;`).height] = item.id
-                                //debugger
 
                                 LengthMap.header[item.id].heightLength = item.text.width("hide-surplus-text,horizontally,word-break-all,table-header-call",`width: ${headercell}px;`).height
 
@@ -404,6 +400,8 @@ class TableGrid {
                         document.documentElement.clearEventListeners("mousemove")
                         document.documentElement.clearEventListeners("mouseup")
 
+                        console.log("结束了",dataLength);
+
                         mouseStart = {}
                         rightStart = {}
                         leftMapValue = {}
@@ -476,6 +474,8 @@ class TableGrid {
             return true
         })
 
+        console.log(dataLength);
+
         var configItems = {}
 
         config.columns.forEach(function(item){
@@ -513,21 +513,20 @@ class TableGrid {
             var random = genId()
             if(linemodel === "auto"){
 
-
                 dataLength[random] = {}
 
                 var LentMaxValue = {1:"field"}
 
                 for (let itemKey in item) {
 
-                    if(item[itemKey].toString().width("hide-surplus-text,horizontally,word-break-all,table-header-call",`width:${headerWidth[itemKey]}px`).height > Object.keys(LentMaxValue)[0]){
+                    if(item[itemKey].toString().width("hide-surplus-text,horizontally,word-break-all,table-tabulation-cell-line",`width:${headerWidth[itemKey]}px`).height > Object.keys(LentMaxValue)[0]){
                         LentMaxValue = {}
-                        LentMaxValue[item[itemKey].toString().width("hide-surplus-text,horizontally,word-break-all,table-header-call",`width:${headerWidth[itemKey]}px`).height] = itemKey
+                        LentMaxValue[item[itemKey].toString().width("hide-surplus-text,horizontally,word-break-all,table-tabulation-cell-line",`width:${headerWidth[itemKey]}px`).height] = itemKey
                     }
 
                     dataLength[random][itemKey] = {
                         text:item[itemKey],
-                        heightLength: item[itemKey].toString().width(`hide-surplus-text,horizontally,word-break-all,table-header-call`,`width:${headerWidth[itemKey]}px`).height,
+                        heightLength: item[itemKey].toString().width(`hide-surplus-text,horizontally,word-break-all,table-tabulation-cell-line`,`width:${headerWidth[itemKey]}px`).height,
                         heightAbsolute:true,
                         heightRelative:false,
                     };
