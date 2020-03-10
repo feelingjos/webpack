@@ -161,8 +161,6 @@ class TableGrid {
                     }
                 }
 
-
-
                 var mouseStart = {}
                 var rightStart = {}
 
@@ -192,7 +190,7 @@ class TableGrid {
                         for(let dd = 0; dd < rules.length; dd ++ ){
                             let ruleheaders = rules[dd]
                             if(ruleheaders.style.left && itemQueue.indexOf(ruleheaders.selectorText) !== -1){
-                                leftMapValue[ruleheaders.selectorText] = parseInt(ruleheaders.style.left.replace("px",""))
+                                leftMapValue[ruleheaders.selectorText] = parseInt(ruleheaders.style.left.replace("px","") - 2)
                             }
                         }
                     }
@@ -232,9 +230,6 @@ class TableGrid {
                                     var tempCell,minCell;
 
                                     var keyMapCell = Object.keys(dataLength[dataLengthKey]);
-
-                                    var index = keyMapCell.indexOf("maxItem");
-                                    keyMapCell.splice(index, 1);
 
                                     for(var i = 0 ;i < keyMapCell.length - 1 ; i ++){
                                         minCell = i;
@@ -276,8 +271,6 @@ class TableGrid {
 
                                     querySelector2.classList.add("heightRelative")
                                     querySelector2.classList.remove("heightAbsolute")
-
-                                    console.log(dataLength[dataLengthKey].maxItem);
 
                                 }else{
 
@@ -400,8 +393,6 @@ class TableGrid {
                         document.documentElement.clearEventListeners("mousemove")
                         document.documentElement.clearEventListeners("mouseup")
 
-                        console.log("结束了",dataLength);
-
                         mouseStart = {}
                         rightStart = {}
                         leftMapValue = {}
@@ -473,8 +464,6 @@ class TableGrid {
             }
             return true
         })
-
-        console.log(dataLength);
 
         var configItems = {}
 
