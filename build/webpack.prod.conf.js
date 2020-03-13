@@ -25,6 +25,16 @@ module.exports = {
             }
         }),
         new HtmlWebpackPlugin({
+            //filename: 'example/table/tableinit/tableinit.html',
+            //template: './example/table/tableinit/tableinit.html',
+            filename: 'example/table/tableinit/tablecss.html',
+            template: './example/table/tableinit/tablecss.html',
+            chunks: ['index'],
+            minify: {
+                collapseWhitespace: false //压缩空格
+            }
+        }),
+        new HtmlWebpackPlugin({
             filename: 'example/table/tableinit/tableconfig.html',
             template: './example/table/tableinit/tableconfig.html',
             chunks: ['index'],
@@ -82,9 +92,13 @@ module.exports = {
                     {
                         loader: 'file-loader',
                         options: {
-                            publicPath: '',
-                            outputPath: '../fonticon',
-                            useRelativePath: false
+                            name: "[name]-[hash:5].min.[ext]",
+                            limit: 5000, // fonts file size <= 5KB, use 'base64'; else, output svg file
+                            publicPath: "../fonts/",
+                            outputPath: "fonts/",
+                            /*publicPath: '',
+                            outputPath: '../fonticon',*/
+                            useRelativePath: true
                         }
                     }
                 ]
