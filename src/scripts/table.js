@@ -379,7 +379,7 @@ class TableGrid {
 
                         var headerindex = headercell + rightStart.header_width - rightStart.width  - rightStart.x
 
-                        let faultTolerant = 6
+                        let faultTolerant = 0
 
                         rulesheaders.style.width = headerindex + faultTolerant + 'px'
 
@@ -508,17 +508,41 @@ class TableGrid {
 
                 for (let itemKey in item) {
 
-                    if(item[itemKey].toString().width("hide-surplus-text,horizontally,word-break-all,table-tabulation-cell-line",`width:${headerWidth[itemKey]}px`).height > Object.keys(LentMaxValue)[0]){
-                        LentMaxValue = {}
-                        LentMaxValue[item[itemKey].toString().width("hide-surplus-text,horizontally,word-break-all,table-tabulation-cell-line",`width:${headerWidth[itemKey]}px`).height] = itemKey
+                    /*if(configItems[itemKey].replace && typeof configItems[itemKey].replace(item[itemKey]) === "Object"){
+                        console.log(configItems[itemKey].replace(item[itemKey]));
+                    }*/
+
+                    if(configItems[itemKey].replace && typeof configItems[itemKey].replace(item[itemKey]) !== "undefined"){
+
+                        if(configItems[itemKey].replace(item[itemKey]).toString().width("hide-surplus-text,horizontally,word-break-all,table-tabulation-cell-line",`width:${headerWidth[itemKey]}px`).height > Object.keys(LentMaxValue)[0]){
+                            LentMaxValue = {}
+                            LentMaxValue[configItems[itemKey].replace(item[itemKey]).width("hide-surplus-text,horizontally,word-break-all,table-tabulation-cell-line",`width:${headerWidth[itemKey]}px`).height] = itemKey
+                        }
+
+                        dataLength[random][itemKey] = {
+                            native:item[itemKey],
+                            text: configItems[itemKey].replace(item[itemKey]),
+                            heightLength: item[itemKey].toString().width(`hide-surplus-text,horizontally,word-break-all,table-tabulation-cell-line`,`width:${headerWidth[itemKey]}px`).height,
+                            heightAbsolute:true,
+                            heightRelative:false,
+                        };
+
+                    }else{
+
+                        if(item[itemKey].toString().width("hide-surplus-text,horizontally,word-break-all,table-tabulation-cell-line",`width:${headerWidth[itemKey]}px`).height > Object.keys(LentMaxValue)[0]){
+                            LentMaxValue = {}
+                            LentMaxValue[item[itemKey].toString().width("hide-surplus-text,horizontally,word-break-all,table-tabulation-cell-line",`width:${headerWidth[itemKey]}px`).height] = itemKey
+                        }
+
+                        dataLength[random][itemKey] = {
+                            text:item[itemKey],
+                            heightLength: item[itemKey].toString().width(`hide-surplus-text,horizontally,word-break-all,table-tabulation-cell-line`,`width:${headerWidth[itemKey]}px`).height,
+                            heightAbsolute:true,
+                            heightRelative:false,
+                        };
                     }
 
-                    dataLength[random][itemKey] = {
-                        text:item[itemKey],
-                        heightLength: item[itemKey].toString().width(`hide-surplus-text,horizontally,word-break-all,table-tabulation-cell-line`,`width:${headerWidth[itemKey]}px`).height,
-                        heightAbsolute:true,
-                        heightRelative:false,
-                    };
+
                 }
 
                 dataLength[random].maxItem = LentMaxValue
@@ -535,7 +559,7 @@ class TableGrid {
                             hide-surplus-text " >`
 
                 if(configItems[cell].replace && typeof configItems[cell].replace === "function"){
-                    domCell += typeof configItems[cell].replace(item[cell]) === "string" ? configItems[cell].replace(item[cell]) :item[cell]
+                    domCell += typeof configItems[cell].replace(item[cell]) !== "undefined" ? configItems[cell].replace(item[cell]) :item[cell]
                 }else{
                     domCell += item[cell]
                 }
