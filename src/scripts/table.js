@@ -16,11 +16,8 @@ class TableGrid {
 
         var self = this,sort = {desc: ">",asc: "<"}, //绘制头部
          columns = config.columns,headerCssRules = ``,dataResult = {},maxValue = {1:"null"}
-            ,LengthMap = {header:{}},linemodel = config.linemodel || "one" ;
-
-        var headerWidth = {}
-
-        var dataLength = {}
+            ,LengthMap = {header:{}},linemodel = config.linemodel || "one" ,
+            headerWidth = {},dataLength = {}, headerContainer =``;
 
         if("auto" === linemodel){
             columns.forEach(function(item){
@@ -39,22 +36,68 @@ class TableGrid {
             LengthMap.header[Object.values(maxValue)[0]].heightRelative = !LengthMap.header[Object.values(maxValue)[0]].heightRelative
         }
 
-        var headerContainer = `<div class="table-header-line-column header-cell 
+        headerContainer = `<div class="table-header-line-column header-cell 
                 ${linemodel === "auto" ? `heightRelative` : ``}">`;
 
         var cellSize = 2;
 
+        var leftScale = 2
+
         if(config.checkbox){
 
-            //cellSize += 30
+            cellSize += 30
+
+            //leftScale += 32
 
             /*headerContainer += `<div class="checkbox-header table-header-call"/>
                 <span class="iconfont checkbox-true">&#xec58;</span>
+                </div>` */
+            if(linemodel === "one"){
+                headerContainer += `<div class="table-header-call heightRelative"/> 
+                <div class="cell-header-check-box one-line-fixed-height">
+                    <span class="iconfont icon iconcheck-box-outline-bl"></span>
+                   </div>
+                </div>`
+                headerCssRules += `
+                .cell-header-check-box{
+                   width: 27px;
+                   text-align:center;
+                   box-sizing: border-box;
+                } `
+            }else{
+                /*headerContainer += `<div class="table-header-call"/>
+                    <div class="cell-header-check-box heightAbsolute "  >
+                       <div class="heightRelative" style="height: 100%;">
+                          <span class="iconfont icon iconcheck-box-outline-bl heightRelative"
+                           style="position: absolute; left: 0;top: 35%;"></span>
+                       </div>
+                    </div>
                 </div>`*/
+
+                headerContainer += `<div class="table-header-call"/> 
+                    <div class="cell-header-check-box heightAbsolute FlexContainer"  >
+                       <div class="FlexItem">
+                          <span class="iconfont icon iconcheck-box-outline-bl"
+                           ></span>
+                       </div>
+                    </div>
+                </div>`
+
+                headerCssRules += `
+                .cell-header-check-box{
+                   width: 27px;
+                   /*text-align:center;*/
+                   box-sizing: border-box;
+                   height: 100%;
+                   left:0px
+                } `
+                leftScale += 25
+            }
+
 
         }
 
-        var leftScale = 2
+
 
         columns.forEach(function(item,index){
 
@@ -278,7 +321,8 @@ class TableGrid {
                                         && dataLength[dataLengthKey][item.id].text.toString().width("hide-surplus-text,horizontally,word-break-all,table-tabulation-cell-line",`width: ${headercell}px;`).height
                                         > parseInt(Object.keys(dataLength[dataLengthKey].maxItem)[0]) ){
 
-                                        dataLength[dataLengthKey][item.id].heightLength = item.text.width("hide-surplus-text,horizontally,word-break-all,table-tabulation-cell-line",`width: ${headercell}px;`).height
+                                        //dataLength[dataLengthKey][item.id].heightLength = item.text.width("hide-surplus-text,horizontally,word-break-all,table-tabulation-cell-line",`width: ${headercell}px;`).height
+                                        dataLength[dataLengthKey][item.id].heightLength = dataLength[dataLengthKey][item.id].text.toString().width("hide-surplus-text,horizontally,word-break-all,table-tabulation-cell-line",`width: ${headercell}px;`).height
 
                                         dataLength[dataLengthKey][item.id].heightRelative = !dataLength[dataLengthKey][item.id].heightRelative
                                         dataLength[dataLengthKey][item.id].heightAbsolute = !dataLength[dataLengthKey][item.id].heightAbsolute
@@ -467,6 +511,10 @@ class TableGrid {
 
         var configItems = {}
 
+        if(config.checkbox){
+            configItems["checkbox"] = {};
+        }
+
         config.columns.forEach(function(item){
             configItems[item.id] = item
         })
@@ -494,8 +542,6 @@ class TableGrid {
             }
         }
 
-        //return
-
         config.data.forEach(function (item,index) {
 
             var arr = {};
@@ -508,21 +554,20 @@ class TableGrid {
 
                 for (let itemKey in item) {
 
-                    /*if(configItems[itemKey].replace && typeof configItems[itemKey].replace(item[itemKey]) === "Object"){
-                        console.log(configItems[itemKey].replace(item[itemKey]));
-                    }*/
-
-                    if(configItems[itemKey].replace && typeof configItems[itemKey].replace(item[itemKey]) !== "undefined"){
+                    if(configItems[itemKey].replace
+                        && typeof configItems[itemKey].replace === "function"
+                        && typeof configItems[itemKey].replace(item[itemKey]) !== "undefined"
+                        && typeof configItems[itemKey].replace(item[itemKey]) !== "object" ){
 
                         if(configItems[itemKey].replace(item[itemKey]).toString().width("hide-surplus-text,horizontally,word-break-all,table-tabulation-cell-line",`width:${headerWidth[itemKey]}px`).height > Object.keys(LentMaxValue)[0]){
                             LentMaxValue = {}
-                            LentMaxValue[configItems[itemKey].replace(item[itemKey]).width("hide-surplus-text,horizontally,word-break-all,table-tabulation-cell-line",`width:${headerWidth[itemKey]}px`).height] = itemKey
+                            LentMaxValue[configItems[itemKey].replace(item[itemKey]).toString().width("hide-surplus-text,horizontally,word-break-all,table-tabulation-cell-line",`width:${headerWidth[itemKey]}px`).height] = itemKey
                         }
 
                         dataLength[random][itemKey] = {
                             native:item[itemKey],
                             text: configItems[itemKey].replace(item[itemKey]),
-                            heightLength: item[itemKey].toString().width(`hide-surplus-text,horizontally,word-break-all,table-tabulation-cell-line`,`width:${headerWidth[itemKey]}px`).height,
+                            heightLength: configItems[itemKey].replace(item[itemKey]).toString().width(`hide-surplus-text,horizontally,word-break-all,table-tabulation-cell-line`,`width:${headerWidth[itemKey]}px`).height,
                             heightAbsolute:true,
                             heightRelative:false,
                         };
@@ -552,13 +597,45 @@ class TableGrid {
 
             }
 
+            if(linemodel === "one"){
+                var domCells = `<div class="table-tabulation-cell-line cell-header-check-box
+                          one-line-fixed-height space-nowrap
+                            hide-surplus-text "> 
+                <div class="cell-header-check-box one-line-fixed-height">
+                    <span class="iconfont icon iconcheck-box-outline-bl"></span>
+                   </div>
+                </div>`
+
+                Object.defineProperty(arr, "checkbox", {
+                    value: domCells,
+                    writable: true // 是否可以改变
+                })
+
+            }else{
+                var domCells = `<div class="table-tabulation-cell-line cell-header-check-box
+                          heightAbsolute horizontally word-break-all
+                            hide-surplus-text  FlexContainer"> 
+                   <div class="one-line-fixed-height FlexItem">
+                    <span class="iconfont icon iconcheck-box-outline-bl"></span>
+                   </div>
+                </div>`
+
+                Object.defineProperty(arr, "checkbox", {
+                    value: domCells,
+                    writable: true // 是否可以改变
+                })
+
+            }
+
             for(let cell in item){
 
                 var domCell =  `<div class="table-tabulation-cell-line cell-header-${cell} 
                           ${linemodel === "auto" ? `${dataLength[random][cell].heightRelative ? `heightRelative` : `heightAbsolute`} horizontally word-break-all` : `one-line-fixed-height space-nowrap`}
                             hide-surplus-text " >`
 
-                if(configItems[cell].replace && typeof configItems[cell].replace === "function"){
+                if(configItems[cell].replace && typeof configItems[cell].replace === "function"
+                    && typeof configItems[cell].replace(item[cell]) !== "undefined"
+                    && typeof configItems[cell].replace(item[cell]) !== "object"){
                     domCell += typeof configItems[cell].replace(item[cell]) !== "undefined" ? configItems[cell].replace(item[cell]) :item[cell]
                 }else{
                     domCell += item[cell]
@@ -598,9 +675,41 @@ class TableGrid {
             
             self.container.appendChild(tableBodyTabulation)
 
+
+
         });
 
+        this.alignCheckBoxcenter(el)
+
     }
+
+    /**
+     * checkbox居中
+     */
+    alignCheckBoxcenter(el){
+
+        var nodeListOf = document.querySelectorAll("#"+el+" .cell-header-check-box");
+
+        console.log(nodeListOf);
+
+        for(let nodeEl in nodeListOf){
+
+            var querySelector1 = nodeListOf[nodeEl]
+
+
+            //console.log(querySelector1);
+
+            //console.log(querySelector1.querySelector(".icon"));
+
+            //var cha = (querySelector1.offsetHeight / 2) - (querySelector1.querySelector(".icon").offsetHeight - 2)
+
+            //querySelector1.querySelector(".icon").style.top = cha + 'px'
+
+        }
+
+    }
+
+
 
     teset(){
 

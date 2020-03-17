@@ -15,35 +15,78 @@
             { width: 100,align: 'center',text:"1",id:"name",
                 sort: true,
                 replace:function(text){
-                    return "asdfasdfadsdfasdfasdfasdfddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddafsdfa"
+                    //return "asdfasdfadsdfasdfasdfasdfddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddafsdfa"
+                    //return "asdfad"
                 },
                 resize:true
             },
-            { width: 100, align: 'left',text:"lisasdfasdf" +
-                "asfdasdfasdf" +
-                "asdfasd" +
-                "asdfasd" +
-                "asdfasd" +
-                "asdfasd" +
-                "asdfasd" +
-                "fasdfst", id: "age",resize:true,
-                sort: false
+            { width: 100, align: 'left',text:"lisasdfasdfli" +
+                "sasdfasdfl" +
+                "sasdfasdfl" +
+                "sasdfasdfl" +
+                "sasdfasdfl" +
+                "sasdfasdfl" +
+                "sasdfasdfl" +
+                "sasdfasdfl" +
+                "isasdfasdflisasdfasdflisasdfasdf",
+                replace:function(text){
+                    //return "asdfasdfadsdfasdfasdfasdfddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddafsdfa"
+                    /*return [
+                        "asdf","asdfa"
+                    ]*/
+                    return "ad"
+                },
+                id: "age",resize:true,
+                sort: true
             },
-            { width: 200, align: 'center',text:"fasdfadsfasdfasdfasdf", id: "sex",resize:true,sort:false},
-            { width: 200, align: 'center',text:"fasdfadsfasdfasdfasdf" +
-                "fasdfadsfasdfasdfasdf" +
-                "fasdfadsfasdfasdfasdf" +
-                "fasdfadsfasdfasdfasdf" +
-                "fasdfadsfasdfasdfasdf" +
-                "", id: "achievement",sort:false,resize:true},
-            { width: 200, align: 'center',text:"/", id: "grade",resize:true,sort: false},
-            { width: 200, align: 'center',text:"。", id: "subject",resize:true}
+            { width: 200, align: 'center',text:"fasdfadsfasdfasdfasdf",
+                replace:function(text){
+                    //return "asdfasdfadsdfasdfasdfasdfddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddafsdfa"
+                    return "adfa"
+                    /*return [
+                        "asdf","asdfa"
+                    ]*/
+                },id: "sex",resize:true,sort:true},
+            { width: 200, align: 'center',text:"fasdfadsfasdfasdfasdf",
+                replace:function(text){
+                    //return "asdfasdfadsdfasdfasdfasdfddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddafsdfa"
+                    return "adf"
+                    /*return [
+                        "asdf","asdfa"
+                    ]*/
+                },id: "achievement",sort:true,resize:true},
+            { width: 200, align: 'center',text:"/",
+                replace:function(text){
+                    //return "asdfasdfadsdfasdfasdfasdfddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddafsdfa"
+                    return "Asdf"
+                    /*return [
+                        "asdf","asdfa"
+                    ]*/
+                },id: "grade",resize:true,sort: false},
+            { width: 200, align: 'center',text:"。",
+                replace:function(text){
+                    //return "asdfasdfadsdfasdfasdfasdfddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddafsdfa"
+                    return "asdf"
+                    /*return [
+                        "asdf","asdfa"
+                    ]*/
+                },id: "subject",resize:true,sort:true}
         ]
 
         var data = [
             {
-                "age":"lisasdfasdfasfdasdfasdfasdfasdasdfasdasdfasdasdfasdasdfasdfasdfst",
-                "name":"lisasdfasdfasfdasdfasdfsdfasdfasdfst-",
+                "age":"lisasdfasdfasfdasdfasdfasdfasdasdfasdasdfasd" +
+                "asdfasdasdfasdf" +
+                "asdfasdasdfasdf" +
+                "asdfasdasdfasdf" +
+                "asdfasdasdfasdf" +
+                "asdfasdasdfasdf" +
+                "asdfasdasdfasdf" +
+                "asdfasdasdfasdf" +
+                "asdfasdasdfasdf" +
+                "asdfasdasdfasdf" +
+                "asdfst",
+                "name":"lisasdfasdfasfdasdfasdfsdfasdfasdfst-lisasdfasdfasfdasdfasdfsdfasdfasdfstlisasdfasdfasfdasdfasdfsdfasdfasdfstlisasdfasdfasfdasdfasdfsdfasdfasdfst",
                 "sex":"fasdfadsfasdfasdfasdf",
                 "achievement": "fasdfadsfasdfasdfasdf" +
                 "fasdfadsfasdfasdfasdf" +
@@ -52,7 +95,7 @@
                 "fasdfadsfasdfasdfasdf",
                 "grade":"/",
                 "subject":"100"
-            },
+            }/*,
             {
                 "age":"lisasdfasdfasfdasdfasdfasdfasdasdfasdasdfasdasdfasdasdfasdfasdfst",
                 "name":"lisasdfasdfasfdasdfasdfsdfasdfasdfst-",
@@ -73,16 +116,16 @@
                  "achievement": 258,
                  "grade":"一年级",
                  "subject":"100"
-             }
+            }
              ,
-             {
+            {
                  "age":"30",
                  "sex":"男adfasfddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
                  "name":"吴华豪-",
                  "achievement": 999,
                  "grade":"一年级",
                  "subject":"100"
-             }
+            }
              ,
              {
                  "age":"30",
@@ -120,14 +163,14 @@
                  "subject":"100d"
              }
              ,
-             {
+            {
                  "age":"30aa",
                  "sex":"男",
                  "name":"吴华豪-dddddddddddddddddddddddddddddddddddddddddd",
                  "achievement": 2,
                  "grade":"一年级---",
                  "subject":"100d"
-             }
+            }*/
         ]
 
 
@@ -145,6 +188,8 @@
             })
 
             //console.log(tableGrid.findKeysss("是"));
+
+            //tableGrid.teset()
 
 
             //var tableGrid =  new fjcode.TableGrid('tableinit',schema,data)
