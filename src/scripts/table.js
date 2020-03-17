@@ -106,7 +106,7 @@ class TableGrid {
                     width: ${item.width}px;
                     text-align: ${item.align};
                     ${linemodel === "one" ? 
-                    `` : `box-sizing: border-box; 
+                    `` : `box-sizing: border-box; top:0;
                     ${LengthMap.header[item.id].heightRelative ? `height: 100%;`:`height: 100%;`}
                     left: ${leftScale}px;`}
                 }
@@ -127,12 +127,14 @@ class TableGrid {
                sortfield="${item.id}" title="sort-${item.id}"/></div>` : ``}
                     <div class="cell-header-${item.id} hide-surplus-text space-nowrap one-line-fixed-height" fieldindex="${index}" field="${item.id}">
                ` : `
-                  <div class="cell-header-${item.id}
+                  <div class="cell-header-${item.id}  FlexContainer
                             ${LengthMap.header[item.id].heightRelative ? `heightRelative` : `heightAbsolute`}
                                   hide-surplus-text word-break-all horizontally" fieldindex="${index}" field="${item.id}">
                             ${item.sort ? `<div class="header-sort-desc iconjiangxu iconfont one-sort-sign" sortfield="${item.id}" title="sort-${item.id}"/></div>`:``}  
                `}
+                ${linemodel === "auto" ?  `<div class="FlexItem hide-surplus-text">` : ``}
                 ${item.text}
+                ${linemodel === "auto" ?  `</div>` : ``}
                 ${linemodel === "auto" ? `${item.resize ? `<div class="table-header-right-resize" resizefield="${item.id}"></div>` : ``}`:``}
             </div>  
             ${linemodel === "one" ? `${item.resize ? `<div class="table-header-right-resize" resizefield="${item.id}"></div>` : ``}`:``}
@@ -630,8 +632,8 @@ class TableGrid {
             for(let cell in item){
 
                 var domCell =  `<div class="table-tabulation-cell-line cell-header-${cell} 
-                          ${linemodel === "auto" ? `${dataLength[random][cell].heightRelative ? `heightRelative` : `heightAbsolute`} horizontally word-break-all` : `one-line-fixed-height space-nowrap`}
-                            hide-surplus-text " >`
+                          ${linemodel === "auto" ? `${dataLength[random][cell].heightRelative ? `heightRelative` : `heightAbsolute`} FlexContainer horizontally word-break-all` : `one-line-fixed-height space-nowrap`}
+                            hide-surplus-text " > ${linemodel === "auto" ? `<div class="FlexItem hide-surplus-text">`:``} `
 
                 if(configItems[cell].replace && typeof configItems[cell].replace === "function"
                     && typeof configItems[cell].replace(item[cell]) !== "undefined"
@@ -641,7 +643,7 @@ class TableGrid {
                     domCell += item[cell]
                 }
 
-                domCell += `</div>`
+                domCell += ` ${linemodel === "auto" ? `<div class="fasdf ">`:``}</div>`
 
                 Object.defineProperty(arr, cell, {
                     value: domCell,
