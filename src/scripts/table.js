@@ -19,6 +19,8 @@ class TableGrid {
             ,LengthMap = {header:{}},linemodel = config.linemodel || "one" ,
             headerWidth = {},dataLength = {}, headerContainer =``;
 
+        this.dataResult = dataResult
+
         if("auto" === linemodel){
             columns.forEach(function(item){
                 headerWidth[item.id] = item.width
@@ -55,7 +57,7 @@ class TableGrid {
             if(linemodel === "one"){
                 headerContainer += `<div class="table-header-call heightRelative"/> 
                 <div class="cell-header-check-box one-line-fixed-height">
-                    <span class="iconfont icon iconcheck-box-outline-bl"></span>
+                    <span class="iconfont icon iconcheck-box-outline-bl" checkbox="false"></span>
                    </div>
                 </div>`
                 headerCssRules += `
@@ -77,8 +79,7 @@ class TableGrid {
                 headerContainer += `<div class="table-header-call"/> 
                     <div class="cell-header-check-box heightAbsolute FlexContainer"  >
                        <div class="FlexItem">
-                          <span class="iconfont icon iconcheck-box-outline-bl"
-                           ></span>
+                          <span class="iconfont icon iconcheck-box-outline-bl" checkbox="false"></span>
                        </div>
                     </div>
                 </div>`
@@ -604,7 +605,7 @@ class TableGrid {
                           one-line-fixed-height space-nowrap
                             hide-surplus-text "> 
                 <div class="cell-header-check-box one-line-fixed-height">
-                    <span class="iconfont icon iconcheck-box-outline-bl"></span>
+                    <span class="iconfont icon iconcheck-box-outline-bl" data-hash="${random}" checkbox="false"></span>
                    </div>
                 </div>`
 
@@ -618,7 +619,7 @@ class TableGrid {
                           heightAbsolute horizontally word-break-all
                             hide-surplus-text  FlexContainer"> 
                    <div class="one-line-fixed-height FlexItem">
-                    <span class="iconfont icon iconcheck-box-outline-bl"></span>
+                    <span class="iconfont icon iconcheck-box-outline-bl" data-hash="${random}" checkbox="false"></span>
                    </div>
                 </div>`
 
@@ -633,7 +634,7 @@ class TableGrid {
 
                 var domCell =  `<div class="table-tabulation-cell-line cell-header-${cell} 
                           ${linemodel === "auto" ? `${dataLength[random][cell].heightRelative ? `heightRelative` : `heightAbsolute`} FlexContainer horizontally word-break-all` : `one-line-fixed-height space-nowrap`}
-                            hide-surplus-text " > ${linemodel === "auto" ? `<div class="FlexItem hide-surplus-text">`:``} `
+                            hide-surplus-text " > ${linemodel === "auto" ? `<div class="FlexItem">`:``} `
 
                 if(configItems[cell].replace && typeof configItems[cell].replace === "function"
                     && typeof configItems[cell].replace(item[cell]) !== "undefined"
@@ -643,7 +644,7 @@ class TableGrid {
                     domCell += item[cell]
                 }
 
-                domCell += ` ${linemodel === "auto" ? `<div class="fasdf ">`:``}</div>`
+                domCell += ` ${linemodel === "auto" ? `</div>`:``}</div>`
 
                 Object.defineProperty(arr, cell, {
                     value: domCell,
@@ -677,40 +678,72 @@ class TableGrid {
             
             self.container.appendChild(tableBodyTabulation)
 
-
-
         });
 
-        this.alignCheckBoxcenter(el)
+        this._checkBoxInit()
 
     }
 
-    /**
-     * checkbox居中
-     */
-    alignCheckBoxcenter(el){
+    _checkBoxInit(){
 
-        var nodeListOf = document.querySelectorAll("#"+el+" .cell-header-check-box");
+        console.log(this.dataResult);
 
-        console.log(nodeListOf);
+        var checkValueMapStructure = {}
 
-        for(let nodeEl in nodeListOf){
+        var that = this
 
-            var querySelector1 = nodeListOf[nodeEl]
+        this.checkValueMapStructure = checkValueMapStructure
+
+        var nodeListOf = document.querySelectorAll("#"+that.el+ " * span[checkbox]");
+        for (let nodeListOfKey = 0; nodeListOfKey < nodeListOf.length ; nodeListOfKey ++) {
+            nodeListOf[nodeListOfKey].addEventListener("click",function () {
+
+                if(nodeListOf[nodeListOfKey].getAttribute("data-hash") === null){
+
+                    var nodeListOf1 = document.querySelectorAll("#"+that.el+ " * span[checkbox]");
+                    for (let nodeListOfKey = 0; nodeListOfKey < nodeListOf1.length ; nodeListOfKey ++) {
+                        nodeListOf1[nodeListOfKey].checkbox = !nodeListOf1[nodeListOfKey].checkbox
+                        nodeListOf1[nodeListOfKey].setAttribute("checkbox",nodeListOf1[nodeListOfKey].checkbox)
+
+                        checkValueMapStructure[nodeListOf1[nodeListOfKey].getAttribute("data-hash")] = nodeListOf1[nodeListOfKey].checkbox
+
+                        if(nodeListOf1[nodeListOfKey].checkbox
+                            && nodeListOf1[nodeListOfKey].classList.contains("iconcheck-box-outline-bl")){
+                            nodeListOf1[nodeListOfKey].classList.add("iconcheckboxoutline")
+                            nodeListOf1[nodeListOfKey].classList.remove("iconcheck-box-outline-bl")
+                        }else{
+                            nodeListOf1[nodeListOfKey].classList.remove("iconcheckboxoutline")
+                            nodeListOf1[nodeListOfKey].classList.add("iconcheck-box-outline-bl")
+                        }
+
+                    }
 
 
-            //console.log(querySelector1);
+                }else{
 
-            //console.log(querySelector1.querySelector(".icon"));
+                    nodeListOf[nodeListOfKey].checkbox = !nodeListOf[nodeListOfKey].checkbox
+                    nodeListOf[nodeListOfKey].setAttribute("checkbox",nodeListOf[nodeListOfKey].checkbox)
 
-            //var cha = (querySelector1.offsetHeight / 2) - (querySelector1.querySelector(".icon").offsetHeight - 2)
+                    checkValueMapStructure[nodeListOf[nodeListOfKey].getAttribute("data-hash")] = nodeListOf[nodeListOfKey].checkbox
 
-            //querySelector1.querySelector(".icon").style.top = cha + 'px'
+                    if(nodeListOf[nodeListOfKey].checkbox
+                        && nodeListOf[nodeListOfKey].classList.contains("iconcheck-box-outline-bl")){
+                        nodeListOf[nodeListOfKey].classList.add("iconcheckboxoutline")
+                        nodeListOf[nodeListOfKey].classList.remove("iconcheck-box-outline-bl")
+                    }else{
+                        nodeListOf[nodeListOfKey].classList.remove("iconcheckboxoutline")
+                        nodeListOf[nodeListOfKey].classList.add("iconcheck-box-outline-bl")
+                    }
+                }
 
+
+                //console.log(checkValueMapStructure);
+            })
         }
 
-    }
 
+
+    }
 
 
     teset(){
