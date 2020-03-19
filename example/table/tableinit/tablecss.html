@@ -5,8 +5,11 @@
     <title>Title</title>
 </head>
 <body>
-
+     <button id="getSelectRow">获取选行</button>
     <div id="tablecss" style="width: 100px;height: 100px;"></div>
+
+
+
 </body>
 
     <script type="text/javascript">
@@ -117,7 +120,7 @@
                  "grade":"一年级",
                  "subject":"100"
             }
-             ,
+            /*,
             {
                  "age":"30",
                  "sex":"男adfasfddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
@@ -170,7 +173,7 @@
                  "achievement": 2,
                  "grade":"一年级---",
                  "subject":"100d"
-            }
+            }*/
         ]
 
 
@@ -187,13 +190,16 @@
                 linemodel: "one"
             })
 
+            var getSelectRow = document.getElementById("getSelectRow");
+
+            getSelectRow.addEventListener("click",function (ev) {
+
+                console.log(tableGrid.getSelectRow())
+
+            })
+
 
             //console.log(tableGrid.findKeysss("是"));
-
-            //tableGrid.teset()
-
-
-            //var tableGrid =  new fjcode.TableGrid('tableinit',schema,data)
 
         }
 
