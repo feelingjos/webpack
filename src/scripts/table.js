@@ -145,12 +145,12 @@ class TableGrid {
 
         var sort = {desc: ">",asc: "<"}, //绘制头部
          columns = config.columns,headerCssRules = ``,dataResult = {},maxValue = {1:"null"}
-            ,LengthMap = {header:{}},linemodel = config.linemodel || "one" ,
-            headerWidth = {},dataLength = {}, headerContainer =``;
+            ,LengthMap = {header:{}},lineModel = config.lineModel || "one" ,
+            headerWidth = {},dataLength = {}, headerContainer =``,showLineNumber = config.showLineNumber || false;
 
         this.dataResult = dataResult
 
-        if("auto" === linemodel){
+        if("auto" === lineModel){
             columns.forEach(function(item){
                 headerWidth[item.id] = item.width
                 LengthMap.header[[item.id]] = {
@@ -168,59 +168,58 @@ class TableGrid {
         }
 
         headerContainer = `<div class="table-header-line-column header-cell 
-                ${linemodel === "auto" ? `heightRelative` : ``}">`;
+                ${lineModel === "auto" ? `heightRelative` : ``}">`;
 
         var cellSize = 2;
 
         var leftScale = 2
 
+        if(showLineNumber){
+
+            cellSize += 30
+
+            if(lineModel === "one"){
+                headerContainer += `<div class="table-header-call heightRelative"/> 
+                   <div class="cell-header-check-box one-line-fixed-height">
+                       
+                   </div>
+                </div>`
+
+            }else{
+
+                headerContainer += `<div class="table-header-call"/> 
+                    <div class="cell-header-check-box heightAbsolute FlexContainer"  >
+                       <div class="FlexItem">
+                            
+                       </div>
+                    </div>
+                </div>`
+
+                leftScale += 25
+            }
+
+        }
+
         if(config.checkbox){
 
             cellSize += 30
 
-            //leftScale += 32
-
-            /*headerContainer += `<div class="checkbox-header table-header-call"/>
-                <span class="iconfont checkbox-true">&#xec58;</span>
-                </div>` */
-            if(linemodel === "one"){
+            if(lineModel === "one"){
                 headerContainer += `<div class="table-header-call heightRelative"/> 
                 <div class="cell-header-check-box one-line-fixed-height">
                     <span class="iconfont icon iconcheck-box-outline-bl" checkbox="false" check-hash="header"></span>
                    </div>
                 </div>`
-                headerCssRules += `
-                .cell-header-check-box{
-                   width: 27px;
-                   text-align:center;
-                   box-sizing: border-box;
-                } `
             }else{
-                /*headerContainer += `<div class="table-header-call"/>
-                    <div class="cell-header-check-box heightAbsolute "  >
-                       <div class="heightRelative" style="height: 100%;">
-                          <span class="iconfont icon iconcheck-box-outline-bl heightRelative"
-                           style="position: absolute; left: 0;top: 35%;"></span>
-                       </div>
-                    </div>
-                </div>`*/
 
                 headerContainer += `<div class="table-header-call"/> 
-                    <div class="cell-header-check-box heightAbsolute FlexContainer"  >
+                    <div class="cell-header-check-box height-fill-parant heightAbsolute FlexContainer" style="left: 27px" >
                        <div class="FlexItem">
                           <span class="iconfont icon iconcheck-box-outline-bl" checkbox="false" check-hash="header"></span>
                        </div>
                     </div>
                 </div>`
 
-                headerCssRules += `
-                .cell-header-check-box{
-                   width: 27px;
-                   /*text-align:center;*/
-                   box-sizing: border-box;
-                   height: 100%;
-                   left:0px
-                } `
                 leftScale += 25
             }
 
@@ -233,7 +232,7 @@ class TableGrid {
                 .cell-header-${item.id}{
                     width: ${item.width}px;
                     text-align: ${item.align};
-                    ${linemodel === "one" ? 
+                    ${lineModel === "one" ? 
                     `` : `box-sizing: border-box; top:0;
                     ${LengthMap.header[item.id].heightRelative ? `height: 100%;`:`height: 100%;`}
                     left: ${leftScale}px;`}
@@ -250,8 +249,8 @@ class TableGrid {
             }
 
             headerContainer += `
-            <div class="table-header-call ${linemodel === "one" ? `heightRelative`:``}" >
-            ${linemodel === "one" ? `${item.sort ? `<div class="header-sort-desc iconjiangxu iconfont one-line-fixed-height" 
+            <div class="table-header-call ${lineModel === "one" ? `heightRelative`:``}" >
+            ${lineModel === "one" ? `${item.sort ? `<div class="header-sort-desc iconjiangxu iconfont one-line-fixed-height" 
                sortfield="${item.id}" title="sort-${item.id}"/></div>` : ``}
                     <div class="cell-header-${item.id} hide-surplus-text space-nowrap one-line-fixed-height" fieldindex="${index}" field="${item.id}">
                ` : `
@@ -260,12 +259,12 @@ class TableGrid {
                                   hide-surplus-text word-break-all horizontally" fieldindex="${index}" field="${item.id}">
                             ${item.sort ? `<div class="header-sort-desc iconjiangxu iconfont one-sort-sign" sortfield="${item.id}" title="sort-${item.id}"/></div>`:``}  
                `}
-                ${linemodel === "auto" ?  `<div class="FlexItem hide-surplus-text">` : ``}
+                ${lineModel === "auto" ?  `<div class="FlexItem hide-surplus-text">` : ``}
                 ${item.text}
-                ${linemodel === "auto" ?  `</div>` : ``}
-                ${linemodel === "auto" ? `${item.resize ? `<div class="table-header-right-resize" resizefield="${item.id}"></div>` : ``}`:``}
+                ${lineModel === "auto" ?  `</div>` : ``}
+                ${lineModel === "auto" ? `${item.resize ? `<div class="table-header-right-resize" resizefield="${item.id}"></div>` : ``}`:``}
             </div>  
-            ${linemodel === "one" ? `${item.resize ? `<div class="table-header-right-resize" resizefield="${item.id}"></div>` : ``}`:``}
+            ${lineModel === "one" ? `${item.resize ? `<div class="table-header-right-resize" resizefield="${item.id}"></div>` : ``}`:``}
             </div>
             `;
 
@@ -344,7 +343,7 @@ class TableGrid {
 
                     var oEvent = ev || event
 
-                    if(linemodel === "auto"){
+                    if(lineModel === "auto"){
                         var leftMapValue = {}
 
                         var valve = false
@@ -390,7 +389,7 @@ class TableGrid {
                             moveindex = headercell  - (rightStart.x + rightStart.width)
                         }
 
-                        if(linemodel === "auto"){
+                        if(lineModel === "auto"){
                             LengthMap.header[item.id].heightLength = item.text.width("hide-surplus-text,horizontally,word-break-all,table-header-call",`width: ${headercell}px;`).height
 
                             for (let dataLengthKey in dataLength) {
@@ -541,7 +540,7 @@ class TableGrid {
 
                         ruleThat.style.width = headercell + 'px'
 
-                        if(linemodel === "auto"){
+                        if(lineModel === "auto"){
                             for(let dd = 0; dd < rules.length; dd ++ ){
                                 let ruleheaders = rules[dd]
                                 if(leftMapValue[ruleheaders.selectorText]
@@ -641,6 +640,10 @@ class TableGrid {
 
         var configItems = {}
 
+        if(showLineNumber){
+            configItems["showLineNumber"] = {}
+        }
+
         if(config.checkbox){
             configItems["checkbox"] = {};
         }
@@ -676,7 +679,7 @@ class TableGrid {
 
             var arr = {};
             var random = genId()
-            if(linemodel === "auto"){
+            if(lineModel === "auto"){
 
                 dataLength[random] = {}
 
@@ -727,7 +730,28 @@ class TableGrid {
 
             }
 
-            if(linemodel === "one"){
+            if(lineModel === "one"){
+
+                if(showLineNumber){
+
+                    var showLineNumberdomCells = `
+                         <div class="table-tabulation-cell-line cell-header-check-box
+                          one-line-fixed-height space-nowrap
+                            hide-surplus-text "> 
+                        <div class="cell-header-check-box one-line-fixed-height">
+                             ${index}
+                           </div>
+                        </div>
+                    `
+
+                    Object.defineProperty(arr, "showLineNumber", {
+                        value: showLineNumberdomCells,
+                        writable: true // 是否可以改变
+                    })
+
+
+                }
+
                 var domCells = `<div class="table-tabulation-cell-line cell-header-check-box
                           one-line-fixed-height space-nowrap
                             hide-surplus-text "> 
@@ -742,9 +766,30 @@ class TableGrid {
                 })
 
             }else{
-                var domCells = `<div class="table-tabulation-cell-line cell-header-check-box
+
+                if(showLineNumber){
+
+                    var showLineNumberdomCells = `
+                         <div class="table-tabulation-cell-line cell-header-check-box
                           heightAbsolute horizontally word-break-all
                             hide-surplus-text  FlexContainer"> 
+                           <div class="one-line-fixed-height FlexItem">
+                            ${index}
+                           </div>
+                        </div>
+                    `
+
+                    Object.defineProperty(arr, "showLineNumber", {
+                        value: showLineNumberdomCells,
+                        writable: true // 是否可以改变
+                    })
+
+
+                }
+
+                var domCells = `<div class="table-tabulation-cell-line cell-header-check-box
+                          heightAbsolute horizontally word-break-all
+                            hide-surplus-text  FlexContainer height-fill-parant" style="left: 27px"> 
                    <div class="one-line-fixed-height FlexItem">
                     <span class="iconfont icon iconcheck-box-outline-bl" check-hash="${random}" checkbox="false"></span>
                    </div>
@@ -760,8 +805,8 @@ class TableGrid {
             for(let cell in item){
 
                 var domCell =  `<div class="table-tabulation-cell-line cell-header-${cell} 
-                          ${linemodel === "auto" ? `${dataLength[random][cell].heightRelative ? `heightRelative` : `heightAbsolute`} FlexContainer horizontally word-break-all` : `one-line-fixed-height space-nowrap`}
-                            hide-surplus-text " > ${linemodel === "auto" ? `<div class="FlexItem">`:``} `
+                          ${lineModel === "auto" ? `${dataLength[random][cell].heightRelative ? `heightRelative` : `heightAbsolute`} FlexContainer horizontally word-break-all` : `one-line-fixed-height space-nowrap`}
+                            hide-surplus-text " > ${lineModel === "auto" ? `<div class="FlexItem">`:``} `
 
                 if(configItems[cell].replace && typeof configItems[cell].replace === "function"
                     && typeof configItems[cell].replace(item[cell]) !== "undefined"
@@ -771,7 +816,7 @@ class TableGrid {
                     domCell += item[cell]
                 }
 
-                domCell += ` ${linemodel === "auto" ? `</div>`:``}</div>`
+                domCell += ` ${lineModel === "auto" ? `</div>`:``}</div>`
 
                 Object.defineProperty(arr, cell, {
                     value: domCell,
@@ -788,7 +833,7 @@ class TableGrid {
             dataResult[index] = item
 
             tableBodyTabulation.classList.add("table-body-tabulation")
-            if(linemodel === "auto"){
+            if(lineModel === "auto"){
                 tableBodyTabulation.classList.add("heightRelative")
             }
             tableBodyTabulation.classList.add("header-cell")
