@@ -9,9 +9,9 @@ var el ,container ,checkValueMapStructure = {};
  * @param headerCheckBox
  * @param isTrue
  */
-const checkSelect = function(headerCheckBox,isTrue){
+const checkSelect = function(headerCheckBox = {},isTrue = false){
 
-    var nodeListOf1 = document.querySelectorAll("#" + el + " * span[checkbox]");
+    var nodeListOf1 = container.querySelectorAll("span[checkbox]");
 
     for (let nodeListOfKeyAll = 0; nodeListOfKeyAll < nodeListOf1.length ; nodeListOfKeyAll ++) {
         if(nodeListOf1[nodeListOfKeyAll].getAttribute("checkbox") === "true"){
@@ -36,7 +36,7 @@ const checkSelect = function(headerCheckBox,isTrue){
             nodeListOf1[nodeListOfKeyAll].classList.remove("iconcheck-box-outline-bl")
 
             if(checkHashCheck !== "header"){
-                var querySelector = document.querySelector("div[data-hash='" + checkHashCheck +"']");
+                var querySelector = container.querySelector("div[data-hash='" + checkHashCheck +"']");
 
                 querySelector.classList.add("select-cell-Highlight")
             }
@@ -46,7 +46,7 @@ const checkSelect = function(headerCheckBox,isTrue){
             nodeListOf1[nodeListOfKeyAll].classList.remove("iconcheckboxoutline")
             nodeListOf1[nodeListOfKeyAll].classList.add("iconcheck-box-outline-bl")
             if(checkHashCheck !== "header"){
-                var querySelector = document.querySelector("div[data-hash='" + checkHashCheck + "']");
+                var querySelector = container.querySelector("div[data-hash='" + checkHashCheck + "']");
                 querySelector.classList.remove("select-cell-Highlight")
             }
             delete checkValueMapStructure[checkHashCheck]
@@ -56,7 +56,7 @@ const checkSelect = function(headerCheckBox,isTrue){
 
 }
 
-const checkHeaderSelect = function (selectCheckBox){
+const checkHeaderSelect = function (selectCheckBox = {}){
     
     var checkHash = selectCheckBox.getAttribute("check-hash");
 
@@ -73,14 +73,14 @@ const checkHeaderSelect = function (selectCheckBox){
 
         if( checkHash !== "header"){
 
-            var querySelector = document.querySelector("div[data-hash='"+ checkHash +"']");
+            var querySelector = container.querySelector("div[data-hash='"+ checkHash +"']");
             querySelector.classList.add("select-cell-Highlight")
 
         }
 
         var isTrue = true
 
-        var nodeListOf12 = document.querySelectorAll("#" + el + " * span[checkbox]");
+        var nodeListOf12 = container.querySelectorAll("span[checkbox]");
 
         for (let nodeListOfKeyAll = 0; nodeListOfKeyAll < nodeListOf12.length ; nodeListOfKeyAll ++) {
             if(nodeListOf12[nodeListOfKeyAll].getAttribute("check-hash") !== "header"
@@ -92,7 +92,7 @@ const checkHeaderSelect = function (selectCheckBox){
 
         if(isTrue){
 
-            var querySelector122 = document.querySelector("#"+el+" [check-hash='header']");
+            var querySelector122 = container.querySelector("[check-hash='header']");
 
             querySelector122["checkbox"] = true
             querySelector122.setAttribute("checkbox",true)
@@ -112,11 +112,11 @@ const checkHeaderSelect = function (selectCheckBox){
         selectCheckBox.classList.remove("iconcheckboxoutline")
         selectCheckBox.classList.add("iconcheck-box-outline-bl")
         if( checkHash !== "header"){
-            var querySelector = document.querySelector("div[data-hash='"+ checkHash +"']");
+            var querySelector = container.querySelector("div[data-hash='"+ checkHash +"']");
             querySelector.classList.remove("select-cell-Highlight")
         }
 
-        var querySelector123 = document.querySelector("#"+el+" [check-hash='header']");
+        var querySelector123 = container.querySelector("[check-hash='header']");
 
         querySelector123["checkbox"] = false
         querySelector123.setAttribute("checkbox",false)
@@ -130,6 +130,25 @@ const checkHeaderSelect = function (selectCheckBox){
 
 }
 
+const styleRules = function (htmlStyleElement) {
+
+    var sheet = htmlStyleElement.sheet || htmlStyleElement.styleSheet || {}
+    var rules = sheet.cssRules || sheet.rules;
+
+    var rulesheaders
+
+    for(let dd = 0; dd < rules.length; dd ++ ){
+        var ruleheaders = rules[dd]
+
+        //console.log(ruleheaders);
+
+        //if(ruleheaders.selectorText === '.header-cell'){
+            //rulesheaders = ruleheaders
+            //break
+       //}
+    }
+
+}
 
 class TableGrid {
 
@@ -146,7 +165,9 @@ class TableGrid {
         var sort = {desc: ">",asc: "<"}, //绘制头部
          columns = config.columns,headerCssRules = ``,dataResult = {},maxValue = {1:"null"}
             ,LengthMap = {header:{}},lineModel = config.lineModel || "one" ,
-            headerWidth = {},dataLength = {}, headerContainer =``,showLineNumber = config.showLineNumber || false;
+            headerWidth = {},dataLength = {}, headerContainer =``,showLineNumber = config.showLineNumber || false,
+            selectRowCheck = config.selectRowCheck || false
+        ;
 
         this.dataResult = dataResult
 
@@ -179,23 +200,44 @@ class TableGrid {
             cellSize += 30
 
             if(lineModel === "one"){
+
+                var width = parseInt(config.data.length.toString().width("table-tabulation-cell-line,one-line-fixed-height,space-nowrap,hide-surplus-text,margin-right-left").width);
+                //var width = parseInt(config.data.length.toString().width("table-tabulation-cell-line,one-line-fixed-height,space-nowrap,hide-surplus-text,one-line-fixed-height").width);
+
+                headerCssRules += `
+                    .cell-check-box-offset{
+                        width : ${width}px
+                    }
+                `
+
                 headerContainer += `<div class="table-header-call heightRelative"/> 
-                   <div class="cell-header-check-box one-line-fixed-height">
+                   <div class="one-line-fixed-height cell-check-box-offset">
                        
                    </div>
                 </div>`
 
             }else{
+                
+                var width = parseInt(config.data.length.toString().width("one-line-fixed-height,FlexItem,table-tabulation-cell-line,heightAbsolute,horizontally,word-break-all,hide-surplus-text,FlexContainer,margin-right-left").width);
+
+                headerCssRules += `
+                    .cell-check-box-offset{
+                        left: ${width + 6}px
+                    }
+                    .cell-show-line-width{
+                        width: ${width}px
+                    }
+                `
 
                 headerContainer += `<div class="table-header-call"/> 
-                    <div class="cell-header-check-box heightAbsolute FlexContainer"  >
+                    <div class=" heightAbsolute FlexContainer cell-show-line-width margin-right-left"  >
                        <div class="FlexItem">
                             
                        </div>
                     </div>
                 </div>`
 
-                leftScale += 25
+                leftScale += width + 6
             }
 
         }
@@ -213,7 +255,9 @@ class TableGrid {
             }else{
 
                 headerContainer += `<div class="table-header-call"/> 
-                    <div class="cell-header-check-box height-fill-parant heightAbsolute FlexContainer" style="left: 27px" >
+                    <div class="cell-header-check-box height-fill-parant heightAbsolute FlexContainer
+                      ${showLineNumber ? `cell-check-box-offset` : ``}
+                    " >
                        <div class="FlexItem">
                           <span class="iconfont icon iconcheck-box-outline-bl" checkbox="false" check-hash="header"></span>
                        </div>
@@ -259,7 +303,7 @@ class TableGrid {
                                   hide-surplus-text word-break-all horizontally" fieldindex="${index}" field="${item.id}">
                             ${item.sort ? `<div class="header-sort-desc iconjiangxu iconfont one-sort-sign" sortfield="${item.id}" title="sort-${item.id}"/></div>`:``}  
                `}
-                ${lineModel === "auto" ?  `<div class="FlexItem hide-surplus-text">` : ``}
+                ${lineModel === "auto" ?  `<div class="FlexItem">` : ``}
                 ${item.text}
                 ${lineModel === "auto" ?  `</div>` : ``}
                 ${lineModel === "auto" ? `${item.resize ? `<div class="table-header-right-resize" resizefield="${item.id}"></div>` : ``}`:``}
@@ -299,6 +343,8 @@ class TableGrid {
                 break
             }
         }
+
+        styleRules(htmlStyleElement)
 
         columns.forEach(function(item){
 
@@ -432,7 +478,7 @@ class TableGrid {
                                     dataLength[dataLengthKey][Object.values(dataLength[dataLengthKey].maxItem)[0]].heightRelative = !dataLength[dataLengthKey][Object.values(dataLength[dataLengthKey].maxItem)[0]].heightRelative
                                     dataLength[dataLengthKey][Object.values(dataLength[dataLengthKey].maxItem)[0]].heightAbsolute = !dataLength[dataLengthKey][Object.values(dataLength[dataLengthKey].maxItem)[0]].heightAbsolute
 
-                                    var querySelector1ss = document.querySelector(`[data-hash="${dataLengthKey}"]`);
+                                    var querySelector1ss = container.querySelector(`[data-hash="${dataLengthKey}"]`);
 
                                     var querySelector1 = querySelector1ss.querySelector(".heightRelative");
 
@@ -456,7 +502,7 @@ class TableGrid {
                                         dataLength[dataLengthKey][item.id].heightRelative = !dataLength[dataLengthKey][item.id].heightRelative
                                         dataLength[dataLengthKey][item.id].heightAbsolute = !dataLength[dataLengthKey][item.id].heightAbsolute
 
-                                        var querySelector1ss = document.querySelector(`[data-hash="${dataLengthKey}"]`);
+                                        var querySelector1ss = container.querySelector(`[data-hash="${dataLengthKey}"]`);
 
                                         var thatItemOther = querySelector1ss.querySelector(`.heightRelative`);
 
@@ -499,12 +545,12 @@ class TableGrid {
                                 LengthMap.header[Object.values(maxValue)[0]].heightRelative = !LengthMap.header[Object.values(maxValue)[0]].heightRelative
                                 LengthMap.header[Object.values(maxValue)[0]].heightAbsolute = !LengthMap.header[Object.values(maxValue)[0]].heightAbsolute
 
-                                var thatItem = document.querySelector(`[field=${item.id}]`);
+                                var thatItem = container.querySelector(`[field=${item.id}]`);
 
                                 thatItem.classList.add("heightAbsolute");
                                 thatItem.classList.remove("heightRelative");
 
-                                var thatItemOther = document.querySelector(`[field=${Object.values(maxValue)[0]}]`);
+                                var thatItemOther = container.querySelector(`[field=${Object.values(maxValue)[0]}]`);
 
                                 thatItemOther.classList.add("heightRelative");
                                 thatItemOther.classList.remove("heightAbsolute");
@@ -519,12 +565,12 @@ class TableGrid {
                                     LengthMap.header[item.id].heightRelative = !LengthMap.header[item.id].heightRelative
                                     LengthMap.header[item.id].heightAbsolute = !LengthMap.header[item.id].heightAbsolute
 
-                                    var thatItem = document.querySelector(`[field=${item.id}]`);
+                                    var thatItem = container.querySelector(`[field=${item.id}]`);
 
                                     thatItem.classList.add("heightRelative");
                                     thatItem.classList.remove("heightAbsolute");
 
-                                    var thatItemOther = document.querySelector(`[field=${Object.values(maxValue)[0]}]`);
+                                    var thatItemOther = container.querySelector(`[field=${Object.values(maxValue)[0]}]`);
 
                                     thatItemOther.classList.add("heightAbsolute");
                                     thatItemOther.classList.remove("heightRelative");
@@ -579,7 +625,7 @@ class TableGrid {
             }
             if(item["sort"]){
 
-                var sortFieldDOM = document.querySelector(`[sortfield=${item.id}]`);
+                var sortFieldDOM = container.querySelector(`[sortfield=${item.id}]`);
 
                 sortFieldDOM.addEventListener("click",function (e) {
 
@@ -626,8 +672,8 @@ class TableGrid {
                     }
 
                     for(let i = 0 ; i < dome.length ; i ++){
-                        sortItemMap[i] = document.querySelector(`[data-index="${Object.keys(dome[i])[0]}"]`)
-                        container.removeChild(document.querySelector(`[data-index="${Object.keys(dome[i])[0]}"]`))
+                        sortItemMap[i] = container.querySelector(`[data-index="${Object.keys(dome[i])[0]}"]`)
+                        container.removeChild(container.querySelector(`[data-index="${Object.keys(dome[i])[0]}"]`))
                     }
 
                     for (let i = 0 ; i < sortItemMap.length ; i ++) {
@@ -674,6 +720,10 @@ class TableGrid {
                 }
             }
         }
+
+        //console.log(config.data.length.toString());
+        //console.log(config.data.length.toString().width("one-line-fixed-height,FlexItem").width);
+        //console.log(config.data.length.toString().width("one-line-fixed-height,FlexItem,table-tabulation-cell-line,heightAbsolute,horizontally,word-break-all,hide-surplus-text,FlexContainer").width);
 
         config.data.forEach(function (item,index) {
 
@@ -735,10 +785,10 @@ class TableGrid {
                 if(showLineNumber){
 
                     var showLineNumberdomCells = `
-                         <div class="table-tabulation-cell-line cell-header-check-box
-                          one-line-fixed-height space-nowrap
+                         <div class="table-tabulation-cell-line 
+                          one-line-fixed-height space-nowrap cell-check-box-offset margin-right-left
                             hide-surplus-text "> 
-                        <div class="cell-header-check-box one-line-fixed-height">
+                        <div class=" one-line-fixed-height">
                              ${index}
                            </div>
                         </div>
@@ -770,9 +820,10 @@ class TableGrid {
                 if(showLineNumber){
 
                     var showLineNumberdomCells = `
-                         <div class="table-tabulation-cell-line cell-header-check-box
+                         <div class="table-tabulation-cell-line  
                           heightAbsolute horizontally word-break-all
-                            hide-surplus-text  FlexContainer"> 
+                           FlexContainer height-fill-parant cell-show-line-width margin-right-left
+                            "> 
                            <div class="one-line-fixed-height FlexItem">
                             ${index}
                            </div>
@@ -789,7 +840,9 @@ class TableGrid {
 
                 var domCells = `<div class="table-tabulation-cell-line cell-header-check-box
                           heightAbsolute horizontally word-break-all
-                            hide-surplus-text  FlexContainer height-fill-parant" style="left: 27px"> 
+                            hide-surplus-text  FlexContainer height-fill-parant
+                            ${showLineNumber ? `cell-check-box-offset`: ``}
+                            " > 
                    <div class="one-line-fixed-height FlexItem">
                     <span class="iconfont icon iconcheck-box-outline-bl" check-hash="${random}" checkbox="false"></span>
                    </div>
@@ -852,27 +905,40 @@ class TableGrid {
 
         });
 
-        this.checkBoxInit()
+        this.checkBoxInit(selectRowCheck)
 
     }
 
-    checkBoxInit(){
+    checkBoxInit(selectRowCheck){
 
-        var nodeListOf = document.querySelectorAll("#"+el+ " * span[checkbox]");
-
-        for (let nodeListOfKey = 0; nodeListOfKey < nodeListOf.length ; nodeListOfKey ++) {
-            nodeListOf[nodeListOfKey].addEventListener("click",function () {
-
-                var checkHash = nodeListOf[nodeListOfKey].getAttribute("check-hash");
-
-                if(checkHash === "header"){
-                    checkSelect(nodeListOf[nodeListOfKey],true)
-                }else{
-                    checkHeaderSelect(nodeListOf[nodeListOfKey])
-                }
-
+        if(selectRowCheck){
+            var indexList = container.querySelectorAll("[data-hash]");
+            for(let i = 0; i < indexList.length ; i ++ ){
+                indexList[i].addEventListener("click",function(){
+                    var dataHash = indexList[i].getAttribute("data-hash");
+                    var hashNode = container.querySelector("[check-hash='" +dataHash+ "']");
+                    checkHeaderSelect(hashNode)
+                })
+            }
+            var headerNodeAll = container.querySelector("[check-hash='header']");
+            headerNodeAll.addEventListener("click",function () {
+                checkSelect(headerNodeAll,true)
             })
+        }else{
+            var nodeListOf = container.querySelectorAll("span[checkbox]");
+            for (let nodeListOfKey = 0; nodeListOfKey < nodeListOf.length ; nodeListOfKey ++) {
+                nodeListOf[nodeListOfKey].addEventListener("click",function () {
+                    var checkHash = nodeListOf[nodeListOfKey].getAttribute("check-hash");
+                    if(checkHash === "header"){
+                        checkSelect(nodeListOf[nodeListOfKey],true)
+                    }else{
+                        checkHeaderSelect(nodeListOf[nodeListOfKey])
+                    }
+                })
+            }
         }
+
+
 
 
     }

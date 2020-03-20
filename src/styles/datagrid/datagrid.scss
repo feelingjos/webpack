@@ -153,6 +153,7 @@ html, body{
 .heightAbsolute{
   position: absolute;
 }
+.heightStatic
 
 .checkbox-true{
   cursor:pointer;
@@ -191,6 +192,10 @@ html, body{
   width: 27px;
   text-align:center;
   box-sizing: border-box;
+}
+.margin-right-left{
+  padding-right: 2px;
+  padding-left: 2px;
 }
 
 

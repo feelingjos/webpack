@@ -25,7 +25,11 @@
             height : htmlDivElement.offsetHeight
         };
 
+        //if(parseInt(this) === 74){
+        //    console.log(parseInt(this) === 73)
+        //}else{
         htmlDivElement.parentNode.removeChild(htmlDivElement)
+        //}
 
         return result;
     }
