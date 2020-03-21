@@ -198,7 +198,27 @@ html, body{
   padding-left: 2px;
 }
 
+.select-text-prohibit{
+  -moz-user-select:none; /*火狐*/
+  -webkit-user-select:none; /*webkit浏览器*/
+  -ms-user-select:none; /*IE10*/
+  -khtml-user-select:none; /*早期浏览器*/
+  user-select:none;
+}
 
+.select-model-panel{
+  position: absolute;
+  width: 0px;
+  height: 0px;
+  font-size: 0px;
+  margin: 0px;
+  padding: 0px;
+  border: 1px dashed #0099FF;
+  background-color: #C3D5ED;
+  z-index: 1000;
+  filter: alpha(opacity = 60);
+  opacity: 0.6;
+}
 
 
 

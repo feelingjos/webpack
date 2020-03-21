@@ -150,6 +150,157 @@ const styleRules = function (htmlStyleElement) {
 
 }
 
+const selectRowBox = function(dataHash,isTrue){
+
+    var node = container.querySelector("[data-hash='"+ dataHash +"']");
+
+    var nodeBox = container.querySelector("[check-hash='" + dataHash +"']");
+
+    if(!nodeBox.checkbox){
+
+        nodeBox.classList.add("iconcheckboxoutline")
+        nodeBox.classList.remove("iconcheck-box-outline-bl")
+
+        checkValueMapStructure[dataHash] = nodeBox.checkbox
+
+        console.log("diany ")
+
+        node.classList.add("select-cell-Highlight")
+
+    }
+
+
+}
+
+/**
+ * 获取行hash
+ * @param node
+ * @returns {*}
+ */
+var getParentNode = function (node) {
+    try {
+        if(node.parentNode.getAttribute("data-hash")){
+            //console.log(node.parentNode.getAttribute("data-hash"))
+            return node.parentNode.getAttribute("data-hash");
+        }else{
+            return getParentNode(node.parentNode);
+        }
+    }catch (e) {
+        console.log(node)
+    }
+    return null;
+}
+
+/**
+ * 设置跨行模式 ：default ， rowspan
+ * @param selectModel
+ */
+const selectModelFun = function (selectModel = 'default') {
+
+    if(selectModel === "rowspan"){
+
+        var allpro2 = [];
+        var index = 0;
+
+        container.classList.add("select-text-prohibit")
+
+        document.documentElement.addEventListener("mousedown",function (ev) {
+
+            ev.stopPropagation()
+            ev.preventDefault()
+
+            //var startX = (oEvent.x || oEvent.clientX);
+            //var startY = (oEvent.y || oEvent.clientY);
+
+            var dataHashCell = container.querySelectorAll("[data-hash]");
+
+            document.documentElement.addEventListener("mouseover",function(e){
+                var dataHash = getParentNode(e.target);
+                if(dataHash){
+                    selectRowBox(dataHash)
+                }
+            })
+
+            /*for(let i = 0; i < dataHashCell.length; i ++ ){
+                dataHashCell[i].addEventListener("mouseover",function (e) {
+                    var dataHash = getParentNode(e.target);
+                    if(dataHash){
+                        selectRowBox(dataHash)
+                    }
+                })
+            }*/
+
+            ev = ev || window.event;
+            var scrollX = document.documentElement.scrollLeft || document.body.scrollLeft;//分别兼容ie和chrome
+            var scrollY = document.documentElement.scrollTop || document.body.scrollTop;
+            var startX = ev.pageX || (ev.clientX+scrollX);//兼容火狐和其他浏览器
+            var startY = ev.pageY || (ev.clientY+scrollY);
+
+            var selList = [];
+            allpro2 = []; //选错区域后重选则清空数组
+            paint(container, selList, startX, startY, true);
+
+
+        })
+
+        function paint(yheight, selList, startX, startY, istrue) {
+            var isSelect = true;
+            var selDiv = document.createElement("div");
+            selDiv.id = "selectDiv";
+            selDiv.classList.add('select-model-panel')
+            selDiv.style.cursor = "pointer"
+            selDiv.style.display = "none"
+            document.body.appendChild(selDiv);
+
+            selDiv.style.left = startX + "px";
+            selDiv.style.top = startY + "px";
+
+            var _x = null;
+            var _y = null;
+
+            document.addEventListener("mousemove",function (ev) {
+                var evt = window.event || arguments[0];
+                if(isSelect && selDiv) {
+
+                    if(selDiv.style.display == "none") {
+                        selDiv.style.display = "";
+                    }
+
+                    ev = ev || window.event;
+                    var scrollX = document.documentElement.scrollLeft || document.body.scrollLeft;//分别兼容ie和chrome
+                    var scrollY = document.documentElement.scrollTop || document.body.scrollTop;
+                    _x = ev.pageX || (ev.clientX+scrollX);//兼容火狐和其他浏览器
+                    _y = ev.pageY || (ev.clientY+scrollY);
+
+                    selDiv.style.left = Math.min(_x, startX) + "px";
+                    selDiv.style.top = Math.min(_y, startY) + "px";
+                    selDiv.style.width = Math.abs(_x - startX) + "px";
+                    selDiv.style.height = Math.abs(_y - startY) + "px";
+                }
+            })
+
+            document.addEventListener("mouseup",function () {
+                if(selDiv){
+                    document.body.removeChild(selDiv);
+                }
+                /*var dataHashCells = container.querySelectorAll("[data-hash]");
+                for(let i = 0; i < dataHashCells.length; i ++ ){
+                    dataHashCells[i].clearEventListeners("mouseover")
+                }*/
+                document.documentElement.clearEventListeners("mouseover")
+                selDiv = null;
+
+            })
+
+        }
+
+
+
+    }
+
+
+}
+
 class TableGrid {
 
     constructor(elP,config) {
@@ -158,6 +309,7 @@ class TableGrid {
         this.columns = config.columns;
         this.data = config.data;
         this.init(config)
+        selectModelFun(config.selectModel)
     }
 
     init(config){
@@ -166,7 +318,7 @@ class TableGrid {
          columns = config.columns,headerCssRules = ``,dataResult = {},maxValue = {1:"null"}
             ,LengthMap = {header:{}},lineModel = config.lineModel || "one" ,
             headerWidth = {},dataLength = {}, headerContainer =``,showLineNumber = config.showLineNumber || false,
-            selectRowCheck = config.selectRowCheck || false
+            selectRowCheck = config.selectRowCheck || false,selectModel = config.selectRowCheck || 'default'
         ;
 
         this.dataResult = dataResult
@@ -946,60 +1098,6 @@ class TableGrid {
     getSelectRow(){
 
         return checkValueMapStructure
-
-    }
-
-
-    teset(){
-
-        //asdf.findKey("heh")
-
-        //Object.keys(asdf).find(k => compare(obj[k], value))
-
-        //console.log(defineProperty[ddd]);
-
-
-        //console.log( new AesUtil())
-
-        //console.log(Dom.strCastNative(doms));
-
-
-        //获取domBody
-        /*var getDomBody = new RegExp("^(\s*<\s*\/?\s*[a-zA-z_]([^>]*?[\"][^\"]*[\"])*[^>\"]*>)|\s*(<\s*\/?\s*[a-zA-z_]([^>]*?[\"][^\"]*[\"])*[^>\"]*>)$","g")
-
-        var getDomContent = new RegExp("^(s*<s*!/?s*[a-zA-z_]([^>]*?[\"][^\"]*[\"])*[^>\"]*>)","g")
-
-        var getdomName = new RegExp("(?<=<)\\s*.*?(?=\\s.*?\\W)","g")
-
-        //获取dom属性上下文
-        var getDomAttr = new RegExp("\\s.*[^>]","g");
-
-        var getAttrContent = new RegExp("[a-zA-Z]*\\s*=\\s*\".*?\"","g")
-
-        var dombody = doms.trim().replace(getDomBody,"")
-
-        var headercontent = doms.trim().match(getDomContent)[0]
-
-        var dom = headercontent.match(getdomName)[0];
-
-        //容器
-        var domContainer = document.createElement(dom.trim());
-
-        var domAttrContent = headercontent.match(getDomAttr)[0];
-
-        var attrs = domAttrContent.match(getAttrContent)
-
-        for (let i = 0;i < attrs.length;i ++){
-
-            let attrVal = attrs[i].split("=")
-
-            domContainer.setAttribute(attrVal[0],attrVal[1].replace(/\"/g,""))
-
-        }
-
-        domContainer.innerHTML = dombody
-
-        return domContainer*/
 
     }
 
