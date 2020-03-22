@@ -2,7 +2,87 @@ import './util/event'
 import {genId} from './util/utils'
 import {Dom} from './util/dom.js'
 
-var el ,container ,checkValueMapStructure = {};
+var el ,container ,checkValueMapStructure = {},checkRangeCall
+    ,range, x, y
+;
+
+const getOffset = function(dom){
+    if(dom){
+        let result = {
+            top: 0,
+            left: 0
+        }
+        const getOffset = (node, init) => {
+            if (node.nodeType !== 1) {
+                return
+            }
+
+            position = window.getComputedStyle(node)['position']
+
+            if (typeof(init) === 'undefined' && position === 'static') {
+                getOffset(node.parentNode)
+                return
+            }
+
+            result.top = node.offsetTop + result.top - node.scrollTop
+            result.left = node.offsetLeft + result.left - node.scrollLeft
+            result.width = node.offsetWidth
+            result.height = node.offsetHeight
+
+            if (position === 'fixed') {
+                return
+            }
+            getOffset(node.parentNode)
+        }
+
+        // 当前 DOM 节点的 display === 'none' 时, 直接返回 {top: 0, left: 0}
+        if (window.getComputedStyle(dom)['display'] === 'none') {
+            return result
+        }
+
+        let position
+
+        getOffset(dom, true)
+
+        return result
+
+    }
+    throw new Error("variable DOM: " + dom + " is null");
+
+}
+
+const checkHeader = function () {
+
+    var isTrue = true
+
+    var nodeListOf = container.querySelectorAll("span[checkbox]");
+
+    for (let nodeListOfKeyAll = 0; nodeListOfKeyAll < nodeListOf.length ; nodeListOfKeyAll ++) {
+        if(nodeListOf[nodeListOfKeyAll].getAttribute("check-hash") !== "header"
+            && nodeListOf[nodeListOfKeyAll].getAttribute("checkbox") === "false"){
+            isTrue = false
+            break
+        };
+    }
+    var headerCheckBox = container.querySelector("[check-hash='header']");
+    if(isTrue){
+        headerCheckBox["checkbox"] = true
+        headerCheckBox.setAttribute("checkbox",true)
+
+        checkValueMapStructure["header"] = true
+
+        headerCheckBox.classList.add("iconcheckboxoutline")
+        headerCheckBox.classList.remove("iconcheck-box-outline-bl")
+
+    }else{
+        headerCheckBox["checkbox"] = false
+        headerCheckBox.setAttribute("checkbox",false)
+        delete checkValueMapStructure["header"]
+        headerCheckBox.classList.remove("iconcheckboxoutline")
+        headerCheckBox.classList.add("iconcheck-box-outline-bl")
+    }
+
+}
 
 /**
  * 选中校验 处理开关全选操作
@@ -65,66 +145,23 @@ const checkHeaderSelect = function (selectCheckBox = {}){
 
     if(selectCheckBox.checkbox
         && selectCheckBox.classList.contains("iconcheck-box-outline-bl")){
-
         selectCheckBox.classList.add("iconcheckboxoutline")
         selectCheckBox.classList.remove("iconcheck-box-outline-bl")
-
         checkValueMapStructure[checkHash] = selectCheckBox.checkbox
-
         if( checkHash !== "header"){
-
             var querySelector = container.querySelector("div[data-hash='"+ checkHash +"']");
             querySelector.classList.add("select-cell-Highlight")
-
         }
-
-        var isTrue = true
-
-        var nodeListOf12 = container.querySelectorAll("span[checkbox]");
-
-        for (let nodeListOfKeyAll = 0; nodeListOfKeyAll < nodeListOf12.length ; nodeListOfKeyAll ++) {
-            if(nodeListOf12[nodeListOfKeyAll].getAttribute("check-hash") !== "header"
-                && nodeListOf12[nodeListOfKeyAll].getAttribute("checkbox") === "false"){
-                isTrue = false
-                break
-            };
-        }
-
-        if(isTrue){
-
-            var querySelector122 = container.querySelector("[check-hash='header']");
-
-            querySelector122["checkbox"] = true
-            querySelector122.setAttribute("checkbox",true)
-
-            checkValueMapStructure["header"] = true
-
-            querySelector122.classList.add("iconcheckboxoutline")
-            querySelector122.classList.remove("iconcheck-box-outline-bl")
-
-        }
-
-
+        checkHeader()
     }else{
-
         delete checkValueMapStructure[checkHash]
-
         selectCheckBox.classList.remove("iconcheckboxoutline")
         selectCheckBox.classList.add("iconcheck-box-outline-bl")
         if( checkHash !== "header"){
             var querySelector = container.querySelector("div[data-hash='"+ checkHash +"']");
             querySelector.classList.remove("select-cell-Highlight")
         }
-
-        var querySelector123 = container.querySelector("[check-hash='header']");
-
-        querySelector123["checkbox"] = false
-        querySelector123.setAttribute("checkbox",false)
-
-        delete checkValueMapStructure["header"]
-
-        querySelector123.classList.remove("iconcheckboxoutline")
-        querySelector123.classList.add("iconcheck-box-outline-bl")
+        checkHeader()
 
     }
 
@@ -161,15 +198,98 @@ const selectRowBox = function(dataHash,isTrue){
         nodeBox.classList.add("iconcheckboxoutline")
         nodeBox.classList.remove("iconcheck-box-outline-bl")
 
-        checkValueMapStructure[dataHash] = nodeBox.checkbox
-
-        console.log("diany ")
+        checkValueMapStructure[dataHash] = !nodeBox.checkbox
 
         node.classList.add("select-cell-Highlight")
 
     }
 
+}
 
+var getRangeSelect = function (start,end) {
+    var arr = []
+    if(start < end){
+        for(let i = start; i <= end; i ++){
+            var querySelecter = container.querySelector("[data-index='"+ i +"']");
+            var attrDataHash = querySelecter.getAttribute("data-hash");
+            arr.push(i)
+            selectRowBox(attrDataHash)
+        }
+    }else{
+        for(let i = end; i <= start; i ++){
+            var querySelecter = container.querySelector("[data-index='"+ i +"']");
+            var attrDataHash = querySelecter.getAttribute("data-hash");
+            selectRowBox(attrDataHash)
+        }
+    }
+    selectRangeClearOther(arr)
+}
+
+var selectRangeClearOther = function (range) {
+
+    var trueNodeList = container.querySelectorAll("[checkbox='true']");
+/*
+
+    for (let i = 0; i < trueNodeList.length ; i ++) {
+        var checkHash = trueNodeList[i].getAttribute("check-hash");
+
+        var dataHash = container.querySelector("[data-hash='"+checkHash+"']");
+
+        var dataIndex = dataHash.getAttribute("data-index");
+
+        if(range.indexOf(dataIndex) === -1){
+
+            trueNodeList[i].classList.remove("iconcheckboxoutline")
+            trueNodeList[i].classList.add("iconcheck-box-outline-bl")
+
+            checkValueMapStructure[dataHash] = !trueNodeList[i].checkbox
+
+            node.classList.remove("select-cell-Highlight")
+
+        }
+
+
+    }
+*/
+
+}
+
+var rangeFunc = function(range, targetRange) {
+    return Math.max(range.top, targetRange.top) < Math.min(range.top + range.height, targetRange.top + targetRange.height);
+}
+
+var selectRowFun = function (nodeRow,isTrue) {
+
+    var dataHash = nodeRow.getAttribute("data-hash");
+
+    var checkNode = nodeRow.querySelector("[check-hash='"+dataHash+"']");
+
+    var checkBoxFlag = nodeRow.getAttribute("checkbox");
+
+    checkNode.checkbox = isTrue
+    checkNode.setAttribute("checkbox",isTrue)
+
+    if(isTrue){
+        checkNode.classList.add("iconcheckboxoutline")
+        checkNode.classList.remove("iconcheck-box-outline-bl")
+        checkValueMapStructure[dataHash] = isTrue
+        nodeRow.classList.add("select-cell-Highlight")
+    }else{
+        checkNode.classList.remove("iconcheckboxoutline")
+        checkNode.classList.add("iconcheck-box-outline-bl")
+        delete checkValueMapStructure[dataHash]
+        nodeRow.classList.remove("select-cell-Highlight")
+    }
+
+    checkHeader()
+}
+
+const checkRange = function(range){
+    var dataCellList = container.querySelectorAll("[data-hash]");
+    for(let i = 0 ; i < dataCellList.length ; i ++){
+        var offset = getOffset(dataCellList[i]);
+        selectRowFun(dataCellList[i],rangeFunc(range,offset))
+    }
 }
 
 /**
@@ -177,16 +297,16 @@ const selectRowBox = function(dataHash,isTrue){
  * @param node
  * @returns {*}
  */
-var getParentNode = function (node) {
+var getParentNode = function (node,attr) {
     try {
-        if(node.parentNode.getAttribute("data-hash")){
-            //console.log(node.parentNode.getAttribute("data-hash"))
-            return node.parentNode.getAttribute("data-hash");
+        if(node.parentNode.getAttribute(attr)){
+            //console.log("getParentNode",node.parentNode.getAttribute(attr))
+            return node.parentNode.getAttribute(attr);
         }else{
             return getParentNode(node.parentNode);
         }
     }catch (e) {
-        console.log(node)
+        //console.log(node)
     }
     return null;
 }
@@ -198,53 +318,17 @@ var getParentNode = function (node) {
 const selectModelFun = function (selectModel = 'default') {
 
     if(selectModel === "rowspan"){
-
-        var allpro2 = [];
-        var index = 0;
-
         container.classList.add("select-text-prohibit")
-
         document.documentElement.addEventListener("mousedown",function (ev) {
-
-            ev.stopPropagation()
-            ev.preventDefault()
-
-            //var startX = (oEvent.x || oEvent.clientX);
-            //var startY = (oEvent.y || oEvent.clientY);
-
-            var dataHashCell = container.querySelectorAll("[data-hash]");
-
-            document.documentElement.addEventListener("mouseover",function(e){
-                var dataHash = getParentNode(e.target);
-                if(dataHash){
-                    selectRowBox(dataHash)
-                }
-            })
-
-            /*for(let i = 0; i < dataHashCell.length; i ++ ){
-                dataHashCell[i].addEventListener("mouseover",function (e) {
-                    var dataHash = getParentNode(e.target);
-                    if(dataHash){
-                        selectRowBox(dataHash)
-                    }
-                })
-            }*/
-
             ev = ev || window.event;
             var scrollX = document.documentElement.scrollLeft || document.body.scrollLeft;//分别兼容ie和chrome
             var scrollY = document.documentElement.scrollTop || document.body.scrollTop;
             var startX = ev.pageX || (ev.clientX+scrollX);//兼容火狐和其他浏览器
             var startY = ev.pageY || (ev.clientY+scrollY);
-
-            var selList = [];
-            allpro2 = []; //选错区域后重选则清空数组
-            paint(container, selList, startX, startY, true);
-
-
+            paint(startX, startY);
         })
 
-        function paint(yheight, selList, startX, startY, istrue) {
-            var isSelect = true;
+        function paint(startX, startY) {
             var selDiv = document.createElement("div");
             selDiv.id = "selectDiv";
             selDiv.classList.add('select-model-panel')
@@ -259,18 +343,28 @@ const selectModelFun = function (selectModel = 'default') {
             var _y = null;
 
             document.addEventListener("mousemove",function (ev) {
-                var evt = window.event || arguments[0];
-                if(isSelect && selDiv) {
+                if(selDiv) {
 
                     if(selDiv.style.display == "none") {
                         selDiv.style.display = "";
                     }
 
+                    x = ev.pageX;
+                    y = ev.pageY;
+                    range = {
+                        width: Math.abs(x - startX),
+                        height: Math.abs(y - startY),
+                        left: x > startX ? startX : x,
+                        top: y > startY ? startY : y
+                    };
+
+                    checkRange(range)
+
                     ev = ev || window.event;
                     var scrollX = document.documentElement.scrollLeft || document.body.scrollLeft;//分别兼容ie和chrome
                     var scrollY = document.documentElement.scrollTop || document.body.scrollTop;
-                    _x = ev.pageX || (ev.clientX+scrollX);//兼容火狐和其他浏览器
-                    _y = ev.pageY || (ev.clientY+scrollY);
+                    _x = ev.pageX || (ev.clientX + scrollX);//兼容火狐和其他浏览器
+                    _y = ev.pageY || (ev.clientY + scrollY);
 
                     selDiv.style.left = Math.min(_x, startX) + "px";
                     selDiv.style.top = Math.min(_y, startY) + "px";
@@ -283,19 +377,10 @@ const selectModelFun = function (selectModel = 'default') {
                 if(selDiv){
                     document.body.removeChild(selDiv);
                 }
-                /*var dataHashCells = container.querySelectorAll("[data-hash]");
-                for(let i = 0; i < dataHashCells.length; i ++ ){
-                    dataHashCells[i].clearEventListeners("mouseover")
-                }*/
-                document.documentElement.clearEventListeners("mouseover")
                 selDiv = null;
 
             })
-
         }
-
-
-
     }
 
 

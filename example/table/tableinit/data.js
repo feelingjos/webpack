@@ -124,7 +124,7 @@ var data = [
         "grade":"一年级ee",
         "subject":"100"
     }
-    ,
+    /*,
     {
         "age":"30",
         "sex":"男bbbbbbbbbbbb",
@@ -672,7 +672,7 @@ var data = [
         "achievement": 0.001,
         "grade":"一年级ee",
         "subject":"100"
-    }
+    }*/
     ,
     {
         "age":"30",
