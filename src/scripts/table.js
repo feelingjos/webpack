@@ -228,29 +228,6 @@ var getRangeSelect = function (start,end) {
 var selectRangeClearOther = function (range) {
 
     var trueNodeList = container.querySelectorAll("[checkbox='true']");
-/*
-
-    for (let i = 0; i < trueNodeList.length ; i ++) {
-        var checkHash = trueNodeList[i].getAttribute("check-hash");
-
-        var dataHash = container.querySelector("[data-hash='"+checkHash+"']");
-
-        var dataIndex = dataHash.getAttribute("data-index");
-
-        if(range.indexOf(dataIndex) === -1){
-
-            trueNodeList[i].classList.remove("iconcheckboxoutline")
-            trueNodeList[i].classList.add("iconcheck-box-outline-bl")
-
-            checkValueMapStructure[dataHash] = !trueNodeList[i].checkbox
-
-            node.classList.remove("select-cell-Highlight")
-
-        }
-
-
-    }
-*/
 
 }
 
@@ -263,8 +240,6 @@ var selectRowFun = function (nodeRow,isTrue) {
     var dataHash = nodeRow.getAttribute("data-hash");
 
     var checkNode = nodeRow.querySelector("[check-hash='"+dataHash+"']");
-
-    var checkBoxFlag = nodeRow.getAttribute("checkbox");
 
     checkNode.checkbox = isTrue
     checkNode.setAttribute("checkbox",isTrue)
@@ -318,6 +293,7 @@ var getParentNode = function (node,attr) {
 const selectModelFun = function (selectModel = 'default') {
 
     if(selectModel === "rowspan"){
+        selectModelClick()
         container.classList.add("select-text-prohibit")
         document.documentElement.addEventListener("mousedown",function (ev) {
             ev = ev || window.event;
@@ -383,6 +359,25 @@ const selectModelFun = function (selectModel = 'default') {
         }
     }
 
+}
+
+const selectModelClick = function () {
+
+    var isUp = false
+
+    document.documentElement.addEventListener("keydown",function (event) {
+        if(event.keyCode === 17 && !isUp){
+            isUp = true
+            document.documentElement.clearEventListeners("mousedown")
+        }
+    })
+
+    document.documentElement.addEventListener("keyup",function (event) {
+        if(event.keyCode === 17 && isUp){
+            isUp = false
+            selectModelFun("rowspan")
+        }
+    })
 
 }
 
@@ -1174,10 +1169,6 @@ class TableGrid {
                 })
             }
         }
-
-
-
-
     }
 
     getSelectRow(){
