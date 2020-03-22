@@ -20,7 +20,10 @@ var data = [
         "fasdfadsfasdfasdfasdf" +
         "fasdfadsfasdfasdfasdf",
         "grade":"/",
-        "subject":"100"
+        "subject":"100",
+        "config":{
+            "checkbox": "true"
+        }
     },
     {
         "age":"lisasdfasdfasfdasdfasdfasdfasdasdfasdasdfasdasdfasdasdfasdfasdfst",
@@ -32,7 +35,10 @@ var data = [
         "fasdfadsfasdfasdfasdf" +
         "fasdfadsfasdfasdfasdf",
         "grade":"/",
-        "subject":"100"
+        "subject":"100",
+        "config":{
+            "checkbox": "true"
+        }
     }
     ,
    {
@@ -41,7 +47,10 @@ var data = [
         "name":"吴华豪-dddddddddddddddddddddddddddddddddddddddddd",
         "achievement": 2,
         "grade":"一年级---",
-        "subject":"100d"
+        "subject":"100d",
+       "config":{
+           "checkbox": "true"
+       }
    }
    ,
    {

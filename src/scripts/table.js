@@ -3,7 +3,7 @@ import {genId} from './util/utils'
 import {Dom} from './util/dom.js'
 
 var el ,container ,checkValueMapStructure = {},checkRangeCall
-    ,range, x, y
+    ,range, x, y,hashDateMap = {}
 ;
 
 const getOffset = function(dom){
@@ -237,6 +237,8 @@ var rangeFunc = function(range, targetRange) {
 
 var selectRowFun = function (nodeRow,isTrue) {
 
+    //debugger
+
     var dataHash = nodeRow.getAttribute("data-hash");
 
     var checkNode = nodeRow.querySelector("[check-hash='"+dataHash+"']");
@@ -378,6 +380,18 @@ const selectModelClick = function () {
             selectModelFun("rowspan")
         }
     })
+
+}
+
+const checkBoxHookLine = function(){
+
+    for (let i in hashDateMap){
+        //debugger
+        if(hashDateMap[i].config  && hashDateMap[i].config.checkbox === "true"){
+            var CellNodeHash = container.querySelector("[data-hash='" + i + "']");
+            selectRowFun(CellNodeHash,hashDateMap[i].config.checkbox)
+        }
+    }
 
 }
 
@@ -930,6 +944,8 @@ class TableGrid {
             configItems[item.id] = item
         })
 
+        console.log(configItems);
+
         if(config.sort){
             for (var i = 0; i < config.data.length - 1; i++) {
                 // 内层循环,控制比较的次数，并且判断两个数的大小
@@ -953,14 +969,13 @@ class TableGrid {
             }
         }
 
-        //console.log(config.data.length.toString());
-        //console.log(config.data.length.toString().width("one-line-fixed-height,FlexItem").width);
-        //console.log(config.data.length.toString().width("one-line-fixed-height,FlexItem,table-tabulation-cell-line,heightAbsolute,horizontally,word-break-all,hide-surplus-text,FlexContainer").width);
-
         config.data.forEach(function (item,index) {
 
             var arr = {};
             var random = genId()
+
+            hashDateMap[random] = item
+
             if(lineModel === "auto"){
 
                 dataLength[random] = {}
@@ -1013,7 +1028,6 @@ class TableGrid {
             }
 
             if(lineModel === "one"){
-
                 if(showLineNumber){
 
                     var showLineNumberdomCells = `
@@ -1089,25 +1103,28 @@ class TableGrid {
 
             for(let cell in item){
 
-                var domCell =  `<div class="table-tabulation-cell-line cell-header-${cell} 
-                          ${lineModel === "auto" ? `${dataLength[random][cell].heightRelative ? `heightRelative` : `heightAbsolute`} FlexContainer horizontally word-break-all` : `one-line-fixed-height space-nowrap`}
-                            hide-surplus-text " > ${lineModel === "auto" ? `<div class="FlexItem">`:``} `
+                if(cell !== "config") {
 
-                if(configItems[cell].replace && typeof configItems[cell].replace === "function"
-                    && typeof configItems[cell].replace(item[cell]) !== "undefined"
-                    && typeof configItems[cell].replace(item[cell]) !== "object"){
-                    domCell += typeof configItems[cell].replace(item[cell]) !== "undefined" ? configItems[cell].replace(item[cell]) :item[cell]
-                }else{
-                    domCell += item[cell]
+                    var domCell = `<div class="table-tabulation-cell-line cell-header-${cell} 
+                              ${lineModel === "auto" ? `${dataLength[random][cell].heightRelative ? `heightRelative` : `heightAbsolute`} FlexContainer horizontally word-break-all` : `one-line-fixed-height space-nowrap`}
+                                hide-surplus-text " > ${lineModel === "auto" ? `<div class="FlexItem">` : ``} `
+
+                    if (configItems[cell].replace && typeof configItems[cell].replace === "function"
+                        && typeof configItems[cell].replace(item[cell]) !== "undefined"
+                        && typeof configItems[cell].replace(item[cell]) !== "object") {
+                        domCell += typeof configItems[cell].replace(item[cell]) !== "undefined" ? configItems[cell].replace(item[cell]) : item[cell]
+                    } else {
+                        domCell += item[cell]
+                    }
+
+                    domCell += ` ${lineModel === "auto" ? `</div>` : ``}</div>`
+
+                    Object.defineProperty(arr, cell, {
+                        value: domCell,
+                        writable: true // 是否可以改变
+                    })
+
                 }
-
-                domCell += ` ${lineModel === "auto" ? `</div>`:``}</div>`
-
-                Object.defineProperty(arr, cell, {
-                    value: domCell,
-                    writable: true // 是否可以改变
-                })
-
             }
 
             var tableBodyTabulation = document.createElement("div");
@@ -1169,6 +1186,7 @@ class TableGrid {
                 })
             }
         }
+        checkBoxHookLine();
     }
 
     getSelectRow(){
