@@ -22,7 +22,8 @@ var data = [
         "grade":"/",
         "subject":"100",
         "config":{
-            "checkbox": "true"
+            "checkbox": "true",
+            "disable": "true"
         }
     },
     {
@@ -37,7 +38,8 @@ var data = [
         "grade":"/",
         "subject":"100",
         "config":{
-            "checkbox": "true"
+            "checkbox": "false",
+            "disable": "true"
         }
     }
     ,
@@ -47,10 +49,7 @@ var data = [
         "name":"吴华豪-dddddddddddddddddddddddddddddddddddddddddd",
         "achievement": 2,
         "grade":"一年级---",
-        "subject":"100d",
-       "config":{
-           "checkbox": "true"
-       }
+        "subject":"100d"
    }
    ,
    {

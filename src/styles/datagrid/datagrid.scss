@@ -153,14 +153,6 @@ html, body{
 .heightAbsolute{
   position: absolute;
 }
-.heightStatic
-
-.checkbox-true{
-  cursor:pointer;
-}
-.checkbox-true:hover{
-
-}
 
 .icon{
   font-size: 23px;
@@ -193,6 +185,13 @@ html, body{
   text-align:center;
   box-sizing: border-box;
 }
+
+.cell-check-box-disable{
+  //color: #f7f7f7;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .margin-right-left{
   padding-right: 2px;
   padding-left: 2px;

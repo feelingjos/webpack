@@ -89,14 +89,18 @@ const checkHeader = function () {
  * @param headerCheckBox
  * @param isTrue
  */
-const checkSelect = function(headerCheckBox = {},isTrue = false){
+const checkSelect = function(headerCheckBox,isTrue){
 
     var nodeListOf1 = container.querySelectorAll("span[checkbox]");
 
     for (let nodeListOfKeyAll = 0; nodeListOfKeyAll < nodeListOf1.length ; nodeListOfKeyAll ++) {
-        if(nodeListOf1[nodeListOfKeyAll].getAttribute("checkbox") === "true"){
+        var attrDisable = nodeListOf1[nodeListOfKeyAll].getAttribute("disable");
+        /*if(attrDisable && attrDisable === "true") {
+            continue
+        }*/
+        if( nodeListOf1[nodeListOfKeyAll].getAttribute("checkbox") === "true"){
             isTrue = false
-        };
+        }
     }
 
     headerCheckBox.checkbox = isTrue
@@ -105,6 +109,12 @@ const checkSelect = function(headerCheckBox = {},isTrue = false){
     for (let nodeListOfKeyAll = 0; nodeListOfKeyAll < nodeListOf1.length ; nodeListOfKeyAll ++) {
 
         var checkHashCheck = nodeListOf1[nodeListOfKeyAll].getAttribute("check-hash");
+
+        var attrDisable = nodeListOf1[nodeListOfKeyAll].getAttribute("disable");
+
+        if(attrDisable && attrDisable === "true"){
+            return
+        }
 
         nodeListOf1[nodeListOfKeyAll].checkbox = isTrue
         nodeListOf1[nodeListOfKeyAll].setAttribute("checkbox",headerCheckBox.checkbox)
@@ -136,9 +146,15 @@ const checkSelect = function(headerCheckBox = {},isTrue = false){
 
 }
 
-const checkHeaderSelect = function (selectCheckBox = {}){
+const checkHeaderSelect = function (selectCheckBox){
     
     var checkHash = selectCheckBox.getAttribute("check-hash");
+ 
+    var attrDisable = selectCheckBox.getAttribute("disable");
+
+    if(attrDisable && attrDisable === "true"){
+        return
+    }
 
     selectCheckBox.checkbox = !selectCheckBox.checkbox
     selectCheckBox.setAttribute("checkbox",selectCheckBox.checkbox)
@@ -193,41 +209,17 @@ const selectRowBox = function(dataHash,isTrue){
 
     var nodeBox = container.querySelector("[check-hash='" + dataHash +"']");
 
-    if(!nodeBox.checkbox){
-
+    if(isTrue){
         nodeBox.classList.add("iconcheckboxoutline")
         nodeBox.classList.remove("iconcheck-box-outline-bl")
-
         checkValueMapStructure[dataHash] = !nodeBox.checkbox
-
         node.classList.add("select-cell-Highlight")
-
-    }
-
-}
-
-var getRangeSelect = function (start,end) {
-    var arr = []
-    if(start < end){
-        for(let i = start; i <= end; i ++){
-            var querySelecter = container.querySelector("[data-index='"+ i +"']");
-            var attrDataHash = querySelecter.getAttribute("data-hash");
-            arr.push(i)
-            selectRowBox(attrDataHash)
-        }
     }else{
-        for(let i = end; i <= start; i ++){
-            var querySelecter = container.querySelector("[data-index='"+ i +"']");
-            var attrDataHash = querySelecter.getAttribute("data-hash");
-            selectRowBox(attrDataHash)
-        }
+        nodeBox.classList.remove("iconcheckboxoutline")
+        nodeBox.classList.add("iconcheck-box-outline-bl")
+        delete checkValueMapStructure[dataHash]
+        node.classList.remove("select-cell-Highlight")
     }
-    selectRangeClearOther(arr)
-}
-
-var selectRangeClearOther = function (range) {
-
-    var trueNodeList = container.querySelectorAll("[checkbox='true']");
 
 }
 
@@ -236,8 +228,6 @@ var rangeFunc = function(range, targetRange) {
 }
 
 var selectRowFun = function (nodeRow,isTrue) {
-
-    //debugger
 
     var dataHash = nodeRow.getAttribute("data-hash");
 
@@ -264,10 +254,17 @@ var selectRowFun = function (nodeRow,isTrue) {
 const checkRange = function(range){
     var dataCellList = container.querySelectorAll("[data-hash]");
     for(let i = 0 ; i < dataCellList.length ; i ++){
+        var cellDataHash = dataCellList[i].getAttribute("data-hash");
+        var thatCell = dataCellList[i].querySelector("[check-hash='" + cellDataHash + "']");
+        var cellDisable = thatCell.getAttribute("disable");
+        if(cellDisable && cellDisable === "true"){
+            continue
+        }
         var offset = getOffset(dataCellList[i]);
         selectRowFun(dataCellList[i],rangeFunc(range,offset))
     }
 }
+
 
 /**
  * 获取行hash
@@ -277,7 +274,6 @@ const checkRange = function(range){
 var getParentNode = function (node,attr) {
     try {
         if(node.parentNode.getAttribute(attr)){
-            //console.log("getParentNode",node.parentNode.getAttribute(attr))
             return node.parentNode.getAttribute(attr);
         }else{
             return getParentNode(node.parentNode);
@@ -383,8 +379,10 @@ const selectModelClick = function () {
 
 }
 
+/**
+ * 根据数据回显checkbox
+ */
 const checkBoxHookLine = function(){
-
     for (let i in hashDateMap){
         //debugger
         if(hashDateMap[i].config  && hashDateMap[i].config.checkbox === "true"){
@@ -392,7 +390,6 @@ const checkBoxHookLine = function(){
             selectRowFun(CellNodeHash,hashDateMap[i].config.checkbox)
         }
     }
-
 }
 
 class TableGrid {
@@ -944,8 +941,6 @@ class TableGrid {
             configItems[item.id] = item
         })
 
-        console.log(configItems);
-
         if(config.sort){
             for (var i = 0; i < config.data.length - 1; i++) {
                 // 内层循环,控制比较的次数，并且判断两个数的大小
@@ -973,6 +968,8 @@ class TableGrid {
 
             var arr = {};
             var random = genId()
+
+            var cellConfig = item["config"] || {}
 
             hashDateMap[random] = item
 
@@ -1052,7 +1049,8 @@ class TableGrid {
                           one-line-fixed-height space-nowrap
                             hide-surplus-text "> 
                 <div class="cell-header-check-box one-line-fixed-height">
-                    <span class="iconfont icon iconcheck-box-outline-bl" check-hash="${random}" checkbox="false"></span>
+                    <span class="iconfont icon iconcheck-box-outline-bl ${cellConfig && cellConfig.disable && cellConfig.disable === "true" ? `cell-check-box-disable` : ``}" 
+                    ${cellConfig && cellConfig.disable || cellConfig.disable === "true" ? `disable='true'` : ``} check-hash="${random}"   checkbox="false"></span>
                    </div>
                 </div>`
 
@@ -1160,22 +1158,147 @@ class TableGrid {
 
     checkBoxInit(selectRowCheck){
 
+        checkBoxHookLine();
+
         if(selectRowCheck){
+
+            var headerNodeAll = container.querySelector("[check-hash='header']");
+            headerNodeAll.addEventListener("click",function () {
+                var disableTrue = container.querySelectorAll("[checkbox='true'][disable]");
+                var disableFalse = container.querySelectorAll("[checkbox='false'][disable]");
+
+                var headerState = headerNodeAll.getAttribute("checkbox");
+
+                if(disableTrue && disableTrue.length > 0
+                      && disableFalse && disableFalse.length === 0){//禁用下存在true
+
+                    if(headerState === "true"){
+                        headerNodeAll.checkbox = false
+                        headerNodeAll.setAttribute("checkbox",false)
+                        headerNodeAll.classList.remove("iconcheckboxoutline")
+                        headerNodeAll.classList.add("iconcheck-box-outline-bl")
+                        delete checkValueMapStructure['header']
+
+                        var checkboxIsTrueNode = container.querySelectorAll("[checkbox='true']:not([disable])");
+
+                        for(let i = 0 ; i < checkboxIsTrueNode.length; i ++){
+                            checkboxIsTrueNode[i].setAttribute("checkbox",false)
+                            checkboxIsTrueNode[i].checkbox = false
+                            checkboxIsTrueNode[i].classList.remove("iconcheckboxoutline")
+                            checkboxIsTrueNode[i].classList.add("iconcheck-box-outline-bl")
+                            var attributeHash = checkboxIsTrueNode[i].getAttribute('check-hash');
+                            var thatCellNode = container.querySelector("[data-hash='"+ attributeHash +"']");
+                            delete checkValueMapStructure['thatCellNode']
+                            thatCellNode.classList.remove("select-cell-Highlight")
+                        }
+
+                    }else{
+
+                        headerNodeAll.setAttribute("checkbox",true)
+                        headerNodeAll.classList.add("iconcheckboxoutline")
+                        headerNodeAll.classList.remove("iconcheck-box-outline-bl")
+                        checkValueMapStructure['header'] = true
+
+                        var checkboxIsTrueNode = container.querySelectorAll("[checkbox='false']:not([disable])");
+
+                        for(let i = 0 ; i < checkboxIsTrueNode.length; i ++){
+                            checkboxIsTrueNode[i].checkbox = true
+                            checkboxIsTrueNode[i].setAttribute("checkbox",true)
+                            checkboxIsTrueNode[i].classList.add("iconcheckboxoutline")
+                            checkboxIsTrueNode[i].classList.remove("iconcheck-box-outline-bl")
+                            var attributeHash = checkboxIsTrueNode[i].getAttribute('check-hash');
+                            var thatCellNode = container.querySelector("[data-hash='"+ attributeHash +"']");
+                            checkValueMapStructure[attributeHash] = true
+                            thatCellNode.classList.add("select-cell-Highlight")
+                        }
+                    }
+
+                }else if(disableTrue && disableTrue.length > 0
+                    && disableFalse && disableFalse.length > 0){ //禁用下存在true,false
+
+                    var checkboxIsTrueNode = container.querySelectorAll("[checkbox]:not([disable])");
+
+                    for(let i = 0 ; i < checkboxIsTrueNode.length; i ++){
+                        var attributeHash = checkboxIsTrueNode[i].getAttribute('check-hash');
+                        if(attributeHash && attributeHash === 'header'){
+                            continue
+                        }
+                        checkboxIsTrueNode[i].checkbox = !checkboxIsTrueNode[i].checkbox
+                        checkboxIsTrueNode[i].setAttribute("checkbox",checkboxIsTrueNode[i].checkbox)
+
+                        if(checkboxIsTrueNode[i].checkbox === true){
+                            checkboxIsTrueNode[i].classList.add("iconcheckboxoutline")
+                            checkboxIsTrueNode[i].classList.remove("iconcheck-box-outline-bl")
+                            var thatCellNode = container.querySelector("[data-hash='"+ attributeHash +"']");
+                            checkValueMapStructure[attributeHash] = true
+                            thatCellNode.classList.add("select-cell-Highlight")
+                        }else{
+                            checkboxIsTrueNode[i].classList.remove("iconcheckboxoutline")
+                            checkboxIsTrueNode[i].classList.add("iconcheck-box-outline-bl")
+                            var thatCellNode = container.querySelector("[data-hash='"+ attributeHash +"']");
+                            delete checkValueMapStructure[attributeHash]
+                            thatCellNode.classList.remove("select-cell-Highlight")
+                        }
+                    }
+
+                }else if(disableTrue && disableTrue.length === 0
+                    && disableFalse && disableFalse.length > 0){//禁用下存在false
+
+                    var checkboxIsTrueNode = container.querySelectorAll("[checkbox]:not([disable])");
+
+                    for(let i = 0 ; i < checkboxIsTrueNode.length; i ++){
+                        var attributeHash = checkboxIsTrueNode[i].getAttribute('check-hash');
+                        if(attributeHash && attributeHash === 'header'){
+                            continue
+                        }
+                        checkboxIsTrueNode[i].checkbox = !checkboxIsTrueNode[i].checkbox
+                        checkboxIsTrueNode[i].setAttribute("checkbox",checkboxIsTrueNode[i].checkbox)
+
+                        if(checkboxIsTrueNode[i].checkbox === true){
+                            checkboxIsTrueNode[i].classList.add("iconcheckboxoutline")
+                            checkboxIsTrueNode[i].classList.remove("iconcheck-box-outline-bl")
+                            var thatCellNode = container.querySelector("[data-hash='"+ attributeHash +"']");
+                            checkValueMapStructure[attributeHash] = true
+                            thatCellNode.classList.add("select-cell-Highlight")
+                        }else{
+                            checkboxIsTrueNode[i].classList.remove("iconcheckboxoutline")
+                            checkboxIsTrueNode[i].classList.add("iconcheck-box-outline-bl")
+                            var thatCellNode = container.querySelector("[data-hash='"+ attributeHash +"']");
+                            delete checkValueMapStructure[attributeHash]
+                            thatCellNode.classList.remove("select-cell-Highlight")
+                        }
+                    }
+
+                }else if(disableTrue && disableTrue.length === 0
+                  && disableFalse && disableFalse.length === 0 ){
+                    checkSelect(headerNodeAll,true)
+                }
+
+            })
+
             var indexList = container.querySelectorAll("[data-hash]");
             for(let i = 0; i < indexList.length ; i ++ ){
-                indexList[i].addEventListener("click",function(){
+                //debugger
+                var dataHashCell = indexList[i].getAttribute("data-hash");
+                var checkBoxIcon = indexList[i].querySelector("[check-hash='" + dataHashCell + "']");
+                var cellDisable = checkBoxIcon.getAttribute("disable");
+                if(cellDisable && cellDisable === "true"){
+                    continue
+                }
+                indexList[i].addEventListener("click",function(ev){
                     var dataHash = indexList[i].getAttribute("data-hash");
                     var hashNode = container.querySelector("[check-hash='" +dataHash+ "']");
                     checkHeaderSelect(hashNode)
                 })
             }
-            var headerNodeAll = container.querySelector("[check-hash='header']");
-            headerNodeAll.addEventListener("click",function () {
-                checkSelect(headerNodeAll,true)
-            })
+
         }else{
             var nodeListOf = container.querySelectorAll("span[checkbox]");
             for (let nodeListOfKey = 0; nodeListOfKey < nodeListOf.length ; nodeListOfKey ++) {
+                var cellDisable = nodeListOf[nodeListOfKey].getAttribute("disable");
+                if(cellDisable && cellDisable === "true"){
+                    continue
+                }
                 nodeListOf[nodeListOfKey].addEventListener("click",function () {
                     var checkHash = nodeListOf[nodeListOfKey].getAttribute("check-hash");
                     if(checkHash === "header"){
@@ -1186,7 +1309,6 @@ class TableGrid {
                 })
             }
         }
-        checkBoxHookLine();
     }
 
     getSelectRow(){
