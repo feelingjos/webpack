@@ -8,6 +8,7 @@
 <body>
      <div id="index"></div>
      <button id="getSelectRow" >获取选行</button>
+     <button id="refreshHeader" >刷新头部</button>
     <div id="tablecss" ></div>
 
 </body>
@@ -42,7 +43,15 @@
                 id: "age",resize:true,
                 sort: true
             },
-            { width: 200, align: 'center',text:"fasdfadsfasdfasdfasdf",
+            { width: 200, align: 'center',text:"lisasdfasdfli" +
+                "sasdfasdfl" +
+                "sasdfasdfl" +
+                "sasdfasdfl" +
+                "sasdfasdfl" +
+                "sasdfasdfl" +
+                "sasdfasdfl" +
+                "sasdfasdfl" +
+                "isasdfasdflisasdfasdflisasdfasdf",
                 replace:function(text){
                     //return "asdfasdfadsdfasdfasdfasdfddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddafsdfa"
                     return "adfa"
@@ -87,10 +96,17 @@
                     type: "asc"
                 },
                 checkbox: true,
-                lineModel: "one",
+                lineModel: "auto",
                 showLineNumber: true,//显示行号
-                selectRowCheck: true,//点击行选中
-                selectModel: 'rowspan'
+                selectRowCheck: false,//点击行选中
+                selectModel: 'rowspan',//通过方框勾选default:rowspan
+                maxLineLength: "3" // 设置最大行数 与lineModel:'auto' 配合使用
+            })
+
+            var refreshHeader = document.getElementById("refreshHeader");
+
+            refreshHeader.addEventListener("click",function () {
+                tableGrid.refreshHeader()
             })
 
             var getSelectRow = document.getElementById("getSelectRow");
