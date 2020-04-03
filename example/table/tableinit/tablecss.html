@@ -9,7 +9,21 @@
      <div id="index"></div>
      <button id="getSelectRow" >获取选行</button>
      <button id="refreshHeader" >刷新头部</button>
-    <div id="tablecss" ></div>
+     <div class="testList" style="width: 60px; display: block;
+display: -webkit-box;
+max-width: 400px;
+line-height: 1.4;
+-webkit-line-clamp: 3;
+-webkit-box-orient: vertical;
+overflow: hidden;
+text-overflow: ellipsis;">案，意思是原指放
+         书的桌子，后
+         来指在桌子上写字的人。现在指的是公司或企业中从事文字工作的职位，
+         就是以文字来表现已经制定的创意策略。文案它不同于设计师用画面或其他手段的表现手法，
+         它是一个与广告创意先后相继的表现的过程、发展的过程、深化的过程， 多存在于广告公司，企业宣传
+     </div>
+    <!--<div id="tablecss" style="width: 1000px;height: 600px;overflow: hidden;position:relative; top: 10px;left: 10px;"></div>-->
+    <div id="tablecss" style="overflow: auto;height: 100%;width: 100%"></div>
 
 </body>
 
@@ -98,9 +112,10 @@
                 checkbox: true,
                 lineModel: "auto",
                 showLineNumber: true,//显示行号
-                selectRowCheck: false,//点击行选中
+                selectRowCheck: true,//点击行选中
                 selectModel: 'rowspan',//通过方框勾选default:rowspan
-                maxLineLength: "3" // 设置最大行数 与lineModel:'auto' 配合使用
+                //maxLineLength: "3" ,// 设置最大行数 与lineModel:'auto' 配合使用
+                fixedHeader: true  //锁定头部
             })
 
             var refreshHeader = document.getElementById("refreshHeader");

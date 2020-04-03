@@ -2,8 +2,9 @@ import './util/event'
 import {genId} from './util/utils'
 import {Dom} from './util/dom.js'
 
-var el ,container ,checkValueMapStructure = {},checkRangeCall
-    ,range, x, y,hashDateMap = {}
+var _el ,_container ,_checkValueMapStructure = {}
+    ,_range,_x, _y , _hashDateMap = {},_maxValue,_config,
+    _headerStyleRules,_LengthMap
 ;
 
 const getOffset = function(dom){
@@ -13,6 +14,7 @@ const getOffset = function(dom){
             left: 0
         }
         const getOffset = (node, init) => {
+
             if (node.nodeType !== 1) {
                 return
             }
@@ -26,8 +28,10 @@ const getOffset = function(dom){
 
             result.top = node.offsetTop + result.top - node.scrollTop
             result.left = node.offsetLeft + result.left - node.scrollLeft
-            result.width = node.offsetWidth
-            result.height = node.offsetHeight
+            //result.width = node.width === "undefined"  ? window.getComputedStyle(node).width : node.offsetWidth
+            //result.height = node.height === "undefined" ? window.getComputedStyle(node).height : node.offsetHeight
+            //result.width  =  window.getComputedStyle(node).width
+            //result.height =  window.getComputedStyle(node).height
 
             if (position === 'fixed') {
                 return
@@ -43,7 +47,8 @@ const getOffset = function(dom){
         let position
 
         getOffset(dom, true)
-
+        result.width  =  dom.offsetWidth
+        result.height =  dom.offsetHeight
         return result
 
     }
@@ -55,7 +60,7 @@ const checkHeader = function () {
 
     var isTrue = true
 
-    var nodeListOf = container.querySelectorAll("span[checkbox]");
+    var nodeListOf = _container.querySelectorAll("span[checkbox]");
 
     for (let nodeListOfKeyAll = 0; nodeListOfKeyAll < nodeListOf.length ; nodeListOfKeyAll ++) {
         if(nodeListOf[nodeListOfKeyAll].getAttribute("check-hash") !== "header"
@@ -64,12 +69,12 @@ const checkHeader = function () {
             break
         };
     }
-    var headerCheckBox = container.querySelector("[check-hash='header']");
+    var headerCheckBox = _container.querySelector("[check-hash='header']");
     if(isTrue){
         headerCheckBox["checkbox"] = true
         headerCheckBox.setAttribute("checkbox",true)
 
-        checkValueMapStructure["header"] = true
+        _checkValueMapStructure["header"] = true
 
         headerCheckBox.classList.add("iconcheckboxoutline")
         headerCheckBox.classList.remove("iconcheck-box-outline-bl")
@@ -77,7 +82,7 @@ const checkHeader = function () {
     }else{
         headerCheckBox["checkbox"] = false
         headerCheckBox.setAttribute("checkbox",false)
-        delete checkValueMapStructure["header"]
+        delete _checkValueMapStructure["header"]
         headerCheckBox.classList.remove("iconcheckboxoutline")
         headerCheckBox.classList.add("iconcheck-box-outline-bl")
     }
@@ -91,7 +96,7 @@ const checkHeader = function () {
  */
 const checkSelect = function(headerCheckBox,isTrue){
 
-    var nodeListOf1 = container.querySelectorAll("span[checkbox]");
+    var nodeListOf1 = _container.querySelectorAll("span[checkbox]");
 
     for (let nodeListOfKeyAll = 0; nodeListOfKeyAll < nodeListOf1.length ; nodeListOfKeyAll ++) {
         if( nodeListOf1[nodeListOfKeyAll].getAttribute("checkbox") === "true"){
@@ -122,20 +127,20 @@ const checkSelect = function(headerCheckBox,isTrue){
             nodeListOf1[nodeListOfKeyAll].classList.remove("iconcheck-box-outline-bl")
 
             if(checkHashCheck !== "header"){
-                var querySelector = container.querySelector("div[data-hash='" + checkHashCheck +"']");
+                var querySelector = _container.querySelector("div[data-hash='" + checkHashCheck +"']");
 
                 querySelector.classList.add("select-cell-Highlight")
             }
-            checkValueMapStructure[checkHashCheck] = nodeListOf1[nodeListOfKeyAll].checkbox
+            _checkValueMapStructure[checkHashCheck] = nodeListOf1[nodeListOfKeyAll].checkbox
 
         }else{
             nodeListOf1[nodeListOfKeyAll].classList.remove("iconcheckboxoutline")
             nodeListOf1[nodeListOfKeyAll].classList.add("iconcheck-box-outline-bl")
             if(checkHashCheck !== "header"){
-                var querySelector = container.querySelector("div[data-hash='" + checkHashCheck + "']");
+                var querySelector = _container.querySelector("div[data-hash='" + checkHashCheck + "']");
                 querySelector.classList.remove("select-cell-Highlight")
             }
-            delete checkValueMapStructure[checkHashCheck]
+            delete _checkValueMapStructure[checkHashCheck]
         }
 
     }
@@ -159,18 +164,18 @@ const checkHeaderSelect = function (selectCheckBox){
         && selectCheckBox.classList.contains("iconcheck-box-outline-bl")){
         selectCheckBox.classList.add("iconcheckboxoutline")
         selectCheckBox.classList.remove("iconcheck-box-outline-bl")
-        checkValueMapStructure[checkHash] = selectCheckBox.checkbox
+        _checkValueMapStructure[checkHash] = selectCheckBox.checkbox
         if( checkHash !== "header"){
-            var querySelector = container.querySelector("div[data-hash='"+ checkHash +"']");
+            var querySelector = _container.querySelector("div[data-hash='"+ checkHash +"']");
             querySelector.classList.add("select-cell-Highlight")
         }
         checkHeader()
     }else{
-        delete checkValueMapStructure[checkHash]
+        delete _checkValueMapStructure[checkHash]
         selectCheckBox.classList.remove("iconcheckboxoutline")
         selectCheckBox.classList.add("iconcheck-box-outline-bl")
         if( checkHash !== "header"){
-            var querySelector = container.querySelector("div[data-hash='"+ checkHash +"']");
+            var querySelector = _container.querySelector("div[data-hash='"+ checkHash +"']");
             querySelector.classList.remove("select-cell-Highlight")
         }
         checkHeader()
@@ -195,12 +200,12 @@ var selectRowFun = function (nodeRow,isTrue) {
     if(isTrue){
         checkNode.classList.add("iconcheckboxoutline")
         checkNode.classList.remove("iconcheck-box-outline-bl")
-        checkValueMapStructure[dataHash] = isTrue
+        _checkValueMapStructure[dataHash] = isTrue
         nodeRow.classList.add("select-cell-Highlight")
     }else{
         checkNode.classList.remove("iconcheckboxoutline")
         checkNode.classList.add("iconcheck-box-outline-bl")
-        delete checkValueMapStructure[dataHash]
+        delete _checkValueMapStructure[dataHash]
         nodeRow.classList.remove("select-cell-Highlight")
     }
 
@@ -208,7 +213,7 @@ var selectRowFun = function (nodeRow,isTrue) {
 }
 
 const checkRange = function(range){
-    var dataCellList = container.querySelectorAll("[data-hash]");
+    var dataCellList = _container.querySelectorAll("[data-hash]");
     for(let i = 0 ; i < dataCellList.length ; i ++){
         var cellDataHash = dataCellList[i].getAttribute("data-hash");
         var thatCell = dataCellList[i].querySelector("[check-hash='" + cellDataHash + "']");
@@ -229,7 +234,7 @@ const selectModelFun = function (selectModel = 'default') {
 
     if(selectModel === "rowspan"){
         selectModelClick()
-        container.classList.add("select-text-prohibit")
+        _container.classList.add("select-text-prohibit")
         document.documentElement.addEventListener("mousedown",function (ev) {
             ev = ev || window.event;
             var scrollX = document.documentElement.scrollLeft || document.body.scrollLeft;//分别兼容ie和chrome
@@ -253,23 +258,23 @@ const selectModelFun = function (selectModel = 'default') {
             var _x = null;
             var _y = null;
 
-            document.addEventListener("mousemove",function (ev) {
+            document.documentElement.addEventListener("mousemove",function (ev) {
                 if(selDiv) {
 
                     if(selDiv.style.display == "none") {
                         selDiv.style.display = "";
                     }
 
-                    x = ev.pageX;
-                    y = ev.pageY;
-                    range = {
-                        width: Math.abs(x - startX),
-                        height: Math.abs(y - startY),
-                        left: x > startX ? startX : x,
-                        top: y > startY ? startY : y
+                    _x = ev.pageX;
+                    _y = ev.pageY;
+                    _range = {
+                        width: Math.abs(_x - startX),
+                        height: Math.abs(_y - startY),
+                        left: _x > startX ? startX : _x,
+                        top: _y > startY ? startY : _y
                     };
 
-                    checkRange(range)
+                    checkRange(_range)
 
                     ev = ev || window.event;
                     var scrollX = document.documentElement.scrollLeft || document.body.scrollLeft;//分别兼容ie和chrome
@@ -285,7 +290,7 @@ const selectModelFun = function (selectModel = 'default') {
                 }
             })
 
-            document.addEventListener("mouseup",function () {
+            document.documentElement.addEventListener("mouseup",function () {
                 if(selDiv){
                     document.body.removeChild(selDiv);
                 }
@@ -301,14 +306,14 @@ const selectModelClick = function () {
 
     var isUp = false
 
-    document.documentElement.addEventListener("keydown",function (event) {
+    document.addEventListener("keydown",function (event) {
         if(event.keyCode === 17 && !isUp){
             isUp = true
             document.documentElement.clearEventListeners("mousedown")
         }
     })
 
-    document.documentElement.addEventListener("keyup",function (event) {
+    document.addEventListener("keyup",function (event) {
         if(event.keyCode === 17 && isUp){
             isUp = false
             selectModelFun("rowspan")
@@ -321,11 +326,11 @@ const selectModelClick = function () {
  * 根据数据回显checkbox
  */
 const checkBoxHookLine = function(){
-    for (let i in hashDateMap){
+    for (let i in _hashDateMap){
         //debugger
-        if(hashDateMap[i].config  && hashDateMap[i].config.checkbox === "true"){
-            var CellNodeHash = container.querySelector("[data-hash='" + i + "']");
-            selectRowFun(CellNodeHash,hashDateMap[i].config.checkbox)
+        if(_hashDateMap[i].config  && _hashDateMap[i].config.checkbox === "true"){
+            var CellNodeHash = _container.querySelector("[data-hash='" + i + "']");
+            selectRowFun(CellNodeHash,_hashDateMap[i].config.checkbox)
         }
     }
 }
@@ -333,24 +338,42 @@ const checkBoxHookLine = function(){
 /**
  *   渲染表格头部
  */
-const tableRenderHeader = function(headerData,config){
+const tableRenderHeader = function(){
 
-    var lineModel = config.lineModel || "one",showLineNumber = config.showLineNumber || false,headerWidth = {},
-        LengthMap = {header:{}},maxValue = {1:"null"}, headerCssRules = ``,checkbox = config.checkbox || false,
-        dataRowLength = config.dataRowLength || "100",dataLength = {},dataResult ={},
-    headerContainer = `` //头部样式
+    var lineModel = _config.lineModel || "one",showLineNumber = _config.showLineNumber || false,checkbox = _config.checkbox || false,
+        dataRowLength = _config.dataRowLength || "100",maxLineLength = _config.maxLineLength || undefined
+        ,headerData = _config.columns
+
+    var headerWidth = {}, LengthMap = {header:{}},maxValue = {1:"null"}, headerCssRules = ``,
+        maxHeight = undefined, headerContainer = `` //头部样式
 
     if(lineModel === "auto"){//
+
+        if(maxLineLength && maxLineLength > 0){
+            maxHeight = maxLineLength * 25
+        }
+
         headerData.forEach(function(item){
+
+            var height = item.text.render("hide-surplus-text,horizontally,word-break-all,text-overall-situation",`width:${item.width}px`).height;
+
+            var ellipsis = false;
+
+            if(maxHeight && height > maxHeight ){
+                ellipsis = true
+                height = maxHeight
+            }
+
             headerWidth[item.id] = item.width
             LengthMap.header[[item.id]] = {
-                heightLength:item.text.render("hide-surplus-text,horizontally,word-break-all",`width:${item.width}px`).height,
+                heightLength:height,
                 heightAbsolute:true,
                 heightRelative:false,
+                ellipsis: ellipsis
             }
-            if(item.text.render("hide-surplus-text,horizontally,word-break-all",`width:${item.width}px`).height > Object.keys(maxValue)[0]){
+            if(height > Object.keys(maxValue)[0]){
                 maxValue = {}
-                maxValue[item.text.render("hide-surplus-text,horizontally,word-break-all",`width:${item.width}px`).height] = item.id
+                maxValue[height] = item.id
             }
         })
         LengthMap.header[Object.values(maxValue)[0]].heightAbsolute = !LengthMap.header[Object.values(maxValue)[0]].heightAbsolute
@@ -471,12 +494,17 @@ const tableRenderHeader = function(headerData,config){
                                   hide-surplus-text word-break-all horizontally" fieldindex="${index}" field="${item.id}">
                             ${item.sort ? `<div class="header-sort-desc iconjiangxu iconfont one-sort-sign" sortfield="${item.id}" title="sort-${item.id}"/></div>`:``}  
                `}
-                ${lineModel === "auto" ?  `<div class="FlexItem line-Ellipsis">` : ``}
+                ${lineModel === "auto" ?  `<div class="FlexItem line-Ellipsis text-row-line-sdtandard " 
+                     ${LengthMap.header[item.id].ellipsis ? `style="max-height:${LengthMap.header[item.id].heightLength}px "`:``}
+                >` : ``}
                 ${item.text}
-                ${lineModel === "auto" ?  `</div>` : ``}
+                
+                ${lineModel === "auto" ?  `
+                 ${LengthMap.header[item.id].ellipsis ? ` <div class="text-ellipsis" ellipsis="${item.id}">...</div>` : ``} </div>` : ``}
                 ${lineModel === "auto" ? `${item.resize ? `<div class="table-header-right-resize" resizefield="${item.id}"></div>` : ``}`:``}
-            </div>  
-            ${lineModel === "one" ? `${item.resize ? `<div class="table-header-right-resize" resizefield="${item.id}"></div>` : ``}`:``}
+
+                </div>
+                ${lineModel === "one" ? `${item.resize ? `<div class="table-header-right-resize" resizefield="${item.id}"></div>` : ``}`:``}
             </div>
             `;
 
@@ -497,14 +525,26 @@ const tableRenderHeader = function(headerData,config){
 
     htmlStyleElement.innerHTML = headerCssRules;
 
-    Dom.strCastDom(headerContainer,container)
+    var headersAll = document.createElement("div");
+
+    //headersAll.classList.add("heightAbsolute")
+    headersAll.classList.add("headerCell")
+    //headersAll.setAttribute("style",`top:0px;`)
+
+    headersAll.innerHTML = headerContainer
+
+    _container.appendChild(headersAll)
 
     document.head.appendChild(htmlStyleElement)
 
     var sheet = htmlStyleElement.sheet || htmlStyleElement.styleSheet || {}
-    var rules = sheet.cssRules || sheet.rules;
+    _headerStyleRules = sheet.cssRules || sheet.rules;
 
-    var rulesheaders
+    _LengthMap = LengthMap
+    
+    _maxValue = maxValue
+
+    /*var rulesheaders
 
     for(let dd = 0; dd < rules.length; dd ++ ){
         var ruleheaders = rules[dd]
@@ -512,362 +552,16 @@ const tableRenderHeader = function(headerData,config){
             rulesheaders = ruleheaders
             break
         }
-    }
-
-
-    headerData.forEach(function(item){
-
-        if(item["resize"]){
-
-            var querySelector = document.querySelector(`[resizefield=${item["id"]}]`);
-
-            var  miniWidth = item["miniWidth"] || 100
-
-            var ruleThat
-
-            for(let dd = 0; dd < rules.length; dd ++ ){
-                var ruleheaders = rules[dd]
-                if(ruleheaders.selectorText === '.cell-header-'+ item.id){
-                    ruleThat = ruleheaders
-                    break
-                }
-            }
-
-            var temp,min;
-
-            var keyMapHeader = Object.keys(LengthMap.header);
-
-            for(var i = 0 ;i < keyMapHeader.length - 1 ; i ++){
-                min = i;
-                for(var j = i + 1;j < keyMapHeader.length; j ++){
-                    if(LengthMap.header[keyMapHeader[j]].heightLength > LengthMap.header[keyMapHeader[i]].heightLength ){
-                        temp= keyMapHeader[i];
-                        keyMapHeader[i] = keyMapHeader[j];
-                        keyMapHeader[j] = temp;
-                    }
-                }
-            }
-
-            var mouseStart = {}
-            var rightStart = {}
-
-            function start(ev){
-
-                ev.stopPropagation()
-                ev.preventDefault()
-
-                var oEvent = ev || event
-
-                if(lineModel === "auto"){
-                    var leftMapValue = {}
-
-                    var valve = false
-
-                    var itemQueue = []
-
-                    for (let columnsKey in headerData) {
-                        if(valve){
-                            itemQueue.push(".cell-header-" + headerData[columnsKey].id)
-                        }
-                        if(headerData[columnsKey].id === item.id){
-                            valve = true
-                        }
-                    }
-
-                    for(let dd = 0; dd < rules.length; dd ++ ){
-                        let ruleheaders = rules[dd]
-                        if(ruleheaders.style.left && itemQueue.indexOf(ruleheaders.selectorText) !== -1){
-                            leftMapValue[ruleheaders.selectorText] = parseInt(ruleheaders.style.left.replace("px","") - 2)
-                        }
-                    }
-                }
-
-                mouseStart.x = oEvent.clientX
-                rightStart.x = this.offsetLeft;
-                rightStart.width = this.offsetWidth;
-
-                rightStart.header_width = parseFloat(rulesheaders.style.width.substr(0 , rulesheaders.style.width.length - 2))
-
-                document.documentElement.addEventListener("mousemove",function (e) {
-
-                    e.stopPropagation()
-                    e.preventDefault()
-
-                    var oEvent = e || event
-
-                    var moveindex = oEvent.clientX - mouseStart.x
-
-                    var headercell = moveindex + rightStart.x + rightStart.width
-
-                    if(headercell < miniWidth){
-                        headercell = miniWidth
-                        moveindex = headercell  - (rightStart.x + rightStart.width)
-                    }
-
-                    if(lineModel === "auto"){
-                        LengthMap.header[item.id].heightLength = item.text.render("hide-surplus-text,horizontally,word-break-all,table-header-call",`width: ${headercell}px;`).height
-
-                        for (let dataLengthKey in dataLength) {
-                            dataLength[dataLengthKey][item.id].heightLength = dataLength[dataLengthKey][item.id].text.toString().render("hide-surplus-text,horizontally,word-break-all,table-header-call",`width: ${headercell}px;`).height
-
-                            if(dataLength[dataLengthKey][item.id].heightRelative
-                                && dataLength[dataLengthKey][item.id].text.toString().render("hide-surplus-text,horizontally,word-break-all,table-tabulation-cell-line",`width: ${headercell}px;`).height
-                                <  parseInt(Object.keys(dataLength[dataLengthKey].maxItem)[0])){
-
-                                var tempCell,minCell;
-
-                                var keyMapCell = Object.keys(dataLength[dataLengthKey]);
-
-                                for(var i = 0 ;i < keyMapCell.length - 1 ; i ++){
-                                    minCell = i;
-                                    for(var j = i + 1;j < keyMapCell.length; j ++){
-                                        if(keyMapCell[j]  === "maxItem" || keyMapCell[i]  === "maxItem"){
-                                            continue
-                                        }
-                                        if(dataLength[dataLengthKey][keyMapCell[j]].heightLength > dataLength[dataLengthKey][keyMapCell[i]].heightLength ){
-                                            tempCell = keyMapCell[i];
-                                            keyMapCell[i] = keyMapCell[j];
-                                            keyMapCell[j] = tempCell;
-                                        }
-                                    }
-                                }
-                                dataLength[dataLengthKey].maxItem = {}
-
-                                if(dataLength[dataLengthKey][keyMapCell[1]].heightLength > dataLength[dataLengthKey][keyMapCell[0]].heightLength){
-                                    dataLength[dataLengthKey].maxItem = {[dataLength[dataLengthKey][keyMapCell[1]].heightLength] : keyMapCell[1]}
-                                }else{
-                                    dataLength[dataLengthKey].maxItem = {[dataLength[dataLengthKey][keyMapCell[0]].heightLength] : keyMapCell[0]}
-                                }
-
-                                dataLength[dataLengthKey][item.id].heightLength = dataLength[dataLengthKey][item.id].text.toString().render("hide-surplus-text,horizontally,word-break-all,table-tabulation-cell-line",`width: ${headercell}px;`).height
-
-                                dataLength[dataLengthKey][item.id].heightRelative = !dataLength[dataLengthKey][item.id].heightRelative
-                                dataLength[dataLengthKey][item.id].heightAbsolute = !dataLength[dataLengthKey][item.id].heightAbsolute
-
-                                dataLength[dataLengthKey][Object.values(dataLength[dataLengthKey].maxItem)[0]].heightRelative = !dataLength[dataLengthKey][Object.values(dataLength[dataLengthKey].maxItem)[0]].heightRelative
-                                dataLength[dataLengthKey][Object.values(dataLength[dataLengthKey].maxItem)[0]].heightAbsolute = !dataLength[dataLengthKey][Object.values(dataLength[dataLengthKey].maxItem)[0]].heightAbsolute
-
-                                var querySelector1ss = container.querySelector(`[data-hash="${dataLengthKey}"]`);
-
-                                var querySelector1 = querySelector1ss.querySelector(".heightRelative");
-
-                                querySelector1.classList.remove("heightRelative")
-                                querySelector1.classList.add("heightAbsolute")
-
-                                var querySelector2 = querySelector1ss.querySelector(".cell-header-" + Object.values(dataLength[dataLengthKey].maxItem)[0]);
-
-                                querySelector2.classList.add("heightRelative")
-                                querySelector2.classList.remove("heightAbsolute")
-
-                            }else{
-
-                                if( dataLength[dataLengthKey][item.id].heightAbsolute
-                                    && dataLength[dataLengthKey][item.id].text.toString().render("hide-surplus-text,horizontally,word-break-all,table-tabulation-cell-line",`width: ${headercell}px;`).height
-                                    > parseInt(Object.keys(dataLength[dataLengthKey].maxItem)[0]) ){
-
-                                    //dataLength[dataLengthKey][item.id].heightLength = item.text.render("hide-surplus-text,horizontally,word-break-all,table-tabulation-cell-line",`width: ${headercell}px;`).height
-                                    dataLength[dataLengthKey][item.id].heightLength = dataLength[dataLengthKey][item.id].text.toString().render("hide-surplus-text,horizontally,word-break-all,table-tabulation-cell-line",`width: ${headercell}px;`).height
-
-                                    dataLength[dataLengthKey][item.id].heightRelative = !dataLength[dataLengthKey][item.id].heightRelative
-                                    dataLength[dataLengthKey][item.id].heightAbsolute = !dataLength[dataLengthKey][item.id].heightAbsolute
-
-                                    var querySelector1ss = container.querySelector(`[data-hash="${dataLengthKey}"]`);
-
-                                    var thatItemOther = querySelector1ss.querySelector(`.heightRelative`);
-
-                                    thatItemOther.classList.add("heightAbsolute");
-                                    thatItemOther.classList.remove("heightRelative");
-
-                                    var querySelector3 = querySelector1ss.querySelector(".cell-header-" + item.id);
-
-                                    querySelector3.classList.add("heightRelative");
-                                    querySelector3.classList.remove("heightAbsolute");
-
-                                    dataLength[dataLengthKey][Object.values(dataLength[dataLengthKey].maxItem)[0]].heightRelative = !dataLength[dataLengthKey][Object.values(dataLength[dataLengthKey].maxItem)[0]].heightRelative
-                                    dataLength[dataLengthKey][Object.values(dataLength[dataLengthKey].maxItem)[0]].heightAbsolute = !dataLength[dataLengthKey][Object.values(dataLength[dataLengthKey].maxItem)[0]].heightAbsolute
-
-                                    dataLength[dataLengthKey].maxItem = {}
-                                    dataLength[dataLengthKey].maxItem = {
-                                        [dataLength[dataLengthKey][item.id].text.toString().render("hide-surplus-text,horizontally,word-break-all,table-tabulation-cell-line",`width: ${headercell}px;`).height]: item.id
-                                    }
-
-                                }
-                            }
-
-                        }
-
-                        if(LengthMap.header[item.id].heightRelative
-                            && item.text.render("hide-surplus-text,horizontally,word-break-all,table-header-call",`width: ${headercell}px;`).height < Object.keys(maxValue)[0]){
-
-                            maxValue = {}
-                            if(LengthMap.header[keyMapHeader[1]].heightLength > LengthMap.header[keyMapHeader[0]].heightLength){
-                                maxValue[LengthMap.header[keyMapHeader[1]].heightLength] = keyMapHeader[1]
-                            }else{
-                                maxValue[LengthMap.header[keyMapHeader[0]].heightLength] = keyMapHeader[0]
-                            }
-
-                            LengthMap.header[item.id].heightLength = item.text.render("hide-surplus-text,horizontally,word-break-all,table-header-call",`width: ${headercell}px;`).height
-
-                            LengthMap.header[item.id].heightRelative = !LengthMap.header[item.id].heightRelative
-                            LengthMap.header[item.id].heightAbsolute = !LengthMap.header[item.id].heightAbsolute
-
-                            LengthMap.header[Object.values(maxValue)[0]].heightRelative = !LengthMap.header[Object.values(maxValue)[0]].heightRelative
-                            LengthMap.header[Object.values(maxValue)[0]].heightAbsolute = !LengthMap.header[Object.values(maxValue)[0]].heightAbsolute
-
-                            var thatItem = container.querySelector(`[field=${item.id}]`);
-
-                            thatItem.classList.add("heightAbsolute");
-                            thatItem.classList.remove("heightRelative");
-
-                            var thatItemOther = container.querySelector(`[field=${Object.values(maxValue)[0]}]`);
-
-                            thatItemOther.classList.add("heightRelative");
-                            thatItemOther.classList.remove("heightAbsolute");
-
-                        }else{
-
-                            if( LengthMap.header[item.id].heightAbsolute
-                                && item.text.render("hide-surplus-text,horizontally,word-break-all,table-header-call",`width: ${headercell}px;`).height > Object.keys(maxValue)[0]){
-
-                                LengthMap.header[item.id].heightLength = item.text.render("hide-surplus-text,horizontally,word-break-all,table-header-call",`width: ${headercell}px;`).height
-
-                                LengthMap.header[item.id].heightRelative = !LengthMap.header[item.id].heightRelative
-                                LengthMap.header[item.id].heightAbsolute = !LengthMap.header[item.id].heightAbsolute
-
-                                var thatItem = container.querySelector(`[field=${item.id}]`);
-
-                                thatItem.classList.add("heightRelative");
-                                thatItem.classList.remove("heightAbsolute");
-
-                                var thatItemOther = container.querySelector(`[field=${Object.values(maxValue)[0]}]`);
-
-                                thatItemOther.classList.add("heightAbsolute");
-                                thatItemOther.classList.remove("heightRelative");
-
-                                LengthMap.header[Object.values(maxValue)[0]].heightRelative = !LengthMap.header[Object.values(maxValue)[0]].heightRelative
-                                LengthMap.header[Object.values(maxValue)[0]].heightAbsolute = !LengthMap.header[Object.values(maxValue)[0]].heightAbsolute
-
-                                maxValue = {}
-                                maxValue[item.text.render("hide-surplus-text,horizontally,word-break-all,table-header-call",`width: ${headercell}px;`).height] = item.id
-                            }
-                        }
-                    }
-
-                    ruleThat.style.width = headercell + 'px'
-
-                    if(lineModel === "auto"){
-                        for(let dd = 0; dd < rules.length; dd ++ ){
-                            let ruleheaders = rules[dd]
-                            if(leftMapValue[ruleheaders.selectorText]
-                                && Object.keys(leftMapValue).indexOf(`.cell-header-${item.id}`) === -1 ){
-                                ruleheaders.style.left = moveindex + leftMapValue[ruleheaders.selectorText] + 'px'
-                            }
-                        }
-                    }
-
-                    var headerindex = headercell + rightStart.header_width - rightStart.width  - rightStart.x
-
-                    let faultTolerant = 0
-
-                    rulesheaders.style.width = headerindex + faultTolerant + 'px'
-
-                })
-
-                document.documentElement.addEventListener("mouseup",function (event) {
-
-                    event.stopPropagation()
-                    event.preventDefault()
-
-                    document.documentElement.clearEventListeners("mousemove")
-                    document.documentElement.clearEventListeners("mouseup")
-
-                    mouseStart = {}
-                    rightStart = {}
-                    leftMapValue = {}
-
-                })
-
-            }
-
-            querySelector.addEventListener("mousedown",start)
-
-        }
-        if(item["sort"]){
-
-            var sortFieldDOM = container.querySelector(`[sortfield=${item.id}]`);
-
-            sortFieldDOM.addEventListener("click",function (e) {
-
-                var dome = []
-
-                var sortItemMap = []
-
-                for (let i = 0; i < data.length;i ++){
-                    if(typeof dataResult[i][item.id] === "number"){//内容为数字
-                        dome[i] = {[i]:dataResult[i][item.id]}
-                    }else {
-                        dome[i] = {[i]:dataResult[i][item.id].length}
-                    }
-                }
-
-                var descorasc = '>'
-
-                if(sortFieldDOM.classList.contains("desc")){
-                    descorasc = '>'
-                    //sortFieldDOM.querySelector(".iconfont").innerHTML = '&#xe6a1;'
-                    sortFieldDOM.classList.remove("iconshengxu1")
-                    sortFieldDOM.classList.add("iconjiangxu")
-                    sortFieldDOM.classList.remove("desc")
-                    sortFieldDOM.classList.add("asc")
-                }else{
-                    descorasc = "<"
-                    //sortFieldDOM.querySelector(".iconfont").innerHTML = '&#xe751;'
-                    sortFieldDOM.classList.add("iconshengxu1")
-                    sortFieldDOM.classList.remove("iconjiangxu")
-                    sortFieldDOM.classList.add("desc")
-                    sortFieldDOM.classList.remove("asc")
-                }
-
-                for (var i = 0; i < dome.length - 1; i++) {
-                    // 内层循环,控制比较的次数，并且判断两个数的大小
-                    for (var j = 0; j < dome.length - 1 - i; j++) {
-                        // 白话解释：如果前面的数大，放到后面(当然是从小到大的冒泡排序)
-                        if ( eval(Object.values(dome[j])[0] + descorasc + Object.values(dome[j + 1])[0])) {
-                            let temp = dome[j];
-                            dome[j] = dome[j + 1];
-                            dome[j + 1] = temp;
-                        }
-                    }
-                }
-
-                for(let i = 0 ; i < dome.length ; i ++){
-                    sortItemMap[i] = container.querySelector(`[data-index="${Object.keys(dome[i])[0]}"]`)
-                    container.removeChild(container.querySelector(`[data-index="${Object.keys(dome[i])[0]}"]`))
-                }
-
-                for (let i = 0 ; i < sortItemMap.length ; i ++) {
-                    container.appendChild(sortItemMap[i])
-                }
-            })
-        }
-        return true
-    })
+    }*/
 
 }
 
 const tableRenderDataRow = function (rowData,config) {
 
-    var dataCellOld = container.querySelectorAll("[data-hash]");
-
-    if(dataCellOld && dataCellOld > 0){
-        for(let i ; dataCellOld.length < i ; i ++){
-            container.removeChild(dataCellOld[i])
-        }
-    }
-
     var hashDateMap = {},lineModel = config.lineModel || 'one',  sort = {desc: ">",asc: "<"}, //绘制头部
         dataLength = {},configItems = config.configItems ,showLineNumber = config.showLineNumber || false,
-        dataResult = {}
+        dataResult = {},fixedHeader = config.fixedHeader || false,maxLineLength = config.maxLineLength || undefined,
+        maxHeight = undefined
 
     if(config.sort){
         for (var i = 0; i < rowData.length - 1; i++) {
@@ -892,6 +586,7 @@ const tableRenderDataRow = function (rowData,config) {
         }
     }
 
+    var element = document.createElement("div");
 
     rowData.forEach(function (item,index) {
 
@@ -908,6 +603,10 @@ const tableRenderDataRow = function (rowData,config) {
 
             var LentMaxValue = {1:"field"}
 
+            if(maxLineLength && maxLineLength > 0){
+                maxHeight = maxLineLength * 25
+            }
+
             for (let itemKey in item) {
 
                 if(itemKey === "config"){
@@ -919,31 +618,55 @@ const tableRenderDataRow = function (rowData,config) {
                     && typeof configItems[itemKey].replace(item[itemKey]) !== "undefined"
                     && typeof configItems[itemKey].replace(item[itemKey]) !== "object" ){
 
-                    if(configItems[itemKey].replace(item[itemKey]).toString().render("hide-surplus-text,horizontally,word-break-all,table-tabulation-cell-line",`width:${configItems[itemKey].width}px`).height > Object.keys(LentMaxValue)[0]){
-                        LentMaxValue = {}
-                        LentMaxValue[configItems[itemKey].replace(item[itemKey]).toString().render("hide-surplus-text,horizontally,word-break-all,table-tabulation-cell-line",`width:${configItems[itemKey].width}px`).height] = itemKey
+                    var heightCell = configItems[itemKey].replace(item[itemKey]).toString().render("hide-surplus-text,horizontally," +
+                        "word-break-all,table-tabulation-cell-line,text-overall-situation",`width:${configItems[itemKey].width}px`).height
+
+                    var ellipsis = false;
+
+                    if(maxHeight && heightCell > maxHeight ){
+                        ellipsis = true
+                        heightCell = maxHeight
                     }
+
+                    if(heightCell > Object.keys(LentMaxValue)[0]){
+                        LentMaxValue = {}
+                        LentMaxValue[heightCell] = itemKey
+                    }
+
 
                     dataLength[random][itemKey] = {
                         native:item[itemKey],
                         text: configItems[itemKey].replace(item[itemKey]),
-                        heightLength: configItems[itemKey].replace(item[itemKey]).toString().render(`hide-surplus-text,horizontally,word-break-all,table-tabulation-cell-line`,`width:${configItems[itemKey].width}px`).height,
+                        heightLength: heightCell,
                         heightAbsolute:true,
                         heightRelative:false,
+                        ellipsis: ellipsis
                     };
 
                 }else{
 
-                    if(item[itemKey].toString().render("hide-surplus-text,horizontally,word-break-all,table-tabulation-cell-line",`width:${configItems[itemKey].width}px`).height > Object.keys(LentMaxValue)[0]){
+                    var heightCell = item[itemKey].toString().render("hide-surplus-text,horizontally,word-break-all," +
+                        "table-tabulation-cell-line,text-overall-situation",`width:${configItems[itemKey].width}px`).height;
+
+                    var ellipsis = false;
+
+                    if(maxHeight && heightCell > maxHeight ){
+                        ellipsis = true
+                        heightCell = maxHeight
+                    }
+
+
+                    if(heightCell > Object.keys(LentMaxValue)[0]){
                         LentMaxValue = {}
-                        LentMaxValue[item[itemKey].toString().render("hide-surplus-text,horizontally,word-break-all,table-tabulation-cell-line",`width:${configItems[itemKey].width}px`).height] = itemKey
+                        LentMaxValue[heightCell] = itemKey
                     }
 
                     dataLength[random][itemKey] = {
                         text:item[itemKey],
-                        heightLength: item[itemKey].toString().render(`hide-surplus-text,horizontally,word-break-all,table-tabulation-cell-line`,`width:${configItems[itemKey].width}px`).height,
+                        heightLength: heightCell,
                         heightAbsolute:true,
                         heightRelative:false,
+                        ellipsis: ellipsis
                     };
                 }
 
@@ -1000,7 +723,7 @@ const tableRenderDataRow = function (rowData,config) {
                           heightAbsolute horizontally word-break-all
                            FlexContainer height-fill-parant cell-show-line-width margin-right-left
                             "> 
-                           <div class="one-line-fixed-height FlexItem">
+                           <div class="FlexItem">
                             ${index}
                            </div>
                         </div>
@@ -1039,7 +762,8 @@ const tableRenderDataRow = function (rowData,config) {
 
                 var domCell = `<div class="table-tabulation-cell-line cell-header-${cell} 
                               ${lineModel === "auto" ? `${dataLength[random][cell].heightRelative ? `heightRelative` : `heightAbsolute`} FlexContainer horizontally word-break-all` : `one-line-fixed-height space-nowrap`}
-                                hide-surplus-text " > ${lineModel === "auto" ? `<div class="FlexItem line-Ellipsis">` : ``} `
+                                hide-surplus-text " > ${lineModel === "auto" ? `<div class="FlexItem line-Ellipsis text-row-line-sdtandard" 
+                              style="max-height: ${Object.keys(dataLength[random].maxItem)[0]}px">` : ``} `
 
                 if (configItems[cell].replace && typeof configItems[cell].replace === "function"
                     && typeof configItems[cell].replace(item[cell]) !== "undefined"
@@ -1049,7 +773,9 @@ const tableRenderDataRow = function (rowData,config) {
                     domCell += item[cell]
                 }
 
-                domCell += ` ${lineModel === "auto" ? `</div>` : ``}</div>`
+                domCell += ` ${lineModel === "auto" ? `</div>` : ``}
+                          ${lineModel === "auto" ?  `${dataLength[random][cell].ellipsis ? `<div class="text-ellipsis" ellipsis="${cell}-${random}">...</div>`: ``}` : ``}
+                        </div>`
 
                 Object.defineProperty(arr, cell, {
                     value: domCell,
@@ -1082,73 +808,612 @@ const tableRenderDataRow = function (rowData,config) {
             }
         }
 
-        container.appendChild(tableBodyTabulation)
-
+        if(config.fixedHeader){
+            element.appendChild(tableBodyTabulation)
+        }else{
+            _container.appendChild(tableBodyTabulation)
+        }
     });
 
+    if(config.fixedHeader) {
+        element.classList.add("fiexd-row-cell-scroll-container")
+
+        var querySelector = _container.querySelector(".headerCell");
+
+        element.style.marginTop = querySelector.offsetHeight + 'px'
+
+        //element.classList.add("heightRelative")
+
+        //element.setAttribute("style","top:60px")
+
+        _container.appendChild(element)
+    }
+
+    var rulesheaders
+
+    for(let dd = 0; dd < _headerStyleRules.length; dd ++ ){
+        var ruleheaders = _headerStyleRules[dd]
+        if(ruleheaders.selectorText === '.header-cell'){
+            rulesheaders = ruleheaders
+            break
+        }
+    }
+
+/*
+    for (let dataLengthKey in dataLength) {
+        console.log(dataLength[dataLengthKey]);
+        var querySelector4 = document.querySelector("[name='"+dataLengthKey+"']");
+        try{
+            //var querySelectoreed = document.querySelector("["+dataLengthKey+"ellipsis=name]");
+            var querySelectoreed = document.querySelector("[eli='name-"+dataLengthKey+"']");
+            console.log(querySelectoreed)
+        }catch (e) {
+            console.log(e.toString());
+        }
+
+        console.log("asdf",querySelector4);
+
+        //if(Object.keys(dataLength[dataLengthKey].maxItem)[0]  >= dataLength[dataLengthKey][item.id].heightLength ){
+        if(maxHeight && dataLength[dataLengthKey]["name"].heightLength  < maxHeight + 2 && dataLength[dataLengthKey]["name"].ellipsis){
+            dataLength[dataLengthKey]["name"].ellipsis = false
+            //var querySelector4 = document.querySelector(`[${dataLengthKey}-ellipsis='${item.id}']`);
+
+            console.log("true",querySelector4)
+
+            /!*if(querySelector4){
+                querySelector4.style.display = "none"
+            }*!/
+        }else if(!dataLength[dataLengthKey]["name"].ellipsis){
+            dataLength[dataLengthKey]["name"].ellipsis = true
+            //var querySelector4 = document.querySelector(`[${dataLengthKey}-ellipsis='${item.id}']`);
+
+            console.log("false",querySelector4)
+
+            /!*if (querySelector4) {
+                querySelector4.style.display = "inline"
+            }*!/
+        }
+    }
+*/
+
+    _config.columns.forEach(function(item){
+
+        if(item["resize"]){
+
+            var querySelector = document.querySelector(`[resizefield=${item["id"]}]`);
+
+            var  miniWidth = item["miniWidth"] || 100
+
+            var ruleThat
+
+            for(let dd = 0; dd < _headerStyleRules.length; dd ++ ){
+                var ruleheaders = _headerStyleRules[dd]
+                if(ruleheaders.selectorText === '.cell-header-'+ item.id){
+                    ruleThat = ruleheaders
+                    break
+                }
+            }
+
+            var temp,min;
+
+            var keyMapHeader = Object.keys(_LengthMap.header);
+
+            for(var i = 0 ;i < keyMapHeader.length - 1 ; i ++){
+                min = i;
+                for(var j = i + 1;j < keyMapHeader.length; j ++){
+                    if(_LengthMap.header[keyMapHeader[j]].heightLength > _LengthMap.header[keyMapHeader[i]].heightLength ){
+                        temp= keyMapHeader[i];
+                        keyMapHeader[i] = keyMapHeader[j];
+                        keyMapHeader[j] = temp;
+                    }
+                }
+            }
+
+            var mouseStart = {}
+            var rightStart = {}
+
+            function start(ev){
+
+                ev.stopPropagation()
+                ev.preventDefault()
+
+                var oEvent = ev || event
+
+                if(lineModel === "auto"){
+                    var leftMapValue = {}
+
+                    var valve = false
+
+                    var itemQueue = []
+
+                    for (let columnsKey in _config.columns) {
+                        if(valve){
+                            itemQueue.push(".cell-header-" + _config.columns[columnsKey].id)
+                        }
+                        if(_config.columns[columnsKey].id === item.id){
+                            valve = true
+                        }
+                    }
+
+                    for(let dd = 0; dd < _headerStyleRules.length; dd ++ ){
+                        let ruleheaders = _headerStyleRules[dd]
+                        if(ruleheaders.style.left && itemQueue.indexOf(ruleheaders.selectorText) !== -1){
+                            leftMapValue[ruleheaders.selectorText] = parseInt(ruleheaders.style.left.replace("px","") - 2)
+                        }
+                    }
+                }
+
+                mouseStart.x = oEvent.clientX
+                rightStart.x = this.offsetLeft;
+                rightStart.width = this.offsetWidth;
+
+                rightStart.header_width = parseFloat(rulesheaders.style.width.substr(0 , rulesheaders.style.width.length - 2))
+
+                document.documentElement.addEventListener("mousemove",function (e) {
+
+                    e.stopPropagation()
+                    e.preventDefault()
+
+                    var oEvent = e || event
+
+                    var moveindex = oEvent.clientX - mouseStart.x
+
+                    var headercell = moveindex + rightStart.x + rightStart.width
+
+                    if(headercell < miniWidth){
+                        headercell = miniWidth
+                        moveindex = headercell  - (rightStart.x + rightStart.width)
+                    }
+
+                    if(lineModel === "auto"){
+
+                        _LengthMap.header[item.id].heightLength = item.text.render("hide-surplus-text,horizontally,word-break-all,table-header-call,text-overall-situation",`width: ${headercell}px;`).height
+
+                        var querySelector5 = _container.querySelector(".headerCell");
+                        var querySelector9 = _container.querySelector(".fiexd-row-cell-scroll-container");
+
+                        querySelector9.style.marginTop = querySelector5.offsetHeight + 'px'
+
+                        if(maxHeight && _LengthMap.header[item.id].heightLength  <= maxHeight + 2){
+                            _LengthMap.header[item.id].ellipsis = false
+                            var querySelector4 = _container.querySelector("[ellipsis='" + item.id + "']");
+                            if(querySelector4){
+                                querySelector4.style.display = "none"
+                            }
+                        }else if(!_LengthMap.header[item.id].ellipsis){
+                            _LengthMap.header[item.id].ellipsis = true
+                            var querySelector4 = _container.querySelector("[ellipsis='" + item.id + "']");
+                            querySelector4.style.display = "inline";
+                        }
+
+                        //console.log("dataLength",dataLength);
+
+                        for (let dataLengthKey in dataLength) {
+                            dataLength[dataLengthKey][item.id].heightLength = dataLength[dataLengthKey][item.id].text.toString().render(
+                                "hide-surplus-text,horizontally,word-break-all," +
+                                "table-tabulation-cell-line,text-row-line-sdtandard",`width: ${headercell}px;`).height
+
+                            if(maxHeight && dataLength[dataLengthKey][item.id].heightLength  <= maxHeight + 2 ){
+                                dataLength[dataLengthKey][item.id].ellipsis = false
+
+                                var querySelector4 = document.querySelector(`[ellipsis='${item.id}-${dataLengthKey}']`);
+
+                                if(querySelector4){
+                                    querySelector4.style.display = "none"
+                                }
+                            }else if(!dataLength[dataLengthKey][item.id].ellipsis){
+                                dataLength[dataLengthKey][item.id].ellipsis = true
+                                var querySelector4 = document.querySelector(`[ellipsis='${item.id}-${dataLengthKey}']`);
+
+                                if (querySelector4) {
+                                    querySelector4.style.display = "inline"
+                                }
+                            }
+
+                            if(dataLength[dataLengthKey][item.id].heightRelative
+                                && dataLength[dataLengthKey][item.id].text.toString().render("hide-surplus-text,horizontally,word-break-all" +
+                                    ",table-tabulation-cell-line,text-row-line-sdtandard",`width: ${headercell}px;`).height
+                                <  parseInt(Object.keys(dataLength[dataLengthKey].maxItem)[0])){
+
+                                var tempCell,minCell;
+
+                                var keyMapCell = Object.keys(dataLength[dataLengthKey]);
+
+                                for(var i = 0 ;i < keyMapCell.length - 1 ; i ++){
+                                    minCell = i;
+                                    for(var j = i + 1;j < keyMapCell.length; j ++){
+                                        if(keyMapCell[j]  === "maxItem" || keyMapCell[i]  === "maxItem"){
+                                            continue
+                                        }
+                                        if(dataLength[dataLengthKey][keyMapCell[j]].heightLength > dataLength[dataLengthKey][keyMapCell[i]].heightLength ){
+                                            tempCell = keyMapCell[i];
+                                            keyMapCell[i] = keyMapCell[j];
+                                            keyMapCell[j] = tempCell;
+                                        }
+                                    }
+                                }
+                                dataLength[dataLengthKey].maxItem = {}
+
+                                if(dataLength[dataLengthKey][keyMapCell[1]].heightLength > dataLength[dataLengthKey][keyMapCell[0]].heightLength){
+                                    dataLength[dataLengthKey].maxItem = {[dataLength[dataLengthKey][keyMapCell[1]].heightLength] : keyMapCell[1]}
+                                }else{
+                                    dataLength[dataLengthKey].maxItem = {[dataLength[dataLengthKey][keyMapCell[0]].heightLength] : keyMapCell[0]}
+                                }
+
+                                dataLength[dataLengthKey][item.id].heightLength = dataLength[dataLengthKey][item.id].text.toString().render("hide-surplus-text,horizontally,word-break-all,table-tabulation-cell-line,text-row-line-sdtandard",`width: ${headercell}px;`).height
+
+                                dataLength[dataLengthKey][item.id].heightRelative = !dataLength[dataLengthKey][item.id].heightRelative
+                                dataLength[dataLengthKey][item.id].heightAbsolute = !dataLength[dataLengthKey][item.id].heightAbsolute
+
+                                dataLength[dataLengthKey][Object.values(dataLength[dataLengthKey].maxItem)[0]].heightRelative = !dataLength[dataLengthKey][Object.values(dataLength[dataLengthKey].maxItem)[0]].heightRelative
+                                dataLength[dataLengthKey][Object.values(dataLength[dataLengthKey].maxItem)[0]].heightAbsolute = !dataLength[dataLengthKey][Object.values(dataLength[dataLengthKey].maxItem)[0]].heightAbsolute
+
+                                var querySelector1ss = _container.querySelector(`[data-hash="${dataLengthKey}"]`);
+
+                                var querySelector1 = querySelector1ss.querySelector(".heightRelative");
+
+                                querySelector1.classList.remove("heightRelative")
+                                querySelector1.classList.add("heightAbsolute")
+
+                                var querySelector2 = querySelector1ss.querySelector(".cell-header-" + Object.values(dataLength[dataLengthKey].maxItem)[0]);
+
+                                querySelector2.classList.add("heightRelative")
+                                querySelector2.classList.remove("heightAbsolute")
+
+                            }else{
+
+                                if( dataLength[dataLengthKey][item.id].heightAbsolute
+                                    && dataLength[dataLengthKey][item.id].text.toString().render("hide-surplus-text,horizontally,word-break-all" +
+                                        ",table-tabulation-cell-line,text-row-line-sdtandard",`width: ${headercell}px;`).height
+                                    > parseInt(Object.keys(dataLength[dataLengthKey].maxItem)[0]) ){
+
+                                    //dataLength[dataLengthKey][item.id].heightLength = item.text.render("hide-surplus-text,horizontally,word-break-all,table-tabulation-cell-line",`width: ${headercell}px;`).height
+                                    dataLength[dataLengthKey][item.id].heightLength = dataLength[dataLengthKey][item.id].text.toString().render("hide-surplus-text,horizontally,word-break-all,table-tabulation-cell-line,text-row-line-sdtandard",`width: ${headercell}px;`).height
+
+                                    dataLength[dataLengthKey][item.id].heightRelative = !dataLength[dataLengthKey][item.id].heightRelative
+                                    dataLength[dataLengthKey][item.id].heightAbsolute = !dataLength[dataLengthKey][item.id].heightAbsolute
+
+                                    var querySelector1ss = _container.querySelector(`[data-hash="${dataLengthKey}"]`);
+
+                                    var thatItemOther = querySelector1ss.querySelector(`.heightRelative`);
+
+                                    thatItemOther.classList.add("heightAbsolute");
+                                    thatItemOther.classList.remove("heightRelative");
+
+                                    var querySelector3 = querySelector1ss.querySelector(".cell-header-" + item.id);
+
+                                    querySelector3.classList.add("heightRelative");
+                                    querySelector3.classList.remove("heightAbsolute");
+
+                                    dataLength[dataLengthKey][Object.values(dataLength[dataLengthKey].maxItem)[0]].heightRelative = !dataLength[dataLengthKey][Object.values(dataLength[dataLengthKey].maxItem)[0]].heightRelative
+                                    dataLength[dataLengthKey][Object.values(dataLength[dataLengthKey].maxItem)[0]].heightAbsolute = !dataLength[dataLengthKey][Object.values(dataLength[dataLengthKey].maxItem)[0]].heightAbsolute
+
+                                    dataLength[dataLengthKey].maxItem = {}
+                                    dataLength[dataLengthKey].maxItem = {
+                                        [dataLength[dataLengthKey][item.id].text.toString().render("hide-surplus-text,horizontally,word-break-all,table-tabulation-cell-line,text-row-line-sdtandard",`width: ${headercell}px;`).height]: item.id
+                                    }
+
+                                }
+                            }
+
+                        }
+
+                        if(_LengthMap.header[item.id].heightRelative
+                            && item.text.render("hide-surplus-text,horizontally,word-break-all,table-header-call,text-overall-situation",`width: ${headercell}px;`).height < Object.keys(_maxValue)[0]){
+
+                            _maxValue = {}
+                            if(_LengthMap.header[keyMapHeader[1]].heightLength > _LengthMap.header[keyMapHeader[0]].heightLength){
+                                _maxValue[_LengthMap.header[keyMapHeader[1]].heightLength] = keyMapHeader[1]
+                            }else{
+                                _maxValue[_LengthMap.header[keyMapHeader[0]].heightLength] = keyMapHeader[0]
+                            }
+
+                            _LengthMap.header[item.id].heightLength = item.text.render("hide-surplus-text,horizontally,word-break-all,table-header-call,text-overall-situation",`width: ${headercell}px;`).height
+
+                            _LengthMap.header[item.id].heightRelative = !_LengthMap.header[item.id].heightRelative
+                            _LengthMap.header[item.id].heightAbsolute = !_LengthMap.header[item.id].heightAbsolute
+                             
+                            _LengthMap.header[Object.values(_maxValue)[0]].heightRelative = !_LengthMap.header[Object.values(_maxValue)[0]].heightRelative
+                            _LengthMap.header[Object.values(_maxValue)[0]].heightAbsolute = !_LengthMap.header[Object.values(_maxValue)[0]].heightAbsolute
+
+                            var thatItem = _container.querySelector(`[field=${item.id}]`);
+
+                            thatItem.classList.add("heightAbsolute");
+                            thatItem.classList.remove("heightRelative");
+
+                            var thatItemOther = _container.querySelector(`[field=${Object.values(_maxValue)[0]}]`);
+
+                            thatItemOther.classList.add("heightRelative");
+                            thatItemOther.classList.remove("heightAbsolute");
+
+                        }else{
+
+                            if( _LengthMap.header[item.id].heightAbsolute
+                                && item.text.render("hide-surplus-text,horizontally,word-break-all,table-header-call,text-overall-situation",`width: ${headercell}px;`).height > Object.keys(_maxValue)[0]){
+
+                                _LengthMap.header[item.id].heightLength = item.text.render("hide-surplus-text,horizontally,word-break-all,table-header-call,text-overall-situation",`width: ${headercell}px;`).height
+                                
+                                _LengthMap.header[item.id].heightRelative = !_LengthMap.header[item.id].heightRelative
+                                _LengthMap.header[item.id].heightAbsolute = !_LengthMap.header[item.id].heightAbsolute
+
+                                var thatItem = _container.querySelector(`[field=${item.id}]`);
+
+                                thatItem.classList.add("heightRelative");
+                                thatItem.classList.remove("heightAbsolute");
+
+                                var thatItemOther = _container.querySelector(`[field=${Object.values(_maxValue)[0]}]`);
+
+                                thatItemOther.classList.add("heightAbsolute");
+                                thatItemOther.classList.remove("heightRelative");
+
+                                _LengthMap.header[Object.values(_maxValue)[0]].heightRelative = !_LengthMap.header[Object.values(_maxValue)[0]].heightRelative
+                                _LengthMap.header[Object.values(_maxValue)[0]].heightAbsolute = !_LengthMap.header[Object.values(_maxValue)[0]].heightAbsolute
+                                
+                                _maxValue = {}
+                                _maxValue[item.text.render("hide-surplus-text,horizontally,word-break-all,table-header-call,text-overall-situation",`width: ${headercell}px;`).height] = item.id
+                            }
+                        }
+                    }
+
+                    ruleThat.style.width = headercell + 'px'
+
+                    if(lineModel === "auto"){
+                        for(let dd = 0; dd < _headerStyleRules.length; dd ++ ){
+                            let ruleheaders = _headerStyleRules[dd]
+                            if(leftMapValue[ruleheaders.selectorText]
+                                && Object.keys(leftMapValue).indexOf(`.cell-header-${item.id}`) === -1 ){
+                                ruleheaders.style.left = moveindex + leftMapValue[ruleheaders.selectorText] + 'px'
+                            }
+                        }
+                    }
+
+                    var headerindex = headercell + rightStart.header_width - rightStart.width  - rightStart.x
+
+                    let faultTolerant = 0
+
+                    rulesheaders.style.width = headerindex + faultTolerant + 'px'
+
+                })
+
+                document.documentElement.addEventListener("mouseup",function (event) {
+
+                    event.stopPropagation()
+                    event.preventDefault()
+
+                    document.documentElement.clearEventListeners("mousemove")
+                    document.documentElement.clearEventListeners("mouseup")
+
+                    mouseStart = {}
+                    rightStart = {}
+                    leftMapValue = {}
+
+                })
+
+            }
+
+            querySelector.addEventListener("mousedown",start)
+
+        }
+        if(item["sort"]){
+
+            var sortFieldDOM = _container.querySelector(`[sortfield=${item.id}]`);
+
+            sortFieldDOM.addEventListener("click",function (e) {
+
+                var dome = []
+
+                var sortItemMap = []
+
+                for (let i = 0; i < data.length;i ++){
+                    if(typeof dataResult[i][item.id] === "number"){//内容为数字
+                        dome[i] = {[i]:dataResult[i][item.id]}
+                    }else {
+                        dome[i] = {[i]:dataResult[i][item.id].length}
+                    }
+                }
+
+                var descorasc = '>'
+
+                if(sortFieldDOM.classList.contains("desc")){
+                    descorasc = '>'
+                    //sortFieldDOM.querySelector(".iconfont").innerHTML = '&#xe6a1;'
+                    sortFieldDOM.classList.remove("iconshengxu1")
+                    sortFieldDOM.classList.add("iconjiangxu")
+                    sortFieldDOM.classList.remove("desc")
+                    sortFieldDOM.classList.add("asc")
+                }else{
+                    descorasc = "<"
+                    //sortFieldDOM.querySelector(".iconfont").innerHTML = '&#xe751;'
+                    sortFieldDOM.classList.add("iconshengxu1")
+                    sortFieldDOM.classList.remove("iconjiangxu")
+                    sortFieldDOM.classList.add("desc")
+                    sortFieldDOM.classList.remove("asc")
+                }
+
+                for (var i = 0; i < dome.length - 1; i++) {
+                    // 内层循环,控制比较的次数，并且判断两个数的大小
+                    for (var j = 0; j < dome.length - 1 - i; j++) {
+                        // 白话解释：如果前面的数大，放到后面(当然是从小到大的冒泡排序)
+                        if ( eval(Object.values(dome[j])[0] + descorasc + Object.values(dome[j + 1])[0])) {
+                            let temp = dome[j];
+                            dome[j] = dome[j + 1];
+                            dome[j + 1] = temp;
+                        }
+                    }
+                }
+
+                for(let i = 0 ; i < dome.length ; i ++){
+                    sortItemMap[i] = _container.querySelector(`[data-index="${Object.keys(dome[i])[0]}"]`)
+                    _container.removeChild(_container.querySelector(`[data-index="${Object.keys(dome[i])[0]}"]`))
+                }
+
+                for (let i = 0 ; i < sortItemMap.length ; i ++) {
+                    _container.appendChild(sortItemMap[i])
+                }
+            })
+        }
+        return true
+    })
+
+
+}
+
+const tableStyleFun = function () {
+
+    /*console.log(_container.width,_container.width,getOffset(_container),window.getComputedStyle(_container).height,
+        window.getComputedStyle(_container).width);
+
+    var cellContainer = _container.querySelector(".fiexd-row-cell-scroll-container");
+
+    console.log(cellContainer.width,cellContainer.width,getOffset(cellContainer),window.getComputedStyle(cellContainer).height,
+        window.getComputedStyle(cellContainer).width);*/
+
+    /*var headerContainer = document.querySelector(".table-header-line-column");
+    var rowClass = document.querySelector(".fiexd-row-cell-scroll-container");
+
+    console.log(_container.getBoundingClientRect().height,headerContainer.getBoundingClientRect().height,
+        rowClass.getBoundingClientRect().height,_container.scrollHeight);*/
+
+    /*var rowCell = document.querySelector(".fiexd-row-cell-scroll-container");
+
+    console.log(getOffset(rowCell));
+
+    var k = Object.values(_maxValue)[0]
+
+    var querySelector = document.querySelector(".cell-header-"+k);*/
+
+    //console.log(querySelector.querySelector(".line-Ellipsis").getAttribute("style"));
+
+    var htmlDivElement1 = document.createElement("div");
+
+    //htmlDivElement1.classList.add("heightRelative")
+    htmlDivElement1.classList.add("assistor")
+
+    var htmlDivElement = document.createElement("div");
+
+    var querySelector = _container.querySelector(".headerCell");
+    var querySelector1 = _container.querySelector(".fiexd-row-cell-scroll-container");
+
+    htmlDivElement.appendChild(querySelector)
+    htmlDivElement.appendChild(querySelector1)
+
+    querySelector.classList.add("heightAbsolute")
+
+    //querySelector.style.top = 0
+
+    //htmlDivElement.classList.add("heightRelative")
+    htmlDivElement.classList.add("parent")
+
+    htmlDivElement1.appendChild(htmlDivElement)
+
+    _container.appendChild(htmlDivElement1)
+
+    //debugger
+    //window.onload = function () {
+        var querySelector1 = document.querySelector(".headerCell");
+
+        var top = getOffset(querySelector1).top;
+
+        //获取滚动条的滑动距离
+        //var scroH = $(this).scrollTop();
+        // console.log(scroH);
+        //滚动条的滑动距离大于等于定位元素距离浏览器顶部的距离，就固定，反之就不固定
+
+    //console.log(top);
+
+    _container.addEventListener("scroll",function (ev) {
+
+        var scrollTop = ev.target.scrollTop;
+
+        /*if(scrollTop >= top){
+            //console.log("固定")
+            querySelector1.classList.add("header-fiexd-true")
+            //querySelector1.cssText = "position:sticky;top:0"//("style","position:sticky;top:0")
+        }else if(scrollTop < top){
+            //console.log("不固定")
+            querySelector1.classList.remove("header-fiexd-true")
+            //querySelector1.cssText = "top:0"//("style","position:sticky;top:0")
+            //querySelector1.setAttribute("style","top:0")
+        }*/
+
+        console.log("滚动了")
+
+            //console.log("滚动了")
+
+    })
+    //}
+
+
+
+    /*if(scroH>=navH){
+        $(".flightInfoBox").css({"position":"sticky","top":0});
+    }else if(scroH<navH){
+        $(".flightInfoBox").css({"position":"static"});
+    }*/
+    //console.log(item.text.render("hide-surplus-text,horizontally,word-break-all",`width:${item.width}px`).height);
 }
 
 class TableGrid {
 
     constructor(elP,config) {
-        el = elP;
-        container = document.getElementById(el);
+        _el = elP;
+        _container = document.getElementById(_el);
         this.columns = config.columns;
         this.data = config.data;
+        _config = config
+        _config.dataRowLength = config.data.length.toString()
+
         this.init(config)
-        selectModelFun(config.selectModel)
+        selectModelFun(_config.selectModel)
 
-        //tableRenderHeader();
-
-        if("auto" === config.lineModel && config.maxLineLength && config.maxLineLength > 0){
-            var clampNodeList = document.querySelectorAll(".line-Ellipsis");
-            for(let i = 0 ; i < clampNodeList.length; i ++){
-                $clamp(clampNodeList[i], {clamp: config.maxLineLength});
-            }
-        }
+        tableStyleFun()
 
     }
 
     init(config){
 
-        var sort = {desc: ">",asc: "<"}, //绘制头部
+        /*var sort = {desc: ">",asc: "<"}, //绘制头部
             data = config.data,
          columns = config.columns,headerCssRules = ``,dataResult = {},maxValue = {1:"null"}
             ,LengthMap = {header:{}},lineModel = config.lineModel || "one" ,
             headerWidth = {},dataLength = {}, headerContainer =``,showLineNumber = config.showLineNumber || false,
             selectRowCheck = config.selectRowCheck || false,selectModel = config.selectRowCheck || 'default',
             dataRowLength = config.data.length.toString()
-        ;
+        ;*/
 
-        var config = {
+        /*var config = {
             "lineModel":config.lineModel || "one",
             "showLineNumber" : config.showLineNumber || false,
             "checkbox": config.checkbox || false,
             "dataRowLength": config.data.length.toString(),
-            "sort" : config.sort || null
+            "sort" : config.sort || null,
+            "maxLineLength" : config.maxLineLength || undefined,
+            "fixedHeader": config.fixedHeader
         }
 
-        tableRenderHeader(columns,config)
+             console.log("config",config,"_config",_config)
+        */
+        tableRenderHeader()
 
         var configItems = {}
 
-        if(showLineNumber){
+        if(_config.showLineNumber){
             configItems["showLineNumber"] = {}
         }
 
-        if(config.checkbox){
+        if(_config.checkbox){
             configItems["checkbox"] = {};
         }
 
-        columns.forEach(function(item){
+        _config.columns.forEach(function(item){
             configItems[item.id] = item
         })
 
-        config["configItems"] = configItems
+        _config["configItems"] = configItems
 
         tableRenderDataRow(data,config)
 
-        this.checkBoxInit(selectRowCheck)
+        this.checkBoxInit(_config.selectRowCheck)
 
     }
 
@@ -1160,10 +1425,10 @@ class TableGrid {
 
         checkBoxHookLine();
 
-        var headerNodeAll = container.querySelector("[check-hash='header']");
+        var headerNodeAll = _container.querySelector("[check-hash='header']");
         headerNodeAll.addEventListener("click",function () {
-            var disableTrue = container.querySelectorAll("[checkbox='true'][disable]");
-            var disableFalse = container.querySelectorAll("[checkbox='false'][disable]");
+            var disableTrue = _container.querySelectorAll("[checkbox='true'][disable]");
+            var disableFalse = _container.querySelectorAll("[checkbox='false'][disable]");
 
             var headerState = headerNodeAll.getAttribute("checkbox");
 
@@ -1175,9 +1440,9 @@ class TableGrid {
                     headerNodeAll.setAttribute("checkbox",false)
                     headerNodeAll.classList.remove("iconcheckboxoutline")
                     headerNodeAll.classList.add("iconcheck-box-outline-bl")
-                    delete checkValueMapStructure['header']
+                    delete _checkValueMapStructure['header']
 
-                    var checkboxIsTrueNode = container.querySelectorAll("[checkbox='true']:not([disable])");
+                    var checkboxIsTrueNode = _container.querySelectorAll("[checkbox='true']:not([disable])");
 
                     for(let i = 0 ; i < checkboxIsTrueNode.length; i ++){
                         checkboxIsTrueNode[i].setAttribute("checkbox",false)
@@ -1185,8 +1450,8 @@ class TableGrid {
                         checkboxIsTrueNode[i].classList.remove("iconcheckboxoutline")
                         checkboxIsTrueNode[i].classList.add("iconcheck-box-outline-bl")
                         var attributeHash = checkboxIsTrueNode[i].getAttribute('check-hash');
-                        var thatCellNode = container.querySelector("[data-hash='"+ attributeHash +"']");
-                        delete checkValueMapStructure['thatCellNode']
+                        var thatCellNode = _container.querySelector("[data-hash='"+ attributeHash +"']");
+                        delete _checkValueMapStructure['thatCellNode']
                         thatCellNode.classList.remove("select-cell-Highlight")
                     }
 
@@ -1195,9 +1460,9 @@ class TableGrid {
                     headerNodeAll.setAttribute("checkbox",true)
                     headerNodeAll.classList.add("iconcheckboxoutline")
                     headerNodeAll.classList.remove("iconcheck-box-outline-bl")
-                    checkValueMapStructure['header'] = true
+                    _checkValueMapStructure['header'] = true
 
-                    var checkboxIsTrueNode = container.querySelectorAll("[checkbox='false']:not([disable])");
+                    var checkboxIsTrueNode = _container.querySelectorAll("[checkbox='false']:not([disable])");
 
                     for(let i = 0 ; i < checkboxIsTrueNode.length; i ++){
                         checkboxIsTrueNode[i].checkbox = true
@@ -1205,8 +1470,8 @@ class TableGrid {
                         checkboxIsTrueNode[i].classList.add("iconcheckboxoutline")
                         checkboxIsTrueNode[i].classList.remove("iconcheck-box-outline-bl")
                         var attributeHash = checkboxIsTrueNode[i].getAttribute('check-hash');
-                        var thatCellNode = container.querySelector("[data-hash='"+ attributeHash +"']");
-                        checkValueMapStructure[attributeHash] = true
+                        var thatCellNode = _container.querySelector("[data-hash='"+ attributeHash +"']");
+                        _checkValueMapStructure[attributeHash] = true
                         thatCellNode.classList.add("select-cell-Highlight")
                     }
                 }
@@ -1214,7 +1479,7 @@ class TableGrid {
             }else if(disableTrue && disableTrue.length > 0
                 && disableFalse && disableFalse.length > 0){ //禁用下存在true,false
 
-                var checkboxIsTrueNode = container.querySelectorAll("[checkbox]:not([disable])");
+                var checkboxIsTrueNode = _container.querySelectorAll("[checkbox]:not([disable])");
 
                 for(let i = 0 ; i < checkboxIsTrueNode.length; i ++){
                     var attributeHash = checkboxIsTrueNode[i].getAttribute('check-hash');
@@ -1227,14 +1492,14 @@ class TableGrid {
                     if(checkboxIsTrueNode[i].checkbox === true){
                         checkboxIsTrueNode[i].classList.add("iconcheckboxoutline")
                         checkboxIsTrueNode[i].classList.remove("iconcheck-box-outline-bl")
-                        var thatCellNode = container.querySelector("[data-hash='"+ attributeHash +"']");
-                        checkValueMapStructure[attributeHash] = true
+                        var thatCellNode = _container.querySelector("[data-hash='"+ attributeHash +"']");
+                        _checkValueMapStructure[attributeHash] = true
                         thatCellNode.classList.add("select-cell-Highlight")
                     }else{
                         checkboxIsTrueNode[i].classList.remove("iconcheckboxoutline")
                         checkboxIsTrueNode[i].classList.add("iconcheck-box-outline-bl")
-                        var thatCellNode = container.querySelector("[data-hash='"+ attributeHash +"']");
-                        delete checkValueMapStructure[attributeHash]
+                        var thatCellNode = _container.querySelector("[data-hash='"+ attributeHash +"']");
+                        delete _checkValueMapStructure[attributeHash]
                         thatCellNode.classList.remove("select-cell-Highlight")
                     }
                 }
@@ -1242,7 +1507,7 @@ class TableGrid {
             }else if(disableTrue && disableTrue.length === 0
                 && disableFalse && disableFalse.length > 0){//禁用下存在false
 
-                var checkboxIsTrueNode = container.querySelectorAll("[checkbox]:not([disable])");
+                var checkboxIsTrueNode = _container.querySelectorAll("[checkbox]:not([disable])");
 
                 for(let i = 0 ; i < checkboxIsTrueNode.length; i ++){
                     var attributeHash = checkboxIsTrueNode[i].getAttribute('check-hash');
@@ -1255,14 +1520,14 @@ class TableGrid {
                     if(checkboxIsTrueNode[i].checkbox === true){
                         checkboxIsTrueNode[i].classList.add("iconcheckboxoutline")
                         checkboxIsTrueNode[i].classList.remove("iconcheck-box-outline-bl")
-                        var thatCellNode = container.querySelector("[data-hash='"+ attributeHash +"']");
-                        checkValueMapStructure[attributeHash] = true
+                        var thatCellNode = _container.querySelector("[data-hash='"+ attributeHash +"']");
+                        _checkValueMapStructure[attributeHash] = true
                         thatCellNode.classList.add("select-cell-Highlight")
                     }else{
                         checkboxIsTrueNode[i].classList.remove("iconcheckboxoutline")
                         checkboxIsTrueNode[i].classList.add("iconcheck-box-outline-bl")
-                        var thatCellNode = container.querySelector("[data-hash='"+ attributeHash +"']");
-                        delete checkValueMapStructure[attributeHash]
+                        var thatCellNode = _container.querySelector("[data-hash='"+ attributeHash +"']");
+                        delete _checkValueMapStructure[attributeHash]
                         thatCellNode.classList.remove("select-cell-Highlight")
                     }
                 }
@@ -1277,7 +1542,7 @@ class TableGrid {
 
         if(selectRowCheck){
 
-            var indexList = container.querySelectorAll("[data-hash]");
+            var indexList = _container.querySelectorAll("[data-hash]");
             for(let i = 0; i < indexList.length ; i ++ ){
                 //debugger
                 var dataHashCell = indexList[i].getAttribute("data-hash");
@@ -1288,13 +1553,13 @@ class TableGrid {
                 }
                 indexList[i].addEventListener("click",function(ev){
                     var dataHash = indexList[i].getAttribute("data-hash");
-                    var hashNode = container.querySelector("[check-hash='" +dataHash+ "']");
+                    var hashNode = _container.querySelector("[check-hash='" +dataHash+ "']");
                     checkHeaderSelect(hashNode)
                 })
             }
 
         }else{
-            var nodeListOf = container.querySelectorAll("span[checkbox]");
+            var nodeListOf = _container.querySelectorAll("span[checkbox]");
             for (let nodeListOfKey = 0; nodeListOfKey < nodeListOf.length ; nodeListOfKey ++) {
                 var cellDisable = nodeListOf[nodeListOfKey].getAttribute("disable");
                 var checkHash = nodeListOf[nodeListOfKey].getAttribute("check-hash");
@@ -1315,7 +1580,7 @@ class TableGrid {
 
     getSelectRow(){
 
-        return checkValueMapStructure
+        return _checkValueMapStructure
 
     }
 

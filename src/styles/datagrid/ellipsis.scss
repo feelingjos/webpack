@@ -1,0 +1,75 @@
+.mutil-line-ellipsis {
+  width: 400px;
+ /* height: 150px;*/
+  /*line-height: 25px;*/
+  margin: 20px 20px 50px 300px;
+  border: 5px solid #AAA;
+  overflow: hidden;
+}
+/*相当于之前的prop*/
+
+.mutil-line-ellipsis:before {
+  content: '';
+  float: left;
+  width: 5px;
+  /*缩小宽度为5px，其余属性不变*/
+  height: 50px;
+}
+/*相当于之前的main*/
+
+.mutil-line-ellipsis> :first-child {
+  float: right;
+  width: 100%;
+  margin-left: -5px;
+  /*让main元素左移5px，这样main元素在宽度上就完全占满了父元素；*/
+  word-break: break-all;
+}
+/*相当于之前的realEnd*/
+
+.mutil-line-ellipsis:after {
+  content: '...';
+  box-sizing: content-box;
+  float: right;
+  position: relative;
+  /*width: 50px;
+  height: 25px;
+  top: -25px;*/
+  /*等于高度的负值，就是文字的行高*/
+  left: 100%;
+  /*bottom: -120px;*/
+  /*而设置margin-left: -50px、padding-right: 5px则是为了让realend元素的盒模型的最终宽度计算为5px。*/
+  margin-left: -50px;
+  padding-right: 5px;
+  font-size: 25px;
+  text-align: right;
+  background: linear-gradient(to right, rgba(255, 255, 255, 0), #ffffff 40px);
+}
+
+
+.table-header-call .text-ellipsis{
+  position: absolute;
+  //background: #ffffff;
+  background: #f1f1f1;
+  bottom: 0px;
+  //opacity: 0.6;
+  right: 0px;
+  width: 25px;
+  line-height: 25px;
+}
+
+.select-cell-Highlight .table-tabulation-cell-line .text-ellipsis{
+  position: absolute;
+  background: #f1f1f1;
+  bottom: 0px;
+  right: 0px;
+  width: 25px;
+  line-height: 25px;
+}
+.table-tabulation-cell-line .text-ellipsis{
+  position: absolute;
+  background: #ffffff;
+  bottom: 0px;
+  right: 0px;
+  width: 25px;
+  line-height: 25px;
+}

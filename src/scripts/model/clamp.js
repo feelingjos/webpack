@@ -15,6 +15,8 @@
     function clamp(element, options) {
         options = options || {};
 
+        //debugger
+
         var self = this,
             win = window,
             opt = {
