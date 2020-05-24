@@ -9,7 +9,7 @@
      <div id="index"></div>
      <button id="getSelectRow" >获取选行</button>
      <button id="refreshHeader" >刷新头部</button>
-     <div class="testList" style="width: 60px; display: block;
+     <!--<div class="testList" style="width: 60px; display: block;
 display: -webkit-box;
 max-width: 400px;
 line-height: 1.4;
@@ -21,16 +21,19 @@ text-overflow: ellipsis;">案，意思是原指放
          来指在桌子上写字的人。现在指的是公司或企业中从事文字工作的职位，
          就是以文字来表现已经制定的创意策略。文案它不同于设计师用画面或其他手段的表现手法，
          它是一个与广告创意先后相继的表现的过程、发展的过程、深化的过程， 多存在于广告公司，企业宣传
-     </div>
-    <!--<div id="tablecss" style="width: 1000px;height: 600px;overflow: hidden;position:relative; top: 10px;left: 10px;"></div>-->
+     </div>-->
+    <!--<div id="tablecss" style="width: 1000px;height: 600px;overflow: hidden;position:relative; top: 10px;left: 10px;"></div>
     <div id="tablecss" style="overflow: auto;height: 100%;width: 100%"></div>
+    <div id="tablecss" style="width: 1903px;height: 4920px"></div>
+     -->
+     <div id="tablecss" style="width: 100%;height: 800px"></div>
 
 </body>
 
     <script type="text/javascript">
 
         var schema = [
-            { width: 100,align: 'center',text:"1",id:"name",
+            { width: 150,align: 'center',text:"1",id:"name",
                 sort: true,
                 replace:function(text){
                     //return "asdfasdfadsdfasdfasdfasdfddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddafsdfa"
@@ -38,21 +41,14 @@ text-overflow: ellipsis;">案，意思是原指放
                 },
                 resize:true
             },
-            { width: 100, align: 'left',text:"lisasdfasdfli" +
-                "sasdfasdfl" +
-                "sasdfasdfl" +
-                "sasdfasdfl" +
-                "sasdfasdfl" +
-                "sasdfasdfl" +
-                "sasdfasdfl" +
-                "sasdfasdfl" +
-                "isasdfasdflisasdfasdflisasdfasdf",
+            { width: 150, align: 'left',text:"lisasdfasdfli" +
+                "sasdfasdfl",
                 replace:function(text){
                     //return "asdfasdfadsdfasdfasdfasdfddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddafsdfa"
                     /*return [
                         "asdf","asdfa"
                     ]*/
-                    return "ad"
+                    //return "ad"
                 },
                 id: "age",resize:true,
                 sort: true
@@ -65,10 +61,13 @@ text-overflow: ellipsis;">案，意思是原指放
                 "sasdfasdfl" +
                 "sasdfasdfl" +
                 "sasdfasdfl" +
+                "sasdfasdfl" +
+                "sasdfasdfl" +
+                "sasdfasdfl" +
                 "isasdfasdflisasdfasdflisasdfasdf",
                 replace:function(text){
                     //return "asdfasdfadsdfasdfasdfasdfddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddafsdfa"
-                    return "adfa"
+                    //return "adfa"
                     /*return [
                         "asdf","asdfa"
                     ]*/
@@ -76,7 +75,7 @@ text-overflow: ellipsis;">案，意思是原指放
             { width: 200, align: 'center',text:"fasdfadsfasdfasdfasdf",
                 replace:function(text){
                     //return "asdfasdfadsdfasdfasdfasdfddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddafsdfa"
-                    return "adf"
+                    //return "adf"
                     /*return [
                         "asdf","asdfa"
                     ]*/
@@ -84,7 +83,7 @@ text-overflow: ellipsis;">案，意思是原指放
             { width: 200, align: 'center',text:"/",
                 replace:function(text){
                     //return "asdfasdfadsdfasdfasdfasdfddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddafsdfa"
-                    return "Asdf"
+                    //return "Asdf"
                     /*return [
                         "asdf","asdfa"
                     ]*/
@@ -92,7 +91,7 @@ text-overflow: ellipsis;">案，意思是原指放
             { width: 200, align: 'center',text:"。",
                 replace:function(text){
                     //return "asdfasdfadsdfasdfasdfasdfddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddafsdfa"
-                    return "asdf"
+                    //return "asdf"
                     /*return [
                         "asdf","asdfa"
                     ]*/
@@ -114,8 +113,9 @@ text-overflow: ellipsis;">案，意思是原指放
                 showLineNumber: true,//显示行号
                 selectRowCheck: true,//点击行选中
                 selectModel: 'rowspan',//通过方框勾选default:rowspan
-                //maxLineLength: "3" ,// 设置最大行数 与lineModel:'auto' 配合使用
-                fixedHeader: true  //锁定头部
+                //maxLineLength: 3 ,// 设置最大行数 与lineModel:'auto' 配合使用
+                fixedHeader: true//, //锁定头部
+                //cellScrollBar: false
             })
 
             var refreshHeader = document.getElementById("refreshHeader");
@@ -142,6 +142,7 @@ text-overflow: ellipsis;">案，意思是原指放
                 index.innerHTML = 'x:' + x + ';y:' + y
             }
 
+            console.log("DATASIZE:",data.length);
 
         }
 

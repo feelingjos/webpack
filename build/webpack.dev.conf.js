@@ -146,9 +146,11 @@ module.exports = {
         open: true,
         openPage:'example/table/tableinit/tablecss.html',
         port: 9002,
+        host: '0.0.0.0',
         watchContentBase   : true,
         disableHostCheck   : true, // [1]
         overlay            : true,
+        useLocalIp         : true,
         stats: {
             assets     : true,
             children   : false,

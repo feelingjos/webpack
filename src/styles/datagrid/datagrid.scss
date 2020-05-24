@@ -5,6 +5,12 @@ html, body{
   width: 100%;
   //font-size: 20px;
 }
+
+.datagrid-default-container{
+  height: 100%;
+  width: 100%;
+}
+
 .table-body-container-feelj{
   height: 700px;
   //width: 650px;
@@ -26,10 +32,10 @@ html, body{
   position: relative;
   z-index: 999;
 }
-.header-cell:hover .text-ellipsis{
+.table-body-tabulation:hover .text-ellipsis{
   background-color: #f1f1f1;
 }
-.header-cell:hover {
+.table-body-tabulation:hover {
   background-color: #f1f1f1;
 }
 
@@ -235,6 +241,8 @@ html, body{
 
 .parent{
   overflow: hidden;
+  height: auto;
+  width: auto;
 }
 
 .assistor{
@@ -254,11 +262,26 @@ html, body{
   //max-height: 75px;
 }
 
-.header-fiexd-true{
-  /*position:fixed;
-  top: 55px;
-  left: 10px;*/
+/**
+  行可视范围
+ */
+.line-visual-container{
+  overflow: hidden;
+  //height: 648px;
+  //background-image: linear-gradient(#e66465, #9198e5);
+  //height: 100%;
+  //position: absolute;
 }
+
+.line-fiexd-visual-container{
+  //top: 10px;
+  overflow: hidden;
+  //height: 598px;
+  //overflow: scroll;
+  //overflow: auto;
+}
+
+
 
 
 

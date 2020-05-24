@@ -6,6 +6,7 @@ require('core-js/features/array/index-of')
 require('core-js/features/function/bind')
 require('core-js/features/promise')
 
+import './src/scripts/model/md5'
 import './src/scripts/model/clamp.js'
 import {TableGrid} from './src/scripts/table.js'
 import './src/scripts/model/getEventListeners'

@@ -3,8 +3,8 @@ import {genId} from './util/utils'
 import {Dom} from './util/dom.js'
 
 var _el ,_container ,_checkValueMapStructure = {}
-    ,_range,_x, _y , _hashDateMap = {},_maxValue,_config,
-    _headerStyleRules,_LengthMap
+    ,_range,_x, _y , _hashDateMap = {},_config,_dataResultsLength,
+    _headerStyleRules,_LengthMap,_keyMapHeader,_dataMapStructure = {}
 ;
 
 const getOffset = function(dom){
@@ -185,6 +185,7 @@ const checkHeaderSelect = function (selectCheckBox){
 }
 
 var rangeFunc = function(range, targetRange) {
+    //todo 范围校验
     return Math.max(range.top, targetRange.top) < Math.min(range.top + range.height, targetRange.top + targetRange.height);
 }
 
@@ -259,6 +260,9 @@ const selectModelFun = function (selectModel = 'default') {
             var _y = null;
 
             document.documentElement.addEventListener("mousemove",function (ev) {
+
+                var querySelector = document.querySelector(".assistor");
+
                 if(selDiv) {
 
                     if(selDiv.style.display == "none") {
@@ -273,6 +277,8 @@ const selectModelFun = function (selectModel = 'default') {
                         left: _x > startX ? startX : _x,
                         top: _y > startY ? startY : _y
                     };
+
+                    _range.top += querySelector.scrollTop
 
                     checkRange(_range)
 
@@ -344,12 +350,12 @@ const tableRenderHeader = function(){
         dataRowLength = _config.dataRowLength || "100",maxLineLength = _config.maxLineLength || undefined
         ,headerData = _config.columns
 
-    var headerWidth = {}, LengthMap = {header:{}},maxValue = {1:"null"}, headerCssRules = ``,
+    var headerWidth = {}, LengthMap = {header:{},maxValue:{1:""}},maxValue = {1:"null"}, headerCssRules = ``,
         maxHeight = undefined, headerContainer = `` //头部样式
 
     if(lineModel === "auto"){//
 
-        if(maxLineLength && maxLineLength > 0){
+        if(maxLineLength && maxLineLength > 1){
             maxHeight = maxLineLength * 25
         }
 
@@ -371,13 +377,13 @@ const tableRenderHeader = function(){
                 heightRelative:false,
                 ellipsis: ellipsis
             }
-            if(height > Object.keys(maxValue)[0]){
-                maxValue = {}
-                maxValue[height] = item.id
+            if(height > Object.keys(LengthMap.maxValue)[0]){
+                LengthMap.maxValue = {}
+                LengthMap.maxValue[height] = item.id
             }
         })
-        LengthMap.header[Object.values(maxValue)[0]].heightAbsolute = !LengthMap.header[Object.values(maxValue)[0]].heightAbsolute
-        LengthMap.header[Object.values(maxValue)[0]].heightRelative = !LengthMap.header[Object.values(maxValue)[0]].heightRelative
+        LengthMap.header[Object.values(LengthMap.maxValue)[0]].heightAbsolute = !LengthMap.header[Object.values(LengthMap.maxValue)[0]].heightAbsolute
+        LengthMap.header[Object.values(LengthMap.maxValue)[0]].heightRelative = !LengthMap.header[Object.values(LengthMap.maxValue)[0]].heightRelative
     }
 
     headerContainer = `<div class="table-header-line-column header-cell 
@@ -542,17 +548,25 @@ const tableRenderHeader = function(){
 
     _LengthMap = LengthMap
     
-    _maxValue = maxValue
+}
 
-    /*var rulesheaders
+const checkLineSort = function () {
 
-    for(let dd = 0; dd < rules.length; dd ++ ){
-        var ruleheaders = rules[dd]
-        if(ruleheaders.selectorText === '.header-cell'){
-            rulesheaders = ruleheaders
-            break
+    var temp,min;
+
+    _keyMapHeader = Object.keys(_LengthMap.header);
+
+    for(var i = 0 ;i < _keyMapHeader.length - 1 ; i ++){
+        min = i;
+        for(var j = i + 1;j < _keyMapHeader.length; j ++){
+            if(_LengthMap.header[_keyMapHeader[j]].heightLength > _LengthMap.header[_keyMapHeader[i]].heightLength ){
+                temp= _keyMapHeader[i];
+                _keyMapHeader[i] = _keyMapHeader[j];
+                _keyMapHeader[j] = temp;
+            }
         }
-    }*/
+    }
+
 
 }
 
@@ -561,7 +575,7 @@ const tableRenderDataRow = function (rowData,config) {
     var hashDateMap = {},lineModel = config.lineModel || 'one',  sort = {desc: ">",asc: "<"}, //绘制头部
         dataLength = {},configItems = config.configItems ,showLineNumber = config.showLineNumber || false,
         dataResult = {},fixedHeader = config.fixedHeader || false,maxLineLength = config.maxLineLength || undefined,
-        maxHeight = undefined
+        maxHeight = undefined,cellScrollBar = config.maxLineLength || false
 
     if(config.sort){
         for (var i = 0; i < rowData.length - 1; i++) {
@@ -581,7 +595,6 @@ const tableRenderDataRow = function (rowData,config) {
                         rowData[j + 1] = temp;
                     }
                 }
-
             }
         }
     }
@@ -603,7 +616,7 @@ const tableRenderDataRow = function (rowData,config) {
 
             var LentMaxValue = {1:"field"}
 
-            if(maxLineLength && maxLineLength > 0){
+            if(maxLineLength && maxLineLength > 1){
                 maxHeight = maxLineLength * 25
             }
 
@@ -633,6 +646,11 @@ const tableRenderDataRow = function (rowData,config) {
                         LentMaxValue[heightCell] = itemKey
                     }
 
+                    if(config.lineModel === "auto" && config.maxLineLength > 1
+                         && cellScrollBar){
+                        ellipsis = false
+                    }
+
 
                     dataLength[random][itemKey] = {
                         native:item[itemKey],
@@ -655,10 +673,14 @@ const tableRenderDataRow = function (rowData,config) {
                         heightCell = maxHeight
                     }
 
-
                     if(heightCell > Object.keys(LentMaxValue)[0]){
                         LentMaxValue = {}
                         LentMaxValue[heightCell] = itemKey
+                    }
+
+                    if(config.lineModel === "auto" && config.maxLineLength > 1
+                        && cellScrollBar){
+                        ellipsis = false
                     }
 
                     dataLength[random][itemKey] = {
@@ -669,8 +691,6 @@ const tableRenderDataRow = function (rowData,config) {
                         ellipsis: ellipsis
                     };
                 }
-
-
             }
 
             dataLength[random].maxItem = LentMaxValue
@@ -763,7 +783,7 @@ const tableRenderDataRow = function (rowData,config) {
                 var domCell = `<div class="table-tabulation-cell-line cell-header-${cell} 
                               ${lineModel === "auto" ? `${dataLength[random][cell].heightRelative ? `heightRelative` : `heightAbsolute`} FlexContainer horizontally word-break-all` : `one-line-fixed-height space-nowrap`}
                                 hide-surplus-text " > ${lineModel === "auto" ? `<div class="FlexItem line-Ellipsis text-row-line-sdtandard" 
-                              style="max-height: ${Object.keys(dataLength[random].maxItem)[0]}px">` : ``} `
+                              style="overflow:auto;max-height: ${Object.keys(dataLength[random].maxItem)[0]}px">` : ``} `
 
                 if (configItems[cell].replace && typeof configItems[cell].replace === "function"
                     && typeof configItems[cell].replace(item[cell]) !== "undefined"
@@ -809,7 +829,7 @@ const tableRenderDataRow = function (rowData,config) {
         }
 
         if(config.fixedHeader){
-            element.appendChild(tableBodyTabulation)
+            //element.appendChild(tableBodyTabulation)
         }else{
             _container.appendChild(tableBodyTabulation)
         }
@@ -821,10 +841,6 @@ const tableRenderDataRow = function (rowData,config) {
         var querySelector = _container.querySelector(".headerCell");
 
         element.style.marginTop = querySelector.offsetHeight + 'px'
-
-        //element.classList.add("heightRelative")
-
-        //element.setAttribute("style","top:60px")
 
         _container.appendChild(element)
     }
@@ -838,43 +854,6 @@ const tableRenderDataRow = function (rowData,config) {
             break
         }
     }
-
-/*
-    for (let dataLengthKey in dataLength) {
-        console.log(dataLength[dataLengthKey]);
-        var querySelector4 = document.querySelector("[name='"+dataLengthKey+"']");
-        try{
-            //var querySelectoreed = document.querySelector("["+dataLengthKey+"ellipsis=name]");
-            var querySelectoreed = document.querySelector("[eli='name-"+dataLengthKey+"']");
-            console.log(querySelectoreed)
-        }catch (e) {
-            console.log(e.toString());
-        }
-
-        console.log("asdf",querySelector4);
-
-        //if(Object.keys(dataLength[dataLengthKey].maxItem)[0]  >= dataLength[dataLengthKey][item.id].heightLength ){
-        if(maxHeight && dataLength[dataLengthKey]["name"].heightLength  < maxHeight + 2 && dataLength[dataLengthKey]["name"].ellipsis){
-            dataLength[dataLengthKey]["name"].ellipsis = false
-            //var querySelector4 = document.querySelector(`[${dataLengthKey}-ellipsis='${item.id}']`);
-
-            console.log("true",querySelector4)
-
-            /!*if(querySelector4){
-                querySelector4.style.display = "none"
-            }*!/
-        }else if(!dataLength[dataLengthKey]["name"].ellipsis){
-            dataLength[dataLengthKey]["name"].ellipsis = true
-            //var querySelector4 = document.querySelector(`[${dataLengthKey}-ellipsis='${item.id}']`);
-
-            console.log("false",querySelector4)
-
-            /!*if (querySelector4) {
-                querySelector4.style.display = "inline"
-            }*!/
-        }
-    }
-*/
 
     _config.columns.forEach(function(item){
 
@@ -894,20 +873,7 @@ const tableRenderDataRow = function (rowData,config) {
                 }
             }
 
-            var temp,min;
-
-            var keyMapHeader = Object.keys(_LengthMap.header);
-
-            for(var i = 0 ;i < keyMapHeader.length - 1 ; i ++){
-                min = i;
-                for(var j = i + 1;j < keyMapHeader.length; j ++){
-                    if(_LengthMap.header[keyMapHeader[j]].heightLength > _LengthMap.header[keyMapHeader[i]].heightLength ){
-                        temp= keyMapHeader[i];
-                        keyMapHeader[i] = keyMapHeader[j];
-                        keyMapHeader[j] = temp;
-                    }
-                }
-            }
+            checkLineSort();
 
             var mouseStart = {}
             var rightStart = {}
@@ -983,10 +949,11 @@ const tableRenderDataRow = function (rowData,config) {
                         }else if(!_LengthMap.header[item.id].ellipsis){
                             _LengthMap.header[item.id].ellipsis = true
                             var querySelector4 = _container.querySelector("[ellipsis='" + item.id + "']");
-                            querySelector4.style.display = "inline";
-                        }
 
-                        //console.log("dataLength",dataLength);
+                            if(querySelector4){
+                                querySelector4.style.display = "inline";
+                            }
+                        }
 
                         for (let dataLengthKey in dataLength) {
                             dataLength[dataLengthKey][item.id].heightLength = dataLength[dataLengthKey][item.id].text.toString().render(
@@ -1099,13 +1066,14 @@ const tableRenderDataRow = function (rowData,config) {
                         }
 
                         if(_LengthMap.header[item.id].heightRelative
-                            && item.text.render("hide-surplus-text,horizontally,word-break-all,table-header-call,text-overall-situation",`width: ${headercell}px;`).height < Object.keys(_maxValue)[0]){
+                            && item.text.render("hide-surplus-text,horizontally,word-break-all,table-header-call,text-overall-situation",`width: ${headercell}px;`).height
+                            < Object.keys(_LengthMap.maxValue)[0]){
 
-                            _maxValue = {}
-                            if(_LengthMap.header[keyMapHeader[1]].heightLength > _LengthMap.header[keyMapHeader[0]].heightLength){
-                                _maxValue[_LengthMap.header[keyMapHeader[1]].heightLength] = keyMapHeader[1]
+                            _LengthMap.maxValue = {}
+                            if(_LengthMap.header[_keyMapHeader[1]].heightLength > _LengthMap.header[_keyMapHeader[0]].heightLength){
+                                _LengthMap.maxValue[_LengthMap.header[_keyMapHeader[1]].heightLength] = _keyMapHeader[1]
                             }else{
-                                _maxValue[_LengthMap.header[keyMapHeader[0]].heightLength] = keyMapHeader[0]
+                                _LengthMap.maxValue[_LengthMap.header[_keyMapHeader[0]].heightLength] = _keyMapHeader[0]
                             }
 
                             _LengthMap.header[item.id].heightLength = item.text.render("hide-surplus-text,horizontally,word-break-all,table-header-call,text-overall-situation",`width: ${headercell}px;`).height
@@ -1113,15 +1081,15 @@ const tableRenderDataRow = function (rowData,config) {
                             _LengthMap.header[item.id].heightRelative = !_LengthMap.header[item.id].heightRelative
                             _LengthMap.header[item.id].heightAbsolute = !_LengthMap.header[item.id].heightAbsolute
                              
-                            _LengthMap.header[Object.values(_maxValue)[0]].heightRelative = !_LengthMap.header[Object.values(_maxValue)[0]].heightRelative
-                            _LengthMap.header[Object.values(_maxValue)[0]].heightAbsolute = !_LengthMap.header[Object.values(_maxValue)[0]].heightAbsolute
+                            _LengthMap.header[Object.values(_LengthMap.maxValue)[0]].heightRelative = !_LengthMap.header[Object.values(_LengthMap.maxValue)[0]].heightRelative
+                            _LengthMap.header[Object.values(_LengthMap.maxValue)[0]].heightAbsolute = !_LengthMap.header[Object.values(_LengthMap.maxValue)[0]].heightAbsolute
 
                             var thatItem = _container.querySelector(`[field=${item.id}]`);
 
                             thatItem.classList.add("heightAbsolute");
                             thatItem.classList.remove("heightRelative");
 
-                            var thatItemOther = _container.querySelector(`[field=${Object.values(_maxValue)[0]}]`);
+                            var thatItemOther = _container.querySelector(`[field=${Object.values(_LengthMap.maxValue)[0]}]`);
 
                             thatItemOther.classList.add("heightRelative");
                             thatItemOther.classList.remove("heightAbsolute");
@@ -1129,7 +1097,7 @@ const tableRenderDataRow = function (rowData,config) {
                         }else{
 
                             if( _LengthMap.header[item.id].heightAbsolute
-                                && item.text.render("hide-surplus-text,horizontally,word-break-all,table-header-call,text-overall-situation",`width: ${headercell}px;`).height > Object.keys(_maxValue)[0]){
+                                && item.text.render("hide-surplus-text,horizontally,word-break-all,table-header-call,text-overall-situation",`width: ${headercell}px;`).height > Object.keys(_LengthMap.maxValue)[0]){
 
                                 _LengthMap.header[item.id].heightLength = item.text.render("hide-surplus-text,horizontally,word-break-all,table-header-call,text-overall-situation",`width: ${headercell}px;`).height
                                 
@@ -1141,18 +1109,19 @@ const tableRenderDataRow = function (rowData,config) {
                                 thatItem.classList.add("heightRelative");
                                 thatItem.classList.remove("heightAbsolute");
 
-                                var thatItemOther = _container.querySelector(`[field=${Object.values(_maxValue)[0]}]`);
+                                var thatItemOther = _container.querySelector(`[field=${Object.values(_LengthMap.maxValue)[0]}]`);
 
                                 thatItemOther.classList.add("heightAbsolute");
                                 thatItemOther.classList.remove("heightRelative");
 
-                                _LengthMap.header[Object.values(_maxValue)[0]].heightRelative = !_LengthMap.header[Object.values(_maxValue)[0]].heightRelative
-                                _LengthMap.header[Object.values(_maxValue)[0]].heightAbsolute = !_LengthMap.header[Object.values(_maxValue)[0]].heightAbsolute
+                                _LengthMap.header[Object.values(_LengthMap.maxValue)[0]].heightRelative = !_LengthMap.header[Object.values(_LengthMap.maxValue)[0]].heightRelative
+                                _LengthMap.header[Object.values(_LengthMap.maxValue)[0]].heightAbsolute = !_LengthMap.header[Object.values(_LengthMap.maxValue)[0]].heightAbsolute
                                 
-                                _maxValue = {}
-                                _maxValue[item.text.render("hide-surplus-text,horizontally,word-break-all,table-header-call,text-overall-situation",`width: ${headercell}px;`).height] = item.id
+                                _LengthMap.maxValue = {}
+                                _LengthMap.maxValue[item.text.render("hide-surplus-text,horizontally,word-break-all,table-header-call,text-overall-situation",`width: ${headercell}px;`).height] = item.id
                             }
                         }
+                        checkLineSort();
                     }
 
                     ruleThat.style.width = headercell + 'px'
@@ -1244,8 +1213,13 @@ const tableRenderDataRow = function (rowData,config) {
 
                 for(let i = 0 ; i < dome.length ; i ++){
                     sortItemMap[i] = _container.querySelector(`[data-index="${Object.keys(dome[i])[0]}"]`)
-                    _container.removeChild(_container.querySelector(`[data-index="${Object.keys(dome[i])[0]}"]`))
+                    //_container.removeChild(_container.querySelector(`[data-index="${Object.keys(dome[i])[0]}"]`))
+                    document.removeChild(sortItemMap[i])
                 }
+
+                /*var rowContainer = _container.querySelector(".fiexd-row-cell-scroll-container");
+
+                _container.removeChild(rowContainer);*/
 
                 for (let i = 0 ; i < sortItemMap.length ; i ++) {
                     _container.appendChild(sortItemMap[i])
@@ -1255,107 +1229,887 @@ const tableRenderDataRow = function (rowData,config) {
         return true
     })
 
+    _dataResultsLength = dataLength;
 
 }
 
+/**
+ * 获取 滚动条距离顶部距离
+ * @returns {number}
+ */
+const  getScrollTop = function(dom) {
+    var scrollTop = 0;
+    if(dom.scrollTop) {
+        scrollTop = dom.scrollTop;
+    } else if(document.body) {
+        scrollTop = document.body.scrollTop;
+    }
+    return scrollTop;
+}
+
+const rowDataStructureInit = function () {
+
+    var dataMap = {allHeight:0},sort = {desc: ">",asc: "<"},maxHeight = 0
+
+    //var element = document.createElement("div");
+
+    var element = _container.querySelector(".fiexd-row-cell-scroll-container")
+
+    var linevisualcontainer = document.createElement("div");
+
+    linevisualcontainer.classList.add("line-visual-container")
+
+    //linevisualcontainer.classList.add("heightAbsolute")
+
+    //todo 设置容器大小
+
+    //linevisualcontainer.style.height = "1185px"
+
+    element.appendChild(linevisualcontainer);
+
+    var lineFixedVisualContainer = document.createElement("div");
+
+    lineFixedVisualContainer.classList.add("line-fiexd-visual-container")
+
+    //有用
+    //lineFixedVisualContainer.classList.add("heightAbsolute")
+
+    linevisualcontainer.appendChild(lineFixedVisualContainer);
+
+    if(_config.sort){
+        for (var i = 0; i < _config.data.length - 1; i++) {
+            // 内层循环,控制比较的次数，并且判断两个数的大小
+            for (var j = 0; j < _config.data.length - 1 - i; j++) {
+                // 白话解释：如果前面的数大，放到后面(当然是从小到大的冒泡排序)
+                if(typeof _config.data[j][_config.sort.field] === "number"){
+                    if(eval(_config.data[j][_config.sort.field] + sort[_config.sort.type || "desc"] + _config.data[j + 1][_config.sort.field])){
+                        let temp = _config.data[j];
+                        _config.data[j] = _config.data[j + 1];
+                        _config.data[j + 1] = temp;
+                    }
+                }else{
+                    if(eval(_config.data[j][_config.sort.field].length + sort[_config.sort.type || "desc"] + _config.data[j + 1][_config.sort.field].length)){
+                        let temp = _config.data[j];
+                        _config.data[j] = _config.data[j + 1];
+                        _config.data[j + 1] = temp;
+                    }
+                }
+            }
+        }
+    }
+
+    var initHeight = 0 ; //初始化高度
+
+    //console.log("_config.data 0",_config.data[0]);
+    //console.log("_config.data 2",_config.data);
+
+    _config.data.forEach(function (item,index) {
+
+        var arr = {};
+        //var random = genId()
+
+        var cellConfig = item["config"] || {}
+
+        //console.log("_config.item",item);
+
+        var random = md5(JSON.stringify(item));
+
+        dataMap[random] = {}
+
+        dataMap[random].rowIndex = index
+
+        if(_config.lineModel === "auto"){
+
+            dataMap[random].maxVal = 0
+
+            var fieldData = {}
+
+            if(_config.maxLineLength && _config.maxLineLength > 1){
+                maxHeight = _config.maxLineLength * 25
+            }
+
+            var config = {}
+
+            for (let itemKey in item) {
+
+                if(itemKey === "config"){
+                    config = item[itemKey]
+                    continue
+                }
+
+                if(_config.configItems[itemKey].replace
+                    && typeof _config.configItems[itemKey].replace === "function"
+                    && typeof _config.configItems[itemKey].replace(item[itemKey]) !== "undefined"
+                    && typeof _config.configItems[itemKey].replace(item[itemKey]) !== "object" ){
+
+                    var heightCell = _config.configItems[itemKey].replace(item[itemKey]).toString().render("hide-surplus-text,horizontally," +
+                        "word-break-all,table-tabulation-cell-line,text-overall-situation",`width:${_config.configItems[itemKey].width}px`).height
+
+                    var ellipsis = false;
+
+                    if(maxHeight && heightCell > maxHeight ){
+                        ellipsis = true
+                        heightCell = maxHeight
+                    }
+
+                    if(heightCell > dataMap[random].maxVal){
+                        dataMap[random].maxKey = itemKey
+                        dataMap[random].maxVal = heightCell
+
+                    }
+
+                    if(_config.lineModel === "auto" && _config.maxLineLength > 1
+                        && _config.cellScrollBar && _config.cellScrollBar === "true"){
+                        ellipsis = false
+                    }
+
+                    fieldData[itemKey] = {
+                        native:item[itemKey],
+                        text: _config.configItems[itemKey].replace(item[itemKey]),
+                        heightLength: heightCell,
+                        heightAbsolute:true,
+                        heightRelative:false,
+                        ellipsis: ellipsis
+                    };
+
+                }else{
+
+                    var heightCell = item[itemKey].toString().render("hide-surplus-text,horizontally,word-break-all," +
+                        "table-tabulation-cell-line,text-overall-situation",`width:${_config.configItems[itemKey].width}px`).height;
+
+                    var ellipsis = false;
+
+                    if(maxHeight && heightCell > maxHeight ){
+                        ellipsis = true
+                        heightCell = maxHeight
+                    }
+
+                    if(heightCell > dataMap[random].maxVal){
+                        dataMap[random].maxKey = itemKey
+                        dataMap[random].maxVal = heightCell
+                    }
+
+                    if(_config.lineModel === "auto" && _config.maxLineLength > 1
+                        && _config.cellScrollBar && _config.cellScrollBar === "true"){
+                        ellipsis = false
+                    }
+
+                    fieldData[itemKey] = {
+                        text:item[itemKey],
+                        heightLength: heightCell,
+                        heightAbsolute:true,
+                        heightRelative:false,
+                        ellipsis: ellipsis
+                    };
+                }
+            }
+
+            dataMap[random].field = fieldData
+            dataMap[random].config = config
+
+            dataMap[random]["field"][dataMap[random].maxKey].heightAbsolute = !dataMap[random]["field"][dataMap[random].maxKey].heightAbsolute
+            dataMap[random]["field"][dataMap[random].maxKey].heightRelative = !dataMap[random]["field"][dataMap[random].maxKey].heightRelative
+
+            dataMap[random].miniRange = initHeight
+
+            initHeight += dataMap[random].maxVal
+
+            dataMap[random].maxRange = initHeight
+
+        }else{
+
+            dataMap[random].field = item
+            dataMap[random].config = item["config"]
+            dataMap[random].rowIndex = index
+
+        }
+
+
+
+        if(_config.lineModel === "one"){
+            if(_config.showLineNumber){
+
+                var showLineNumberdomCells = `
+                         <div class="table-tabulation-cell-line 
+                          one-line-fixed-height space-nowrap cell-check-box-offset margin-right-left
+                            hide-surplus-text "> 
+                        <div class=" one-line-fixed-height">
+                             ${index}
+                           </div>
+                        </div>
+                    `
+
+                Object.defineProperty(arr, "showLineNumber", {
+                    value: showLineNumberdomCells,
+                    writable: true // 是否可以改变
+                })
+
+            }
+
+            var domCells = `<div class="table-tabulation-cell-line cell-header-check-box
+                          one-line-fixed-height space-nowrap
+                            hide-surplus-text "> 
+                <div class="cell-header-check-box one-line-fixed-height">
+                    <span class="iconfont icon iconcheck-box-outline-bl ${cellConfig && cellConfig.disable && cellConfig.disable === "true" ? `cell-check-box-disable` : ``}" 
+                    ${cellConfig && cellConfig.disable || cellConfig.disable === "true" ? `disable='true'` : ``} check-hash="${random}"   checkbox="false"></span>
+                   </div>
+                </div>`
+
+            Object.defineProperty(arr, "checkbox", {
+                value: domCells,
+                writable: true // 是否可以改变
+            })
+
+        }else{
+
+            if(_config.showLineNumber){
+
+                var showLineNumberdomCells = `
+                         <div class="table-tabulation-cell-line  
+                          heightAbsolute horizontally word-break-all
+                           FlexContainer height-fill-parant cell-show-line-width margin-right-left
+                            "> 
+                           <div class="FlexItem">
+                            ${index}
+                           </div>
+                        </div>
+                    `
+
+                Object.defineProperty(arr, "showLineNumber", {
+                    value: showLineNumberdomCells,
+                    writable: true // 是否可以改变
+                })
+
+
+            }
+
+            var domCells = `<div class="table-tabulation-cell-line cell-header-check-box
+                          heightAbsolute horizontally word-break-all
+                            hide-surplus-text  FlexContainer height-fill-parant
+                            ${_config.showLineNumber ? `cell-check-box-offset`: ``}
+                            >
+                               <div class="one-line-fixed-height FlexItem">
+                                <span class="iconfont icon iconcheck-box-outline-bl ${cellConfig && cellConfig.disable && cellConfig.disable === "true" ? `cell-check-box-disable` : ``} " 
+                                 ${cellConfig && cellConfig.disable || cellConfig.disable === "true" ? `disable='true'` : ``}
+                                             check-hash="${random}" checkbox="false"></span>
+                   </div>
+                </div>`
+
+            Object.defineProperty(arr, "checkbox", {
+                value: domCells,
+                writable: true // 是否可以改变
+            })
+
+        }
+
+        //todo 初始化生成
+
+        for(let cell in item){
+
+            if(cell === "config") {
+                continue
+            }
+            var domCell = `<div class="table-tabulation-cell-line cell-header-${cell} 
+                          ${_config.lineModel === "auto" ? `${dataMap[random]["field"][cell].heightRelative ? `heightRelative` : `heightAbsolute`} FlexContainer horizontally word-break-all` : `one-line-fixed-height space-nowrap`}
+                            hide-surplus-text " > ${_config.lineModel === "auto" ? `<div class="FlexItem line-Ellipsis text-row-line-sdtandard" 
+                          style="overflow:auto;max-height: ${dataMap[random]["field"].maxVal}px">` : ``} `
+
+            if (_config.configItems[cell].replace && typeof _config.configItems[cell].replace === "function"
+                && typeof _config.configItems[cell].replace(item[cell]) !== "undefined"
+                && typeof _config.configItems[cell].replace(item[cell]) !== "object") {
+                domCell += typeof _config.configItems[cell].replace(item[cell]) !== "undefined" ? _config.configItems[cell].replace(item[cell]) : item[cell]
+            } else {
+                domCell += item[cell]
+            }
+
+            domCell += ` ${_config.lineModel === "auto" ? `</div>` : ``}
+                      ${_config.lineModel === "auto" ?  `${dataMap[random]["field"][cell].ellipsis ? `<div class="text-ellipsis" ellipsis="${cell}-${random}">...</div>`: ``}` : ``}
+                    </div>`
+
+            Object.defineProperty(arr, cell, {
+                value: domCell,
+                writable: true // 是否可以改变
+            })
+
+        }
+
+        var tableBodyTabulation = document.createElement("div");
+
+        tableBodyTabulation.setAttribute("data-index",index)
+        tableBodyTabulation.setAttribute("data-hash",random)
+
+        //排序使用
+        //dataResult[index] = item
+
+        tableBodyTabulation.classList.add("table-body-tabulation")
+        if(_config.lineModel === "auto"){
+            tableBodyTabulation.classList.add("heightRelative")
+        }
+        tableBodyTabulation.classList.add("header-cell")
+
+        for (let configItemsKey in _config.configItems) {
+            if(arr[configItemsKey]){
+                Dom.strCastDom(arr[configItemsKey],tableBodyTabulation)
+            }else{
+                let domCell =  `<div class="table-tabulation-cell-line cell-header-${configItemsKey} hide-surplus-text" >
+                    </div>`
+                Dom.strCastDom(domCell,tableBodyTabulation)
+            }
+        }
+
+        if(_config.fixedHeader){
+            //linevisualcontainer.appendChild(tableBodyTabulation)
+            lineFixedVisualContainer.appendChild(tableBodyTabulation)
+        }else{
+            _container.appendChild(tableBodyTabulation)
+        }
+
+        //initHeight += dataMap[random].maxVal
+
+    })
+
+    dataMap.allHeight = initHeight;
+
+    //console.log(dataMap);
+
+    return dataMap;
+
+    /*if(_config.fixedHeader) {
+        element.classList.add("fiexd-row-cell-scroll-container")
+
+        var querySelector = _container.querySelector(".headerCell");
+
+        element.style.marginTop = querySelector.offsetHeight + 'px'
+
+        //_container.appendChild(element)
+    }*/
+
+    //console.log(dataMap);
+
+}
+
+/**
+ * 获取滚动条距离
+ * @param d
+ * @param callback
+ * @param refresh
+ */
+const scrollDistance = function(d,callback, refresh) {
+
+    // Make sure a valid callback was provided
+    if(!callback || typeof callback !== 'function') return;
+
+    // Variables
+    var isScrolling, start, end, distance;
+
+    // Listen for scroll events
+    d.addEventListener('scroll', function(event) {
+
+        // Set starting position
+        if(!start) {
+            start = d.scrollTop;
+        }
+
+        // Clear our timeout throughout the scroll
+        window.clearTimeout(isScrolling);
+
+        // Set a timeout to run after scrolling ends
+        isScrolling = setTimeout(function() {
+
+            // Calculate distance
+            end = d.scrollTop;
+            distance = end - start;
+
+            // Run the callback
+            callback(distance,distance > 0,start, end);
+
+            // Reset calculations
+            start = null;
+            end = null;
+            distance = null;
+
+        }, refresh || 66);
+
+    }, false);
+
+};
+
 const tableStyleFun = function () {
 
-    /*console.log(_container.width,_container.width,getOffset(_container),window.getComputedStyle(_container).height,
-        window.getComputedStyle(_container).width);
+    var htmlDivElement1 = document.createElement("div")
 
-    var cellContainer = _container.querySelector(".fiexd-row-cell-scroll-container");
-
-    console.log(cellContainer.width,cellContainer.width,getOffset(cellContainer),window.getComputedStyle(cellContainer).height,
-        window.getComputedStyle(cellContainer).width);*/
-
-    /*var headerContainer = document.querySelector(".table-header-line-column");
-    var rowClass = document.querySelector(".fiexd-row-cell-scroll-container");
-
-    console.log(_container.getBoundingClientRect().height,headerContainer.getBoundingClientRect().height,
-        rowClass.getBoundingClientRect().height,_container.scrollHeight);*/
-
-    /*var rowCell = document.querySelector(".fiexd-row-cell-scroll-container");
-
-    console.log(getOffset(rowCell));
-
-    var k = Object.values(_maxValue)[0]
-
-    var querySelector = document.querySelector(".cell-header-"+k);*/
-
-    //console.log(querySelector.querySelector(".line-Ellipsis").getAttribute("style"));
-
-    var htmlDivElement1 = document.createElement("div");
-
-    //htmlDivElement1.classList.add("heightRelative")
     htmlDivElement1.classList.add("assistor")
 
-    var htmlDivElement = document.createElement("div");
+    var htmlDivElement = document.createElement("div")
 
-    var querySelector = _container.querySelector(".headerCell");
-    var querySelector1 = _container.querySelector(".fiexd-row-cell-scroll-container");
+    var querySelector = _container.querySelector(".headerCell")
+    var querySelector1 = _container.querySelector(".fiexd-row-cell-scroll-container")
 
     htmlDivElement.appendChild(querySelector)
     htmlDivElement.appendChild(querySelector1)
 
     querySelector.classList.add("heightAbsolute")
 
-    //querySelector.style.top = 0
-
-    //htmlDivElement.classList.add("heightRelative")
     htmlDivElement.classList.add("parent")
 
     htmlDivElement1.appendChild(htmlDivElement)
 
     _container.appendChild(htmlDivElement1)
 
-    //debugger
-    //window.onload = function () {
-        var querySelector1 = document.querySelector(".headerCell");
+    var dataMapSource =  rowDataStructureInit()
 
-        var top = getOffset(querySelector1).top;
+    var querySelectorassistor = document.querySelector(".assistor")
 
-        //获取滚动条的滑动距离
-        //var scroH = $(this).scrollTop();
-        // console.log(scroH);
-        //滚动条的滑动距离大于等于定位元素距离浏览器顶部的距离，就固定，反之就不固定
+    var queryHeaderLineColum = _container.querySelector(".table-header-line-column")//行高
 
-    //console.log(top);
+    var visualDom = _container.offsetHeight - queryHeaderLineColum.offsetHeight;
 
-    _container.addEventListener("scroll",function (ev) {
+    console.log("容器大小",_container.offsetHeight,"可视大小",_container.offsetHeight - queryHeaderLineColum.offsetHeight )
 
-        var scrollTop = ev.target.scrollTop;
+    _container.classList.add("datagrid-default-container")
 
-        /*if(scrollTop >= top){
-            //console.log("固定")
-            querySelector1.classList.add("header-fiexd-true")
-            //querySelector1.cssText = "position:sticky;top:0"//("style","position:sticky;top:0")
-        }else if(scrollTop < top){
-            //console.log("不固定")
-            querySelector1.classList.remove("header-fiexd-true")
-            //querySelector1.cssText = "top:0"//("style","position:sticky;top:0")
-            //querySelector1.setAttribute("style","top:0")
-        }*/
+    var _containerDivDom = _container.querySelector(".fiexd-row-cell-scroll-container");
 
-        console.log("滚动了")
+    var lineVisualContainer = document.querySelector(".line-visual-container");
 
-            //console.log("滚动了")
+    var lineFiexdVisualContainer = _container.querySelector(".line-fiexd-visual-container");
+
+    lineFiexdVisualContainer.style.height = visualDom + 'px'
+
+    console.log("可视化",visualDom );
+
+    console.log("可容纳行",Math.ceil(visualDom / 40))
+
+    var assistor = document.querySelector(".parent");
+
+    console.log("头高" , queryHeaderLineColum.offsetHeight)
+
+    console.log("整体容器大小",assistor.offsetHeight );
+
+    var showDataMapVisual = {}
+
+    showDataMapVisual["field"] = {}
+
+    var asdfasfasdf = document.querySelector(".line-visual-container");
+
+    if(_config.lineModel === 'one'){
+        asdfasfasdf.style.height = _config.data.length * 40  + 'px'
+    }else{
+        asdfasfasdf.style.height = dataMapSource.allHeight  + 'px'
+    }
+
+    console.log("dataMapSource",dataMapSource);
+    console.log("dataMapSource lenght",_config.data.length);
+
+    if(_config.lineModel === 'one'){
+        algorithmRow(visualDom,0)
+    }
+
+    querySelectorassistor.addEventListener('scroll', function(event) {
+        if(_config.lineModel === 'one'){
+             algorithmRow(querySelectorassistor.scrollTop + visualDom,querySelectorassistor.scrollTop)
+        }
+        //todo  滚动调试
+
+        lineFiexdVisualContainer.style.paddingTop = querySelectorassistor.scrollTop + 'px'
+        lineFiexdVisualContainer.scrollTop = querySelectorassistor.scrollTop //+ 'px'
 
     })
-    //}
+
+    scrollDistance(querySelectorassistor,function(){
+        /*console.log("showDataMapVisual",showDataMapVisual
+            ,"可见大小 " ,lineFiexdVisualContainer.offsetHeight);*/
+    },100)
 
 
 
-    /*if(scroH>=navH){
-        $(".flightInfoBox").css({"position":"sticky","top":0});
-    }else if(scroH<navH){
-        $(".flightInfoBox").css({"position":"static"});
-    }*/
-    //console.log(item.text.render("hide-surplus-text,horizontally,word-break-all",`width:${item.width}px`).height);
 }
+
+const algorithmRow = function (maxRange,miniRange) {
+
+    //todo 算法行
+
+    var lineFiexdVisualContainer = _container.querySelector(".line-fiexd-visual-container");
+
+    lineFiexdVisualContainer.innerHTML = ""
+
+
+    if(miniRange == 0){
+
+        var number = Math.ceil(maxRange / 40);
+
+        for (let i  = 0;i < number ; i ++) {
+
+            addRowForTransform(md5(_config.data[i]),_config.data[i],lineFiexdVisualContainer,i)
+
+        }
+
+
+    }else if(miniRange > 0){
+
+        var benRowNumber = Math.floor(miniRange / 40);
+
+        var endRowNumber = Math.ceil(maxRange / 40);
+
+        for (let i  = benRowNumber;i < endRowNumber ; i ++) {
+            addRowForTransform(md5(_config.data[i]),_config.data[i],lineFiexdVisualContainer,i)
+        }
+
+    }
+
+
+
+
+}
+
+
+
+const fixedRowTransformData = function(range,data){
+
+    var lineFiexdVisualContainer = _container.querySelector(".line-fiexd-visual-container");
+
+    //todo 校验
+
+    if(range > 0){
+
+        //var number = Math.ceil(range / 40);
+        //
+        //console.log("number" , 19 + number);
+        //
+        //// 需要加
+        //for (let i = 19 ; i <= 19 + number ; i ++){
+        //
+        //    //console.log(i,_config.data[i],md5(JSON.stringify(_config.data[i])));
+        //    console.log(i,md5(JSON.stringify(_config.data[i])));
+        //
+        //}
+        //需要减
+        //for (let i = 0 ; i <= number;i ++ ){
+        //
+        //    console.log(i,md5(JSON.stringify(_config.data[i])));
+        //
+        //}
+
+
+    }else{
+
+
+
+    }
+
+    //console.log(data);
+
+    //console.log("_container",_config.data);
+
+    for (let dataKey in data) {
+
+        var dataDataKey = data[dataKey]
+
+        //todo 是否改变数据
+
+        /*if(getRowMaxRange(dataDataKey).maxRange <= maxRange
+            && getRowMaxRange(dataDataKey).miniRange >= miniRange ){
+            result["field"][dataKey] = data[dataKey]
+
+            //var querySelector2 = querySelector.querySelector("[data-hash='"+ dataKey +"']");
+            //
+            //if(!querySelector2){
+            //    addRowForTransform(dataKey,data[dataKey],lineFiexdVisualContainer)
+            //}
+
+        }else {
+            if(result["field"][dataKey]){
+                delete result["field"][dataKey]
+            }
+
+            var querySelector1 = lineFiexdVisualContainer.querySelector("[data-hash='"+ dataKey +"']");
+            //console.log(querySelector1 !== null ,querySelector1)
+            if( querySelector1 !== null ){
+                lineFiexdVisualContainer.removeChild(querySelector1)
+            }
+
+        }*/
+
+    }
+
+   /* for (let resultElementKey in result["field"]) {
+
+        //addRowForTransform(resultElementKey,result["field"][resultElementKey],lineFiexdVisualContainer)
+    }*/
+
+    //console.log(result);
+
+}
+
+const getRowMaxRange = function (item) {
+    return {
+        maxRange:item.rowIndex * 42,
+        miniRange: (item.rowIndex - 1) * 42
+    }
+}
+
+/**
+ * auto 生成
+ * @param maxRange
+ * @param miniRange
+ * @param data
+ * @param result
+ */
+const transformData = function (maxRange,miniRange,data,result) {
+    console.log(maxRange,miniRange)
+
+    //result = {}
+
+    var lineFiexdVisualContainer = _container.querySelector(".line-fiexd-visual-container");
+
+    lineFiexdVisualContainer.innerHTML = ""
+
+    for (let dataKey in data) {
+        var dataDataKey = data[dataKey]
+
+        //todo 是否改变数据
+
+        if(dataDataKey.maxRange <= maxRange
+            && dataDataKey.miniRange >= miniRange ){
+            result["field"][dataKey] = data[dataKey]
+
+            var querySelector2 = querySelector.querySelector("[data-hash='"+ dataKey +"']");
+
+            if(!querySelector2){
+                addRowForTransform(dataKey,data[dataKey],lineFiexdVisualContainer)
+            }
+
+        }else {
+            if(result["field"][dataKey]){
+                delete result["field"][dataKey]
+            }
+
+            var querySelector1 = querySelector.querySelector("[data-hash='"+ dataKey +"']");
+            //console.log(querySelector1 !== null ,querySelector1)
+            if( querySelector1 !== null ){
+                lineFiexdVisualContainer.removeChild(querySelector1)
+            }
+
+        }
+
+
+    }
+
+
+    //console.log("result",result);
+
+    //console.log(result);
+
+    //console.log(arguments);
+
+}
+
+const addRowForTransform = function(dataHash,data,container,rowIndex){
+
+    var dataField = data
+
+    var arr = {};
+
+    var cellConfig = data["config"] || {}
+
+    if(_config.lineModel === "one"){
+        if(_config.showLineNumber){
+
+            var showLineNumberdomCells = `
+                         <div class="table-tabulation-cell-line 
+                          one-line-fixed-height space-nowrap cell-check-box-offset margin-right-left
+                            hide-surplus-text "> 
+                        <div class=" one-line-fixed-height">
+                             ${rowIndex}
+                           </div>
+                        </div>
+                    `
+
+            Object.defineProperty(arr, "showLineNumber", {
+                value: showLineNumberdomCells,
+                writable: true // 是否可以改变
+            })
+
+        }
+
+        var domCells = `<div class="table-tabulation-cell-line cell-header-check-box
+                          one-line-fixed-height space-nowrap
+                            hide-surplus-text "> 
+                <div class="cell-header-check-box one-line-fixed-height">
+                    <span class="iconfont icon iconcheck-box-outline-bl ${cellConfig && cellConfig.disable && cellConfig.disable === "true" ? `cell-check-box-disable` : ``}" 
+                    ${cellConfig && cellConfig.disable || cellConfig.disable === "true" ? `disable='true'` : ``} check-hash="${dataHash}"   checkbox="false"></span>
+                   </div>
+                </div>`
+
+        Object.defineProperty(arr, "checkbox", {
+            value: domCells,
+            writable: true // 是否可以改变
+        })
+
+    }else{
+
+        if(_config.showLineNumber){
+
+            var showLineNumberdomCells = `
+                         <div class="table-tabulation-cell-line  
+                          heightAbsolute horizontally word-break-all
+                           FlexContainer height-fill-parant cell-show-line-width margin-right-left
+                            "> 
+                           <div class="FlexItem">
+                            ${rowIndex}
+                           </div>
+                        </div>
+                    `
+
+            Object.defineProperty(arr, "showLineNumber", {
+                value: showLineNumberdomCells,
+                writable: true // 是否可以改变
+            })
+
+
+        }
+
+        var domCells = `<div class="table-tabulation-cell-line cell-header-check-box
+                          heightAbsolute horizontally word-break-all
+                            hide-surplus-text  FlexContainer height-fill-parant
+                            ${_config.showLineNumber ? `cell-check-box-offset`: ``}
+                            >
+                               <div class="one-line-fixed-height FlexItem">
+                                <span class="iconfont icon iconcheck-box-outline-bl ${cellConfig && cellConfig.disable && cellConfig.disable === "true" ? `cell-check-box-disable` : ``} " 
+                                 ${cellConfig && cellConfig.disable || cellConfig.disable === "true" ? `disable='true'` : ``}
+                                             check-hash="${dataHash}" checkbox="false"></span>
+                   </div>
+                </div>`
+
+        Object.defineProperty(arr, "checkbox", {
+            value: domCells,
+            writable: true // 是否可以改变
+        })
+
+    }
+
+    //todo  生成单行
+
+    for(let cell in dataField){
+
+        if(cell === "config") {
+            continue
+        }
+        var domCell = `<div class="table-tabulation-cell-line cell-header-${cell} 
+                          ${_config.lineModel === "auto" ? `${dataField[cell].heightRelative ? `heightRelative` : `heightAbsolute`} FlexContainer horizontally word-break-all` : `one-line-fixed-height space-nowrap`}
+                            hide-surplus-text " > ${_config.lineModel === "auto" ? `<div class="FlexItem line-Ellipsis text-row-line-sdtandard" 
+                          style="overflow:auto;max-height: ${data.maxVal}px">` : ``} `
+
+        if (_config.configItems[cell].replace && typeof _config.configItems[cell].replace === "function"
+            && typeof _config.configItems[cell].replace(dataField[cell]) !== "undefined"
+            && typeof _config.configItems[cell].replace(dataField[cell]) !== "object") {
+            domCell += typeof _config.configItems[cell].replace(dataField[cell]) !== "undefined" ? _config.configItems[cell].replace(dataField[cell]) : dataField[cell]
+        } else {
+            domCell += dataField[cell]
+        }
+
+        domCell += ` ${_config.lineModel === "auto" ? `</div>` : ``}
+                      ${_config.lineModel === "auto" ?  `${dataField[cell].ellipsis ? `<div class="text-ellipsis" ellipsis="${cell}-${dataHash}">...</div>`: ``}` : ``}
+                    </div>`
+
+        Object.defineProperty(arr, cell, {
+            value: domCell,
+            writable: true // 是否可以改变
+        })
+
+
+    }
+
+    var tableBodyTabulation = document.createElement("div");
+
+    tableBodyTabulation.setAttribute("data-index",data.rowIndex)
+    tableBodyTabulation.setAttribute("data-hash",dataHash)
+
+    //排序使用
+    //dataResult[index] = item
+
+    tableBodyTabulation.classList.add("table-body-tabulation")
+    if(_config.lineModel === "auto"){
+        tableBodyTabulation.classList.add("heightRelative")
+    }
+    tableBodyTabulation.classList.add("header-cell")
+
+    for (let configItemsKey in _config.configItems) {
+        if(arr[configItemsKey]){
+            Dom.strCastDom(arr[configItemsKey],tableBodyTabulation)
+        }else{
+            let domCell =  `<div class="table-tabulation-cell-line cell-header-${configItemsKey} hide-surplus-text" >
+                    </div>`
+            Dom.strCastDom(domCell,tableBodyTabulation)
+        }
+    }
+
+    container.appendChild(tableBodyTabulation)
+
+    /*
+
+    for(let cell in item){
+
+        if(cell === "config") {
+            continue
+        }
+        var domCell = `<div class="table-tabulation-cell-line cell-header-${cell} 
+                          ${_config.lineModel === "auto" ? `${dataMap[random]["field"][cell].heightRelative ? `heightRelative` : `heightAbsolute`} FlexContainer horizontally word-break-all` : `one-line-fixed-height space-nowrap`}
+                            hide-surplus-text " > ${_config.lineModel === "auto" ? `<div class="FlexItem line-Ellipsis text-row-line-sdtandard" 
+                          style="overflow:auto;max-height: ${dataMap[random]["field"].maxVal}px">` : ``} `
+
+        if (_config.configItems[cell].replace && typeof _config.configItems[cell].replace === "function"
+            && typeof _config.configItems[cell].replace(item[cell]) !== "undefined"
+            && typeof _config.configItems[cell].replace(item[cell]) !== "object") {
+            domCell += typeof _config.configItems[cell].replace(item[cell]) !== "undefined" ? _config.configItems[cell].replace(item[cell]) : item[cell]
+        } else {
+            domCell += item[cell]
+        }
+
+        domCell += ` ${_config.lineModel === "auto" ? `</div>` : ``}
+                      ${_config.lineModel === "auto" ?  `${dataMap[random]["field"][cell].ellipsis ? `<div class="text-ellipsis" ellipsis="${cell}-${random}">...</div>`: ``}` : ``}
+                    </div>`
+
+        Object.defineProperty(arr, cell, {
+            value: domCell,
+            writable: true // 是否可以改变
+        })
+
+    }
+
+    var tableBodyTabulation = document.createElement("div");
+
+    tableBodyTabulation.setAttribute("data-index",index)
+    tableBodyTabulation.setAttribute("data-hash",random)
+
+    //排序使用
+    //dataResult[index] = item
+
+    tableBodyTabulation.classList.add("table-body-tabulation")
+    if(_config.lineModel === "auto"){
+        tableBodyTabulation.classList.add("heightRelative")
+    }
+    tableBodyTabulation.classList.add("header-cell")
+
+    for (let configItemsKey in _config.configItems) {
+        if(arr[configItemsKey]){
+            Dom.strCastDom(arr[configItemsKey],tableBodyTabulation)
+        }else{
+            let domCell =  `<div class="table-tabulation-cell-line cell-header-${configItemsKey} hide-surplus-text" >
+                    </div>`
+            Dom.strCastDom(domCell,tableBodyTabulation)
+        }
+    }*/
+
+
+
+}
+
 
 class TableGrid {
 
     constructor(elP,config) {
+
         _el = elP;
         _container = document.getElementById(_el);
         this.columns = config.columns;
@@ -1365,8 +2119,6 @@ class TableGrid {
 
         this.init(config)
         selectModelFun(_config.selectModel)
-
-        tableStyleFun()
 
     }
 
@@ -1417,16 +2169,15 @@ class TableGrid {
 
     }
 
-    refreshHeader(){
-
-    }
-
     checkBoxInit(selectRowCheck){
+
+        tableStyleFun()
 
         checkBoxHookLine();
 
         var headerNodeAll = _container.querySelector("[check-hash='header']");
         headerNodeAll.addEventListener("click",function () {
+
             var disableTrue = _container.querySelectorAll("[checkbox='true'][disable]");
             var disableFalse = _container.querySelectorAll("[checkbox='false'][disable]");
 
