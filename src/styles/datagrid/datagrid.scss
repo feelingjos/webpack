@@ -237,6 +237,7 @@ html, body{
   //top: 65px;
   //left: 0px;
   //margin-top: 212px;
+  //overflow: auto;
 }
 
 .parent{
@@ -249,6 +250,7 @@ html, body{
   height: 100%;
   width: 100%;
   overflow: auto;
+  //overflow: hidden;
 }
 
 .text-overall-situation{
@@ -275,7 +277,8 @@ html, body{
 
 .line-fiexd-visual-container{
   //top: 10px;
-  overflow: hidden;
+  //overflow: hidden;
+  overflow: auto;
   //height: 598px;
   //overflow: scroll;
   //overflow: auto;

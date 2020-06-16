@@ -1,0 +1,690 @@
+{
+	"d4432fbb6f258f13aba0bbf361835e80": {
+		"maxVal": 377,
+		"rowIndex": 0,
+		"maxKey": "name",
+		"field": {
+			"age": {
+				"native": "lisasdfasdfasfdasdfasdfasdfasdasdfasdasdfasdasdfasdasdfasdfasdfasdasdfasdfasdfasdasdfasdfasdfasdasdfasdfasdfasdasdfasdfasdfasdasdfasdfasdfasdasdfasdfasdfasdasdfasdfasdfasdasdfasdfasdfst",
+				"text": "ad",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			},
+			"name": {
+				"text": "lisasdfasdfasfdasdfasdfsdfasdfasdfst-lisasdfasdfasfdasdfasdfsdfasdfasdfstlisasdfasdfasfdasdfasdfsdfasdfasdfstlisasdfasdfasfdasdfasdfsdfasdfasdfst",
+				"heightLength": 377,
+				"heightAbsolute": false,
+				"heightRelative": true,
+				"ellipsis": false
+			},
+			"sex": {
+				"native": "fasdfadsfasdfasdfasdf",
+				"text": "adfa",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			},
+			"achievement": {
+				"native": "fasdfadsfasdfasdfasdffasdfadsfasdfasdfasdfddefasdfadsfasdfasdfasdffasdfadsfasdfasdfasdffasdfadsfasdfasdfasdf",
+				"text": "adf",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			},
+			"grade": {
+				"native": "/",
+				"text": "Asdf",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			},
+			"subject": {
+				"native": "100",
+				"text": "asdf",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			}
+		},
+		"config": {
+			"checkbox": "false"
+		},
+		"miniRange": 0,
+		"maxRange": 377
+	},
+	"491e651d6121d9ed99b4cfaa07f22c89": {
+		"maxVal": 102,
+		"rowIndex": 1,
+		"maxKey": "name",
+		"field": {
+			"age": {
+				"native": "lisasdfasdfasfdasdfasdfasdfasdasdfasdasdfasdasdfasdasdfasdfasdfst",
+				"text": "ad",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			},
+			"name": {
+				"text": "lisasdfasdfasfdasdfasdfsdfasdfasdfst-",
+				"heightLength": 102,
+				"heightAbsolute": false,
+				"heightRelative": true,
+				"ellipsis": false
+			},
+			"sex": {
+				"native": "fasdfadsfasdfasdfasdf",
+				"text": "adfa",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			},
+			"achievement": {
+				"native": "fasdfadsfasdfasdfasdffasdfadsfasdfasdfasdffasdfadsfasdfasdfasdffasdfadsfasdfasdfasdffasdfadsfasdfasdfasdf",
+				"text": "adf",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			},
+			"grade": {
+				"native": "/qqd",
+				"text": "Asdf",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			},
+			"subject": {
+				"native": "100",
+				"text": "asdf",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			}
+		},
+		"config": {
+			"checkbox": "false"
+		},
+		"miniRange": 377,
+		"maxRange": 479
+	},
+	"5d32d3858fc51ec1765486c09aa77fa0": {
+		"maxVal": 27,
+		"rowIndex": 2,
+		"maxKey": "age",
+		"field": {
+			"age": {
+				"native": "30",
+				"text": "ad",
+				"heightLength": 27,
+				"heightAbsolute": false,
+				"heightRelative": true,
+				"ellipsis": false
+			},
+			"sex": {
+				"native": "男ccccccccccc",
+				"text": "adfa",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			},
+			"name": {
+				"text": "吴华豪-",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			},
+			"achievement": {
+				"native": 1002533,
+				"text": "adf",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			},
+			"grade": {
+				"native": "一年级ff",
+				"text": "Asdf",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			},
+			"subject": {
+				"native": "100",
+				"text": "asdf",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			}
+		},
+		"config": {},
+		"miniRange": 479,
+		"maxRange": 506
+	},
+	"eaf7c2270a3afaee26637a977cfe664f": {
+		"maxVal": 27,
+		"rowIndex": 3,
+		"maxKey": "age",
+		"field": {
+			"age": {
+				"native": "30",
+				"text": "ad",
+				"heightLength": 27,
+				"heightAbsolute": false,
+				"heightRelative": true,
+				"ellipsis": false
+			},
+			"sex": {
+				"native": "男adfasfddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+				"text": "adfa",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			},
+			"name": {
+				"text": "吴华豪-",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			},
+			"achievement": {
+				"native": 999133,
+				"text": "adf",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			},
+			"grade": {
+				"native": "一年级",
+				"text": "Asdf",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			},
+			"subject": {
+				"native": "100",
+				"text": "asdf",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			}
+		},
+		"config": {},
+		"miniRange": 506,
+		"maxRange": 533
+	},
+	"83a6316d007ff7afca7b9cb7da65fab3": {
+		"maxVal": 27,
+		"rowIndex": 4,
+		"maxKey": "age",
+		"field": {
+			"age": {
+				"native": "3010036669",
+				"text": "ad",
+				"heightLength": 27,
+				"heightAbsolute": false,
+				"heightRelative": true,
+				"ellipsis": false
+			},
+			"sex": {
+				"native": "男cccccccccccasfasd",
+				"text": "adfa",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			},
+			"name": {
+				"text": "吴华豪-",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			},
+			"achievement": {
+				"native": 10025,
+				"text": "adf",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			},
+			"grade": {
+				"native": "一年级ff",
+				"text": "Asdf",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			},
+			"subject": {
+				"native": "100",
+				"text": "asdf",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			}
+		},
+		"config": {},
+		"miniRange": 533,
+		"maxRange": 560
+	},
+	"c0e70496fe9b4ee8e1689b98fea8f2e4": {
+		"maxVal": 52,
+		"rowIndex": 5,
+		"maxKey": "name",
+		"field": {
+			"age": {
+				"native": "30",
+				"text": "ad",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			},
+			"sex": {
+				"native": "男adfasfddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+				"text": "adfa",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			},
+			"name": {
+				"text": "吴华豪-ww",
+				"heightLength": 52,
+				"heightAbsolute": false,
+				"heightRelative": true,
+				"ellipsis": false
+			},
+			"achievement": {
+				"native": 999,
+				"text": "adf",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			},
+			"grade": {
+				"native": "一年级eee",
+				"text": "Asdf",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			},
+			"subject": {
+				"native": "100aaa",
+				"text": "asdf",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			}
+		},
+		"config": {},
+		"miniRange": 560,
+		"maxRange": 612
+	},
+	"e4f96c2f3f188cd0276858415e93557f": {
+		"maxVal": 52,
+		"rowIndex": 6,
+		"maxKey": "name",
+		"field": {
+			"age": {
+				"native": "30",
+				"text": "ad",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			},
+			"sex": {
+				"native": "男adfasfddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+				"text": "adfa",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			},
+			"name": {
+				"text": "吴华豪-辛辣天shen",
+				"heightLength": 52,
+				"heightAbsolute": false,
+				"heightRelative": true,
+				"ellipsis": false
+			},
+			"achievement": {
+				"native": 999,
+				"text": "adf",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			},
+			"grade": {
+				"native": "一年级",
+				"text": "Asdf",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			},
+			"subject": {
+				"native": "100",
+				"text": "asdf",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			}
+		},
+		"config": {},
+		"miniRange": 612,
+		"maxRange": 664
+	},
+	"10376575c6ee4f7fec565b35c245bd26": {
+		"maxVal": 177,
+		"rowIndex": 7,
+		"maxKey": "name",
+		"field": {
+			"age": {
+				"native": "30aa",
+				"text": "ad",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			},
+			"sex": {
+				"native": "男ewqe33",
+				"text": "adfa",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			},
+			"name": {
+				"text": "吴华豪-dddddddddddddddddddddddddddddddddddddddddd",
+				"heightLength": 177,
+				"heightAbsolute": false,
+				"heightRelative": true,
+				"ellipsis": false
+			},
+			"achievement": {
+				"native": 2,
+				"text": "adf",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			},
+			"grade": {
+				"native": "一年级---",
+				"text": "Asdf",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			},
+			"subject": {
+				"native": "100d",
+				"text": "asdf",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			}
+		},
+		"config": {},
+		"miniRange": 664,
+		"maxRange": 841
+	},
+	"2eba68979c5d19afe9d4088e3524052e": {
+		"maxVal": 177,
+		"rowIndex": 8,
+		"maxKey": "name",
+		"field": {
+			"age": {
+				"native": "30aa",
+				"text": "ad",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			},
+			"sex": {
+				"native": "男",
+				"text": "adfa",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			},
+			"name": {
+				"text": "吴华豪-dddddddddddddddddddddddddddddddddddddddddd",
+				"heightLength": 177,
+				"heightAbsolute": false,
+				"heightRelative": true,
+				"ellipsis": false
+			},
+			"achievement": {
+				"native": 2,
+				"text": "adf",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			},
+			"grade": {
+				"native": "一年级---",
+				"text": "Asdf",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			},
+			"subject": {
+				"native": "100d",
+				"text": "asdf",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			}
+		},
+		"config": {},
+		"miniRange": 841,
+		"maxRange": 1018
+	},
+	"2a4bd830911d91df61a581c9c1214f05": {
+		"maxVal": 177,
+		"rowIndex": 9,
+		"maxKey": "name",
+		"field": {
+			"age": {
+				"native": "30aa",
+				"text": "ad",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			},
+			"sex": {
+				"native": "男你过来",
+				"text": "adfa",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			},
+			"name": {
+				"text": "吴华豪-dddddddddddddddddddddddddddddddddddddddddd",
+				"heightLength": 177,
+				"heightAbsolute": false,
+				"heightRelative": true,
+				"ellipsis": false
+			},
+			"achievement": {
+				"native": 2,
+				"text": "adf",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			},
+			"grade": {
+				"native": "一年级---",
+				"text": "Asdf",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			},
+			"subject": {
+				"native": "100d",
+				"text": "asdf",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			}
+		},
+		"config": {},
+		"miniRange": 1018,
+		"maxRange": 1195
+	},
+	"a9b351bf1c699eb8a10d4f8fba11f9dd": {
+		"maxVal": 27,
+		"rowIndex": 10,
+		"maxKey": "age",
+		"field": {
+			"age": {
+				"native": "30",
+				"text": "ad",
+				"heightLength": 27,
+				"heightAbsolute": false,
+				"heightRelative": true,
+				"ellipsis": false
+			},
+			"sex": {
+				"native": "男",
+				"text": "adfa",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			},
+			"name": {
+				"text": "吴华豪-",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			},
+			"achievement": {
+				"native": 0.001,
+				"text": "adf",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			},
+			"grade": {
+				"native": "一年级ee",
+				"text": "Asdf",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			},
+			"subject": {
+				"native": "100",
+				"text": "asdf",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			}
+		},
+		"config": {},
+		"miniRange": 1195,
+		"maxRange": 1222
+	},
+	"d59e8064879e5574e45854e71f514bef": {
+		"maxVal": 27,
+		"rowIndex": 11,
+		"maxKey": "age",
+		"field": {
+			"age": {
+				"native": "30",
+				"text": "ad",
+				"heightLength": 27,
+				"heightAbsolute": false,
+				"heightRelative": true,
+				"ellipsis": false
+			},
+			"sex": {
+				"native": "男或女",
+				"text": "adfa",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			},
+			"name": {
+				"text": "吴华豪-",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			},
+			"achievement": {
+				"native": 0.001,
+				"text": "adf",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			},
+			"grade": {
+				"native": "一年级ee",
+				"text": "Asdf",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			},
+			"subject": {
+				"native": "100",
+				"text": "asdf",
+				"heightLength": 27,
+				"heightAbsolute": true,
+				"heightRelative": false,
+				"ellipsis": false
+			}
+		},
+		"config": {},
+		"miniRange": 1222,
+		"maxRange": 1249
+	}
+}

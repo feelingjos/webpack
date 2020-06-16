@@ -4,7 +4,8 @@ import {Dom} from './util/dom.js'
 
 var _el ,_container ,_checkValueMapStructure = {}
     ,_range,_x, _y , _hashDateMap = {},_config,_dataResultsLength,
-    _headerStyleRules,_LengthMap,_keyMapHeader,_dataMapStructure = {}
+    _headerStyleRules,_LengthMap,_keyMapHeader,_dataMapStructure = {},
+    _fiexdVisual = {maxRange:0,miniRange:0},_thatShow = {maxRange: 0,maxRange: 0}
 ;
 
 const getOffset = function(dom){
@@ -148,9 +149,9 @@ const checkSelect = function(headerCheckBox,isTrue){
 }
 
 const checkHeaderSelect = function (selectCheckBox){
-    
+
     var checkHash = selectCheckBox.getAttribute("check-hash");
- 
+
     var attrDisable = selectCheckBox.getAttribute("disable");
 
     if(attrDisable && attrDisable === "true"){
@@ -547,7 +548,7 @@ const tableRenderHeader = function(){
     _headerStyleRules = sheet.cssRules || sheet.rules;
 
     _LengthMap = LengthMap
-    
+
 }
 
 const checkLineSort = function () {
@@ -840,7 +841,7 @@ const tableRenderDataRow = function (rowData,config) {
 
         var querySelector = _container.querySelector(".headerCell");
 
-        element.style.marginTop = querySelector.offsetHeight + 'px'
+        //element.style.marginTop = querySelector.offsetHeight + 'px'
 
         _container.appendChild(element)
     }
@@ -1080,7 +1081,7 @@ const tableRenderDataRow = function (rowData,config) {
 
                             _LengthMap.header[item.id].heightRelative = !_LengthMap.header[item.id].heightRelative
                             _LengthMap.header[item.id].heightAbsolute = !_LengthMap.header[item.id].heightAbsolute
-                             
+
                             _LengthMap.header[Object.values(_LengthMap.maxValue)[0]].heightRelative = !_LengthMap.header[Object.values(_LengthMap.maxValue)[0]].heightRelative
                             _LengthMap.header[Object.values(_LengthMap.maxValue)[0]].heightAbsolute = !_LengthMap.header[Object.values(_LengthMap.maxValue)[0]].heightAbsolute
 
@@ -1100,7 +1101,7 @@ const tableRenderDataRow = function (rowData,config) {
                                 && item.text.render("hide-surplus-text,horizontally,word-break-all,table-header-call,text-overall-situation",`width: ${headercell}px;`).height > Object.keys(_LengthMap.maxValue)[0]){
 
                                 _LengthMap.header[item.id].heightLength = item.text.render("hide-surplus-text,horizontally,word-break-all,table-header-call,text-overall-situation",`width: ${headercell}px;`).height
-                                
+
                                 _LengthMap.header[item.id].heightRelative = !_LengthMap.header[item.id].heightRelative
                                 _LengthMap.header[item.id].heightAbsolute = !_LengthMap.header[item.id].heightAbsolute
 
@@ -1116,7 +1117,7 @@ const tableRenderDataRow = function (rowData,config) {
 
                                 _LengthMap.header[Object.values(_LengthMap.maxValue)[0]].heightRelative = !_LengthMap.header[Object.values(_LengthMap.maxValue)[0]].heightRelative
                                 _LengthMap.header[Object.values(_LengthMap.maxValue)[0]].heightAbsolute = !_LengthMap.header[Object.values(_LengthMap.maxValue)[0]].heightAbsolute
-                                
+
                                 _LengthMap.maxValue = {}
                                 _LengthMap.maxValue[item.text.render("hide-surplus-text,horizontally,word-break-all,table-header-call,text-overall-situation",`width: ${headercell}px;`).height] = item.id
                             }
@@ -1422,6 +1423,8 @@ const rowDataStructureInit = function () {
             dataMap[random].config = item["config"]
             dataMap[random].rowIndex = index
 
+            return dataMap;
+
         }
 
 
@@ -1646,13 +1649,17 @@ const tableStyleFun = function () {
     var querySelector1 = _container.querySelector(".fiexd-row-cell-scroll-container")
 
     htmlDivElement.appendChild(querySelector)
-    htmlDivElement.appendChild(querySelector1)
+    //htmlDivElement.appendChild(querySelector1)
 
     querySelector.classList.add("heightAbsolute")
 
     htmlDivElement.classList.add("parent")
 
+    htmlDivElement.style.height = "40px"
+
     htmlDivElement1.appendChild(htmlDivElement)
+
+    htmlDivElement1.appendChild(querySelector1)
 
     _container.appendChild(htmlDivElement1)
 
@@ -1668,13 +1675,9 @@ const tableStyleFun = function () {
 
     _container.classList.add("datagrid-default-container")
 
-    var _containerDivDom = _container.querySelector(".fiexd-row-cell-scroll-container");
-
-    var lineVisualContainer = document.querySelector(".line-visual-container");
-
     var lineFiexdVisualContainer = _container.querySelector(".line-fiexd-visual-container");
 
-    lineFiexdVisualContainer.style.height = visualDom + 'px'
+    lineFiexdVisualContainer.style.height = visualDom + 80 + 'px'
 
     console.log("可视化",visualDom );
 
@@ -1699,7 +1702,8 @@ const tableStyleFun = function () {
     }
 
     console.log("dataMapSource",dataMapSource);
-    console.log("dataMapSource lenght",_config.data.length);
+    //console.log("dataMapSource lenght",_config.data.length);
+    console.log("dataMapSource lenght",Object.keys(dataMapSource).length);
 
     if(_config.lineModel === 'one'){
         algorithmRow(visualDom,0)
@@ -1711,17 +1715,81 @@ const tableStyleFun = function () {
         }
         //todo  滚动调试
 
-        lineFiexdVisualContainer.style.paddingTop = querySelectorassistor.scrollTop + 'px'
-        lineFiexdVisualContainer.scrollTop = querySelectorassistor.scrollTop //+ 'px'
+        //lineFiexdVisualContainer.style.paddingTop = querySelectorassistor.scrollTop + 'px'
+        lineFiexdVisualContainer.scrollTop = querySelectorassistor.scrollTop + 40 //+ 'px'
 
     })
 
-    scrollDistance(querySelectorassistor,function(){
+    var startButton = document.getElementById("start");
+    var endButton = document.getElementById("end");
+    var addButton = document.getElementById("add");
+    var subtractButton = document.getElementById("subtract");
+
+    var interval = null
+
+    startButton.onclick = function(){
+
+        console.log("startButton")
+
+        interval = setInterval(function(){
+
+            querySelectorassistor.scrollTop = querySelectorassistor.scrollTop + 1
+
+            algorithmRow(querySelectorassistor.scrollTop + visualDom ,querySelectorassistor.scrollTop)
+
+            //lineFiexdVisualContainer.style.paddingTop = querySelectorassistor.scrollTop + 'px'
+            lineFiexdVisualContainer.scrollTop = querySelectorassistor.scrollTop + 40//+ 'px'
+
+        }, 100 );
+
+    }
+    endButton.onclick = function(){
+        console.log("endButton")
+        if(interval !== null){
+            clearInterval(interval)
+        }
+
+    }
+
+    addButton.onclick = function(){
+
+        console.log("addButton")
+
+        querySelectorassistor.scrollTop = querySelectorassistor.scrollTop + 1
+
+        algorithmRow(querySelectorassistor.scrollTop + visualDom ,querySelectorassistor.scrollTop)
+
+        //lineFiexdVisualContainer.style.paddingTop = querySelectorassistor.scrollTop + 40 + 'px'
+        lineFiexdVisualContainer.scrollTop = querySelectorassistor.scrollTop + 40 // + 'px'
+
+        /*console.log(querySelectorassistor.scrollTop,lineFiexdVisualContainer.style.paddingTop,
+            lineFiexdVisualContainer.scrollTop,querySelectorassistor.scrollTop + 40);*/
+
+
+    }
+    subtractButton.onclick = function(){
+
+        console.log("subtractButton")
+        querySelectorassistor.scrollTop = querySelectorassistor.scrollTop - 1
+
+        algorithmRow(querySelectorassistor.scrollTop + visualDom ,querySelectorassistor.scrollTop)
+
+        ///lineFiexdVisualContainer.style.paddingTop = querySelectorassistor.scrollTop + 'px'
+        lineFiexdVisualContainer.scrollTop = querySelectorassistor.scrollTop + 40 //+ 'px'
+
+    }
+
+
+
+    scrollDistance(querySelectorassistor,function(e){
+
+        console.log("范围",_fiexdVisual)
+
         /*console.log("showDataMapVisual",showDataMapVisual
             ,"可见大小 " ,lineFiexdVisualContainer.offsetHeight);*/
-    },100)
+    },1000)
 
-
+    console.log("_fiexdVisual",_fiexdVisual)
 
 }
 
@@ -1731,19 +1799,21 @@ const algorithmRow = function (maxRange,miniRange) {
 
     var lineFiexdVisualContainer = _container.querySelector(".line-fiexd-visual-container");
 
-    lineFiexdVisualContainer.innerHTML = ""
-
+    //lineFiexdVisualContainer.innerHTML = ""
 
     if(miniRange == 0){
-
         var number = Math.ceil(maxRange / 40);
-
         for (let i  = 0;i < number ; i ++) {
 
-            addRowForTransform(md5(_config.data[i]),_config.data[i],lineFiexdVisualContainer,i)
+            var rowData = lineFiexdVisualContainer.querySelector("div[data-hash='" + md5(JSON.stringify(_config.data[i])) +"']");
+            if(rowData === null || rowData === undefined){
+                addRowForTransform(md5(JSON.stringify(_config.data[i])),_config.data[i],lineFiexdVisualContainer,i)
+            }
 
         }
-
+        rowRemoveAndAdd(number,0)
+        _fiexdVisual.maxRange  = number
+        _fiexdVisual.miniRange  = 0
 
     }else if(miniRange > 0){
 
@@ -1751,160 +1821,167 @@ const algorithmRow = function (maxRange,miniRange) {
 
         var endRowNumber = Math.ceil(maxRange / 40);
 
-        for (let i  = benRowNumber;i < endRowNumber ; i ++) {
-            addRowForTransform(md5(_config.data[i]),_config.data[i],lineFiexdVisualContainer,i)
-        }
+         /*for (let i  = benRowNumber;i < endRowNumber ; i ++) {
+             //console.log("index",i)
+
+             var rowData = lineFiexdVisualContainer.querySelector("div[data-hash='" + md5(JSON.stringify(_config.data[i])) +"']");
+
+             if(rowData === null || rowData === undefined){
+                 //lineFiexdVisualContainer.removeChild(rowData)
+                 addRowForTransform(md5(JSON.stringify(_config.data[i])),_config.data[i],lineFiexdVisualContainer,i)
+             }
+
+         }*/
+
+         //console.log("benRowNumber",benRowNumber,"endRowNumber",endRowNumber)
+
+        rowRemoveAndAdd(endRowNumber,benRowNumber)
+
+        _fiexdVisual.maxRange  = endRowNumber
+        _fiexdVisual.miniRange  = benRowNumber
 
     }
 
 
-
-
 }
 
+const rowCalculationMini = function(flag,range){
 
+    if(_fiexdVisual.miniRange == 0  ||  range == 0){
+        return
+    }
 
-const fixedRowTransformData = function(range,data){
+    if(!flag){
+        //console.log("rangeArray mini",rangeArray(_fiexdVisual.miniRange + range, _fiexdVisual.miniRange));
 
-    var lineFiexdVisualContainer = _container.querySelector(".line-fiexd-visual-container");
-
-    //todo 校验
-
-    if(range > 0){
-
-        //var number = Math.ceil(range / 40);
-        //
-        //console.log("number" , 19 + number);
-        //
-        //// 需要加
-        //for (let i = 19 ; i <= 19 + number ; i ++){
-        //
-        //    //console.log(i,_config.data[i],md5(JSON.stringify(_config.data[i])));
-        //    console.log(i,md5(JSON.stringify(_config.data[i])));
-        //
-        //}
-        //需要减
-        //for (let i = 0 ; i <= number;i ++ ){
-        //
-        //    console.log(i,md5(JSON.stringify(_config.data[i])));
-        //
-        //}
-
-
+        return rangeArray(_fiexdVisual.miniRange + range, _fiexdVisual.miniRange)
     }else{
+        //console.log("rangeArray mini",rangeArray(_fiexdVisual.maxRange + range, _fiexdVisual.maxRange));
 
-
-
+        return rangeArray(_fiexdVisual.maxRange + range, _fiexdVisual.maxRange)
     }
-
-    //console.log(data);
-
-    //console.log("_container",_config.data);
-
-    for (let dataKey in data) {
-
-        var dataDataKey = data[dataKey]
-
-        //todo 是否改变数据
-
-        /*if(getRowMaxRange(dataDataKey).maxRange <= maxRange
-            && getRowMaxRange(dataDataKey).miniRange >= miniRange ){
-            result["field"][dataKey] = data[dataKey]
-
-            //var querySelector2 = querySelector.querySelector("[data-hash='"+ dataKey +"']");
-            //
-            //if(!querySelector2){
-            //    addRowForTransform(dataKey,data[dataKey],lineFiexdVisualContainer)
-            //}
-
-        }else {
-            if(result["field"][dataKey]){
-                delete result["field"][dataKey]
-            }
-
-            var querySelector1 = lineFiexdVisualContainer.querySelector("[data-hash='"+ dataKey +"']");
-            //console.log(querySelector1 !== null ,querySelector1)
-            if( querySelector1 !== null ){
-                lineFiexdVisualContainer.removeChild(querySelector1)
-            }
-
-        }*/
-
-    }
-
-   /* for (let resultElementKey in result["field"]) {
-
-        //addRowForTransform(resultElementKey,result["field"][resultElementKey],lineFiexdVisualContainer)
-    }*/
-
-    //console.log(result);
 
 }
 
-const getRowMaxRange = function (item) {
-    return {
-        maxRange:item.rowIndex * 42,
-        miniRange: (item.rowIndex - 1) * 42
+const rowCalculationMax = function (flag,range) {
+
+    if(_fiexdVisual.miniRange == 0  ||  range == 0){
+        return
     }
+
+    //console.log(flag)
+
+    if(!flag){
+        //console.log("rangeArray max",rangeArray(_fiexdVisual.maxRange + range, _fiexdVisual.maxRange));
+
+        return rangeArray(_fiexdVisual.maxRange + range, _fiexdVisual.maxRange);
+    }else{
+        //console.log("rangeArray max",rangeArray(_fiexdVisual.miniRange + range, _fiexdVisual.miniRange));
+
+        return rangeArray(_fiexdVisual.miniRange + range, _fiexdVisual.miniRange)
+
+    }
+    
 }
 
-/**
- * auto 生成
- * @param maxRange
- * @param miniRange
- * @param data
- * @param result
- */
-const transformData = function (maxRange,miniRange,data,result) {
-    console.log(maxRange,miniRange)
 
-    //result = {}
+const rangeArray = function(max,mini){
+
+    console.log("max",max,"mini",mini)
+
+    let rangeArr = []
+
+    for(let i = mini - 1; i < max ; i ++){
+        rangeArr.push(i)
+    }
+
+    return rangeArr;
+
+}
+
+
+
+const rowRemoveAndAdd = function (maxRange,miniRange) {
+
+    //todo 添加删除吧
+
+    //添加的
+    var addRow = rowCalculationMax(_fiexdVisual.maxRange >  maxRange,Math.abs(_fiexdVisual.maxRange -  maxRange))
+
+    //减少的
+    var removeRow = rowCalculationMini(_fiexdVisual.maxRange >  maxRange,Math.abs(_fiexdVisual.maxRange -  maxRange))
+
+    /*console.log("removeRow",removeRow,"_fiexdVisual.maxRange",_fiexdVisual.maxRange,"maxRange",maxRange,
+       "miniRange",miniRange,"移动距离",Math.abs(_fiexdVisual.maxRange -  maxRange)
+    );*/
 
     var lineFiexdVisualContainer = _container.querySelector(".line-fiexd-visual-container");
 
-    lineFiexdVisualContainer.innerHTML = ""
+    //if(addRow){
+        //console.log("addRow",addRow,"_fiexdVisual",_fiexdVisual,"range",Math.abs(_fiexdVisual.maxRange -  maxRange))
+    //}
 
-    for (let dataKey in data) {
-        var dataDataKey = data[dataKey]
+    if(addRow){
 
-        //todo 是否改变数据
+        console.log("addRow",addRow)
 
-        if(dataDataKey.maxRange <= maxRange
-            && dataDataKey.miniRange >= miniRange ){
-            result["field"][dataKey] = data[dataKey]
+        /*if(_fiexdVisual.maxRange >  maxRange){
 
-            var querySelector2 = querySelector.querySelector("[data-hash='"+ dataKey +"']");
+        }else{*/
+            for (let i = 0 ; i < addRow.length;i ++){
 
-            if(!querySelector2){
-                addRowForTransform(dataKey,data[dataKey],lineFiexdVisualContainer)
+                var rowData = _container.querySelector("div[data-hash='" + md5(JSON.stringify(_config.data[addRow[i]])) +"']");
+
+                if(rowData === null || rowData === undefined){
+                    addRowForTransform(md5(JSON.stringify(_config.data[addRow[i]])),_config.data[addRow[i]],
+                        lineFiexdVisualContainer,addRow[i],_fiexdVisual.maxRange >  maxRange)
+                }
+
+                //todo 删除行
+            }
+        //}
+
+        //console.log("removeRow",removeRow,"_fiexdVisual",_fiexdVisual,"range",Math.abs(_fiexdVisual.maxRange -  maxRange))
+        /*for (let i = 0 ; i < addRow.length;i ++){
+
+            var rowData = _container.querySelector("div[data-hash='" + md5(JSON.stringify(_config.data[addRow[i]])) +"']");
+
+            if(rowData === null || rowData === undefined){
+                addRowForTransform(md5(JSON.stringify(_config.data[addRow[i]])),_config.data[addRow[i]],lineFiexdVisualContainer,addRow[i])
             }
 
-        }else {
-            if(result["field"][dataKey]){
-                delete result["field"][dataKey]
-            }
+            //todo 删除行
+        }*/
+    }
 
-            var querySelector1 = querySelector.querySelector("[data-hash='"+ dataKey +"']");
-            //console.log(querySelector1 !== null ,querySelector1)
-            if( querySelector1 !== null ){
-                lineFiexdVisualContainer.removeChild(querySelector1)
-            }
+    if(removeRow){
 
+         console.log("removeRow",removeRow)
+
+        //console.log("removeRow",removeRow,"_fiexdVisual",_fiexdVisual,"range",Math.abs(_fiexdVisual.maxRange -  maxRange))
+        for (let i = 0 ; i < removeRow.length;i ++){
+
+            //console.log(removeRow[i]);
+
+            var rowData = _container.querySelector("div[data-hash='" + md5(JSON.stringify(_config.data[removeRow[i]])) +"']");
+
+            if(rowData){
+                lineFiexdVisualContainer.removeChild(rowData)
+            }
+            //todo 删除行
         }
-
-
     }
 
 
-    //console.log("result",result);
 
-    //console.log(result);
+    //console.log("addRow",addRow,"removeRow",removeRow);
+    //console.log("removeRow",removeRow);
 
-    //console.log(arguments);
 
 }
 
-const addRowForTransform = function(dataHash,data,container,rowIndex){
+
+const addRowForTransform = function(dataHash,data,container,rowIndex,before){
 
     var dataField = data
 
@@ -2022,7 +2099,7 @@ const addRowForTransform = function(dataHash,data,container,rowIndex){
 
     var tableBodyTabulation = document.createElement("div");
 
-    tableBodyTabulation.setAttribute("data-index",data.rowIndex)
+    tableBodyTabulation.setAttribute("data-index",rowIndex)
     tableBodyTabulation.setAttribute("data-hash",dataHash)
 
     //排序使用
@@ -2044,7 +2121,14 @@ const addRowForTransform = function(dataHash,data,container,rowIndex){
         }
     }
 
-    container.appendChild(tableBodyTabulation)
+    if(before){
+        container.insertBefore(tableBodyTabulation,container.lastElementChild.nextSibling);
+    }else{
+        container.appendChild(tableBodyTabulation)
+
+    }
+
+
 
     /*
 
@@ -2053,9 +2137,9 @@ const addRowForTransform = function(dataHash,data,container,rowIndex){
         if(cell === "config") {
             continue
         }
-        var domCell = `<div class="table-tabulation-cell-line cell-header-${cell} 
+        var domCell = `<div class="table-tabulation-cell-line cell-header-${cell}
                           ${_config.lineModel === "auto" ? `${dataMap[random]["field"][cell].heightRelative ? `heightRelative` : `heightAbsolute`} FlexContainer horizontally word-break-all` : `one-line-fixed-height space-nowrap`}
-                            hide-surplus-text " > ${_config.lineModel === "auto" ? `<div class="FlexItem line-Ellipsis text-row-line-sdtandard" 
+                            hide-surplus-text " > ${_config.lineModel === "auto" ? `<div class="FlexItem line-Ellipsis text-row-line-sdtandard"
                           style="overflow:auto;max-height: ${dataMap[random]["field"].maxVal}px">` : ``} `
 
         if (_config.configItems[cell].replace && typeof _config.configItems[cell].replace === "function"

@@ -3,12 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <script src="data.js"></script>
+    <script src="data1.js"></script>
 </head>
 <body>
      <div id="index"></div>
      <button id="getSelectRow" >获取选行</button>
      <button id="refreshHeader" >刷新头部</button>
+     <button id="start" >开始执行</button>
+     <button id="end" >结束执行</button>
+     <button id="add" >加一</button>
+     <button id="subtract" >减一</button>
      <!--<div class="testList" style="width: 60px; display: block;
 display: -webkit-box;
 max-width: 400px;
@@ -109,11 +113,11 @@ text-overflow: ellipsis;">案，意思是原指放
                     type: "asc"
                 },
                 checkbox: true,
-                lineModel: "auto",
+                lineModel: "one",
                 showLineNumber: true,//显示行号
                 selectRowCheck: true,//点击行选中
                 selectModel: 'rowspan',//通过方框勾选default:rowspan
-                //maxLineLength: 3 ,// 设置最大行数 与lineModel:'auto' 配合使用
+                maxLineLength: 3 ,// 设置最大行数 与lineModel:'auto' 配合使用
                 fixedHeader: true//, //锁定头部
                 //cellScrollBar: false
             })

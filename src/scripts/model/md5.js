@@ -379,6 +379,9 @@
    * @returns {string} MD5 output
    */
   function md5(string, key, raw) {
+    /*if(typeof string === "object"){
+        string = JSON.stringify(string)
+    }*/
     if (!key) {
       if (!raw) {
         return hexMD5(string)
