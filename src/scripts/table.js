@@ -1649,17 +1649,17 @@ const tableStyleFun = function () {
     var querySelector1 = _container.querySelector(".fiexd-row-cell-scroll-container")
 
     htmlDivElement.appendChild(querySelector)
-    //htmlDivElement.appendChild(querySelector1)
+    htmlDivElement.appendChild(querySelector1)
 
     querySelector.classList.add("heightAbsolute")
 
     htmlDivElement.classList.add("parent")
 
-    htmlDivElement.style.height = "40px"
+    //htmlDivElement.style.height = "40px"
 
     htmlDivElement1.appendChild(htmlDivElement)
 
-    htmlDivElement1.appendChild(querySelector1)
+    //htmlDivElement1.appendChild(querySelector1)
 
     _container.appendChild(htmlDivElement1)
 
@@ -1710,14 +1710,14 @@ const tableStyleFun = function () {
     }
 
     querySelectorassistor.addEventListener('scroll', function(event) {
-        if(_config.lineModel === 'one'){
+        /*if(_config.lineModel === 'one'){
              algorithmRow(querySelectorassistor.scrollTop + visualDom,querySelectorassistor.scrollTop)
         }
         //todo  滚动调试
-
-        //lineFiexdVisualContainer.style.paddingTop = querySelectorassistor.scrollTop + 'px'
-        lineFiexdVisualContainer.scrollTop = querySelectorassistor.scrollTop + 40 //+ 'px'
-
+        //
+        lineFiexdVisualContainer.style.paddingTop = querySelectorassistor.scrollTop + 'px'
+        lineFiexdVisualContainer.scrollTop = querySelectorassistor.scrollTop //+ 'px'
+*/
     })
 
     var startButton = document.getElementById("start");
@@ -1738,7 +1738,7 @@ const tableStyleFun = function () {
             algorithmRow(querySelectorassistor.scrollTop + visualDom ,querySelectorassistor.scrollTop)
 
             //lineFiexdVisualContainer.style.paddingTop = querySelectorassistor.scrollTop + 'px'
-            lineFiexdVisualContainer.scrollTop = querySelectorassistor.scrollTop + 40//+ 'px'
+            lineFiexdVisualContainer.scrollTop = querySelectorassistor.scrollTop //+ 'px'
 
         }, 100 );
 
@@ -1757,10 +1757,11 @@ const tableStyleFun = function () {
 
         querySelectorassistor.scrollTop = querySelectorassistor.scrollTop + 1
 
-        algorithmRow(querySelectorassistor.scrollTop + visualDom ,querySelectorassistor.scrollTop)
+        algorithmRow(querySelectorassistor.scrollTop + visualDom ,
+            querySelectorassistor.scrollTop )
 
-        //lineFiexdVisualContainer.style.paddingTop = querySelectorassistor.scrollTop + 40 + 'px'
-        lineFiexdVisualContainer.scrollTop = querySelectorassistor.scrollTop + 40 // + 'px'
+        //lineFiexdVisualContainer.style.paddingTop = querySelectorassistor.scrollTop  + 'px'
+        lineFiexdVisualContainer.scrollTop = querySelectorassistor.scrollTop  // + 'px'
 
         /*console.log(querySelectorassistor.scrollTop,lineFiexdVisualContainer.style.paddingTop,
             lineFiexdVisualContainer.scrollTop,querySelectorassistor.scrollTop + 40);*/
@@ -1772,10 +1773,11 @@ const tableStyleFun = function () {
         console.log("subtractButton")
         querySelectorassistor.scrollTop = querySelectorassistor.scrollTop - 1
 
-        algorithmRow(querySelectorassistor.scrollTop + visualDom ,querySelectorassistor.scrollTop)
+        algorithmRow(querySelectorassistor.scrollTop + visualDom  ,
+            querySelectorassistor.scrollTop )
 
-        ///lineFiexdVisualContainer.style.paddingTop = querySelectorassistor.scrollTop + 'px'
-        lineFiexdVisualContainer.scrollTop = querySelectorassistor.scrollTop + 40 //+ 'px'
+        lineFiexdVisualContainer.style.paddingTop = querySelectorassistor.scrollTop + 'px'
+        lineFiexdVisualContainer.scrollTop = querySelectorassistor.scrollTop  //+ 'px'
 
     }
 
@@ -1811,7 +1813,7 @@ const algorithmRow = function (maxRange,miniRange) {
             }
 
         }
-        rowRemoveAndAdd(number,0)
+        //rowRemoveAndAdd(number,0)
         _fiexdVisual.maxRange  = number
         _fiexdVisual.miniRange  = 0
 
@@ -1834,6 +1836,8 @@ const algorithmRow = function (maxRange,miniRange) {
          }*/
 
          //console.log("benRowNumber",benRowNumber,"endRowNumber",endRowNumber)
+
+        console.log("miniRange",miniRange,"maxRange",maxRange,"endRowNumber",endRowNumber,"benRowNumber",benRowNumber)
 
         rowRemoveAndAdd(endRowNumber,benRowNumber)
 
@@ -1865,9 +1869,12 @@ const rowCalculationMini = function(flag,range){
 
 const rowCalculationMax = function (flag,range) {
 
-    if(_fiexdVisual.miniRange == 0  ||  range == 0){
+    if( range == 0){
         return
     }
+    //if(_fiexdVisual.miniRange == 0  ||  range == 0){
+    //    return
+    //}
 
     //console.log(flag)
 
@@ -1891,7 +1898,8 @@ const rangeArray = function(max,mini){
 
     let rangeArr = []
 
-    for(let i = mini - 1; i < max ; i ++){
+    //for(let i = mini - 1; i < max ; i ++){
+    for(let i = mini; i < max ; i ++){
         rangeArr.push(i)
     }
 
@@ -1906,10 +1914,12 @@ const rowRemoveAndAdd = function (maxRange,miniRange) {
     //todo 添加删除吧
 
     //添加的
-    var addRow = rowCalculationMax(_fiexdVisual.maxRange >  maxRange,Math.abs(_fiexdVisual.maxRange -  maxRange))
+    //var addRow = rowCalculationMax(_fiexdVisual.maxRange >  maxRange,Math.abs(_fiexdVisual.maxRange -  maxRange))
 
     //减少的
     var removeRow = rowCalculationMini(_fiexdVisual.maxRange >  maxRange,Math.abs(_fiexdVisual.maxRange -  maxRange))
+
+    console.log("addRowArray",null,"addRow",_fiexdVisual.maxRange >  maxRange,Math.abs(_fiexdVisual.maxRange -  maxRange))
 
     /*console.log("removeRow",removeRow,"_fiexdVisual.maxRange",_fiexdVisual.maxRange,"maxRange",maxRange,
        "miniRange",miniRange,"移动距离",Math.abs(_fiexdVisual.maxRange -  maxRange)
@@ -1920,39 +1930,6 @@ const rowRemoveAndAdd = function (maxRange,miniRange) {
     //if(addRow){
         //console.log("addRow",addRow,"_fiexdVisual",_fiexdVisual,"range",Math.abs(_fiexdVisual.maxRange -  maxRange))
     //}
-
-    if(addRow){
-
-        console.log("addRow",addRow)
-
-        /*if(_fiexdVisual.maxRange >  maxRange){
-
-        }else{*/
-            for (let i = 0 ; i < addRow.length;i ++){
-
-                var rowData = _container.querySelector("div[data-hash='" + md5(JSON.stringify(_config.data[addRow[i]])) +"']");
-
-                if(rowData === null || rowData === undefined){
-                    addRowForTransform(md5(JSON.stringify(_config.data[addRow[i]])),_config.data[addRow[i]],
-                        lineFiexdVisualContainer,addRow[i],_fiexdVisual.maxRange >  maxRange)
-                }
-
-                //todo 删除行
-            }
-        //}
-
-        //console.log("removeRow",removeRow,"_fiexdVisual",_fiexdVisual,"range",Math.abs(_fiexdVisual.maxRange -  maxRange))
-        /*for (let i = 0 ; i < addRow.length;i ++){
-
-            var rowData = _container.querySelector("div[data-hash='" + md5(JSON.stringify(_config.data[addRow[i]])) +"']");
-
-            if(rowData === null || rowData === undefined){
-                addRowForTransform(md5(JSON.stringify(_config.data[addRow[i]])),_config.data[addRow[i]],lineFiexdVisualContainer,addRow[i])
-            }
-
-            //todo 删除行
-        }*/
-    }
 
     if(removeRow){
 
@@ -1970,7 +1947,43 @@ const rowRemoveAndAdd = function (maxRange,miniRange) {
             }
             //todo 删除行
         }
+
+        var addRow = rangeArray(_fiexdVisual.maxRange + removeRow.length, _fiexdVisual.maxRange)
+
+        console.log("new addRow ",addRow,_fiexdVisual.maxRange + removeRow.length,_fiexdVisual.maxRange);
+
+        if(addRow){
+            for (let i = 0 ; i < addRow.length;i ++){
+
+                var rowData = _container.querySelector("div[data-hash='" + md5(JSON.stringify(_config.data[addRow[i]])) +"']");
+
+                if(rowData === null || rowData === undefined){
+                    addRowForTransform(md5(JSON.stringify(_config.data[addRow[i]])),_config.data[addRow[i]],
+                        lineFiexdVisualContainer,addRow[i],_fiexdVisual.maxRange >  maxRange)
+                }
+                //todo 删除行
+            }
+         }
+
     }
+
+    //if(addRow){
+    //
+    //    console.log("addRow",addRow)
+    //
+    //    for (let i = 0 ; i < addRow.length;i ++){
+    //
+    //        var rowData = _container.querySelector("div[data-hash='" + md5(JSON.stringify(_config.data[addRow[i]])) +"']");
+    //
+    //        //if(rowData === null || rowData === undefined){
+    //        //    addRowForTransform(md5(JSON.stringify(_config.data[addRow[i]])),_config.data[addRow[i]],
+    //        //        lineFiexdVisualContainer,addRow[i],_fiexdVisual.maxRange >  maxRange)
+    //        //}
+    //
+    //        //todo 删除行
+    //    }
+    //
+    //}
 
 
 
