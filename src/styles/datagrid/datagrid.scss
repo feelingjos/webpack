@@ -241,19 +241,19 @@ html, body{
 }
 
 .parent{
-  overflow: auto;
-  height: 100%;
-  width: 100%;
-  //overflow: hidden;
-  //height: auto;
-  //width: auto;
+  //overflow: auto;
+  //height: 100%;
+  //width: 100%;
+  overflow: hidden;
+  height: auto;
+  width: auto;
 }
 
 .assistor{
   height: 100%;
   width: 100%;
-  //overflow: auto;
-  overflow: hidden;
+  overflow: auto;
+  //overflow: hidden;
 }
 
 .text-overall-situation{

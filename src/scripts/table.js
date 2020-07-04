@@ -1632,6 +1632,7 @@ const scrollDistance = function(d,callback, refresh) {
 };
 
 const configPosition = function(visualDom,scroll){
+
     var yReserve = 1;
     var rowPerPage = Math.round(visualDom / 40);
     var y = Math.round(scroll.top / 40) || 0;
@@ -1675,7 +1676,7 @@ const tableStyleFun = function () {
 
     var dataMapSource =  rowDataStructureInit()
 
-    var parentDOM = document.querySelector(".assistor")
+    var assistor = document.querySelector(".assistor")
 
     var queryHeaderLineColum = _container.querySelector(".table-header-line-column")//行高
 
@@ -1689,7 +1690,9 @@ const tableStyleFun = function () {
 
     lineFiexdVisualContainer.style.marginTop = queryHeaderLineColum.offsetHeight + "px"
 
-    lineFiexdVisualContainer.style.height = visualDom + 80 + 'px'
+    //lineFiexdVisualContainer.style.height = visualDom + 80 + 'px'
+    //lineFiexdVisualContainer.style.height = visualDom + 'px'
+    //lineFiexdVisualContainer.style.height = (_config.data.length * 40) + 'px'
 
     console.log("可视化",visualDom );
 
@@ -1706,12 +1709,14 @@ const tableStyleFun = function () {
     var lineVisualContainer = document.querySelector(".line-visual-container");
 
     if(_config.lineModel === 'one'){
-        lineVisualContainer.style.height = _config.data.length * 40  + 'px'
+        //lineVisualContainer.style.height = _config.data.length * 40  + 'px'
+        fiexdRowCellScrollContainer.style.height = (_config.data.length * 40 ) + 'px'
+        assistor.style.height = visualDom + 'px'
     }else{
         lineVisualContainer.style.height = dataMapSource.allHeight  + 'px'
     }
 
-    configPosition(visualDom,{top:0})
+    //configPosition(visualDom,{top:0})
 
     console.log("_configPosition",_configPosition)
 
@@ -1720,43 +1725,41 @@ const tableStyleFun = function () {
     console.log("dataMapSource lenght",Object.keys(dataMapSource).length);
 
     if(_config.lineModel === 'one'){
-        algorithmRow(visualDom,0)
+        configPosition(visualDom,{top:assistor.scrollTop})
+        initScrollRow()
     }
 
-    parentDOM.addEventListener('scroll', function(event) {
-
-        //console.log(parentDOM.scrollTop + visualDom)
-
-        /*if((Math.ceil(parentDOM.scrollTop / 40)) === 0){
-            lineVisualContainer.style.marginTop = "0px" ;
-        }else{
-            lineVisualContainer.style.marginTop = ( (Math.ceil(parentDOM.scrollTop / 40) - 1 ) * 40 ) + "px" ;
-        }*/
-
-        configPosition(visualDom,{top:parentDOM.scrollTop})
-
+    assistor.addEventListener('scroll', function(event) {
+        configPosition(visualDom,{top:assistor.scrollTop})
         lineVisualContainer.style.paddingTop = (_configPosition.yStart * 40 ) + "px" ;
-
         if(_config.lineModel === 'one'){
             renderScrollRow()
-             //algorithmRow(parentDOM.scrollTop + visualDom,parentDOM.scrollTop)
         }
-
-
-
-
     })
 
     var addButton = document.getElementById("add");
     var subtractButton = document.getElementById("subtract");
+    var startButton = document.getElementById("start");
+    var endButton = document.getElementById("end");
 
     addButton.onclick = function(){
-        parentDOM.scrollTop = parentDOM.scrollTop + 1
-
+        assistor.scrollTop = assistor.scrollTop + 1
     }
     subtractButton.onclick = function(){
-        parentDOM.scrollTop = parentDOM.scrollTop - 1
+        assistor.scrollTop = assistor.scrollTop - 1
     }
+    startButton.onclick = function(){
+        setInterval(function () {
+            assistor.scrollTop = assistor.scrollTop + 1
+        },100);
+    }
+    endButton.onclick = function(){
+        setInterval(function () {
+            assistor.scrollTop = assistor.scrollTop - 1
+        },100);
+    }
+
+
 
     scrollDistance(parentDOM,function(e){
 
@@ -1767,25 +1770,26 @@ const tableStyleFun = function () {
 
 }
 
+const initScrollRow = function(){
+    var lineFiexdVisualContainer = document.querySelector(".line-fiexd-visual-container");
+    for(let i = _configPosition.yStart; i < _configPosition.yEnd ; i ++){
+        addRowForTransform(md5(JSON.stringify(_config.data[i])),_config.data[i],lineFiexdVisualContainer,parseInt( i + 1),false)
+    }
+}
+
 const renderScrollRow = function(){
-
-    //var data = _config.data ? _config.data.slice(_configPosition.yStart, _configPosition.yEnd) : [];
-
     rowSwitchCalculation();
-
 }
 
 const rowSwitchCalculation = function(){
     //todo //算范围
-    var reslut = []
 
     var lineFiexdVisualContainer = document.querySelector(".line-fiexd-visual-container");
 
     if(_configPosition.yStart > _previousPosition.yStart ){
         for (let s = _previousPosition.yStart ; s < _configPosition.yStart ;  s ++){
-            reslut.push(s);
 
-            console.log("-",s,"上")
+            //console.log("-",s,"上")
             var removeRow = _container.querySelector("div[data-index='" + parseInt( s + 1) +"']");
             if(removeRow){
                 removeRow.parentNode.removeChild(removeRow)
@@ -1793,43 +1797,39 @@ const rowSwitchCalculation = function(){
         }
 
         for (let e = _previousPosition.yEnd ; e < _configPosition.yEnd ; e ++){
-            console.log("+",e,"下")
-
+            //console.log("+",e,"下")
+            
             var addRow = _container.querySelector("div[data-index='" + parseInt( e + 1) +"']");
-
+            
             if(!addRow){
-                addRowForTransform(md5(JSON.stringify(_config.data[e - 1])),_config.data[e + 1],lineFiexdVisualContainer,parseInt( e + 1),true)
+                addRowForTransform(md5(JSON.stringify(_config.data[e - 1])),_config.data[e + 1],lineFiexdVisualContainer,parseInt( e + 1),false)
             }
 
         }
 
     }else if(_configPosition.yStart < _previousPosition.yStart ){
         for (let s = _configPosition.yStart ; s < _previousPosition.yStart ;  s ++){
-            reslut.push(s);
 
-            console.log("+",s,"上")
+            //console.log("+",s,"上")
 
             var addRow = _container.querySelector("div[data-index='" + parseInt( s + 1) +"']");
 
             if(!addRow){
-                addRowForTransform(md5(JSON.stringify(_config.data[s + 1])),_config.data[s + 1],lineFiexdVisualContainer,parseInt( s + 1),false)
+                addRowForTransform(md5(JSON.stringify(_config.data[s + 1])),_config.data[s + 1],lineFiexdVisualContainer,parseInt( s + 1),true)
             }
-
 
         }
         for (let e = _configPosition.yEnd ; e < _previousPosition.yEnd ; e ++){
 
-            console.log("-",e,"下")
+            //console.log("-",e,"下")
 
             var removeRow = _container.querySelector("div[data-index='" + parseInt( e + 1) +"']");
             if(removeRow){
                 removeRow.parentNode.removeChild(removeRow)
             }
 
-
         }
     }
-    return reslut
 }
 
 const algorithmRow = function (maxRange,miniRange) {
@@ -1949,9 +1949,18 @@ const addRowForTransform = function(dataHash,data,container,rowIndex,before){
 
     var dataField = data
 
+    try{
+        var data1d = data["config"] || {}
+        console.log(data1d)
+    }catch (e) {
+        console.log("ex",data,rowIndex)
+    }
+
     var arr = {};
 
     var cellConfig = data["config"] || {}
+
+    console.log("addRowForTransform",rowIndex)
 
     if(_config.lineModel === "one"){
         if(_config.showLineNumber){
@@ -2084,10 +2093,9 @@ const addRowForTransform = function(dataHash,data,container,rowIndex,before){
     }
 
     if(before){
-        container.insertBefore(tableBodyTabulation,container.lastElementChild.nextSibling);
+        container.insertBefore(tableBodyTabulation,container.firstElementChild);
     }else{
         container.appendChild(tableBodyTabulation)
-
     }
 
 
