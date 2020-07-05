@@ -1709,16 +1709,11 @@ const tableStyleFun = function () {
     var lineVisualContainer = document.querySelector(".line-visual-container");
 
     if(_config.lineModel === 'one'){
-        //lineVisualContainer.style.height = _config.data.length * 40  + 'px'
         fiexdRowCellScrollContainer.style.height = (_config.data.length * 40 ) + 'px'
-        assistor.style.height = visualDom + 'px'
+        //assistor.style.height = visualDom + 'px'
     }else{
         lineVisualContainer.style.height = dataMapSource.allHeight  + 'px'
     }
-
-    //configPosition(visualDom,{top:0})
-
-    console.log("_configPosition",_configPosition)
 
     console.log("dataMapSource",dataMapSource);
     //console.log("dataMapSource lenght",_config.data.length);
@@ -1772,9 +1767,14 @@ const tableStyleFun = function () {
 
 const initScrollRow = function(){
     var lineFiexdVisualContainer = document.querySelector(".line-fiexd-visual-container");
-    for(let i = _configPosition.yStart; i < _configPosition.yEnd ; i ++){
-        addRowForTransform(md5(JSON.stringify(_config.data[i])),_config.data[i],lineFiexdVisualContainer,parseInt( i + 1),false)
+
+    var initData = _config.data ? _config.data.slice(_configPosition.yStart, _configPosition.yEnd) : [];
+
+    for(var index in initData){
+        //console.log(index,initData[index].rowIndex)
+        addRowForTransform(md5(JSON.stringify(initData[index])),initData[index],lineFiexdVisualContainer,initData[index].index,false)
     }
+
 }
 
 const renderScrollRow = function(){
@@ -1802,7 +1802,7 @@ const rowSwitchCalculation = function(){
             var addRow = _container.querySelector("div[data-index='" + parseInt( e + 1) +"']");
             
             if(!addRow){
-                addRowForTransform(md5(JSON.stringify(_config.data[e - 1])),_config.data[e + 1],lineFiexdVisualContainer,parseInt( e + 1),false)
+                addRowForTransform(md5(JSON.stringify(_config.data[e ])),_config.data[e],lineFiexdVisualContainer,_config.data[e].index,false)
             }
 
         }
@@ -1815,7 +1815,7 @@ const rowSwitchCalculation = function(){
             var addRow = _container.querySelector("div[data-index='" + parseInt( s + 1) +"']");
 
             if(!addRow){
-                addRowForTransform(md5(JSON.stringify(_config.data[s + 1])),_config.data[s + 1],lineFiexdVisualContainer,parseInt( s + 1),true)
+                addRowForTransform(md5(JSON.stringify(_config.data[s])),_config.data[s],lineFiexdVisualContainer,_config.data[s].index,true)
             }
 
         }
@@ -1832,135 +1832,13 @@ const rowSwitchCalculation = function(){
     }
 }
 
-const algorithmRow = function (maxRange,miniRange) {
-
-    //todo 算法行
-
-    var lineFiexdVisualContainer = _container.querySelector(".line-fiexd-visual-container");
-
-    //lineFiexdVisualContainer.innerHTML = ""
-
-    if(miniRange == 0){
-        var number = Math.ceil(maxRange / 40) + 3;
-        for (let i  = 1;i < number ; i ++) {
-
-            var rowData = lineFiexdVisualContainer.querySelector("div[data-hash='" + md5(JSON.stringify(_config.data[i - 1])) +"']");
-            if(rowData === null || rowData === undefined){
-                addRowForTransform(md5(JSON.stringify(_config.data[i - 1])),_config.data[i - 1],lineFiexdVisualContainer,i)
-            }
-
-        }
-
-        _fiexdVisual.maxRange  = number
-        _fiexdVisual.miniRange  = 1
-
-    }else if(miniRange > 0){
-
-        var benRowNumber = Math.floor(miniRange / 40);
-
-        var endRowNumber = Math.ceil(maxRange / 40);
-
-        if(benRowNumber === 0){
-            rowRemoveAndAdd(endRowNumber,1)
-            _fiexdVisual.maxRange  = endRowNumber
-            _fiexdVisual.miniRange  = 1
-        }else{
-            rowRemoveAndAdd(endRowNumber,benRowNumber)
-            _fiexdVisual.maxRange  = endRowNumber
-            _fiexdVisual.miniRange  = benRowNumber
-        }
-
-
-
-
-
-    }
-
-
-}
-
-const rowCalculationMini = function(flag,range){
-
-    if(_fiexdVisual.miniRange == 0  ||  range == 0){
-        return
-    }
-
-    if(!flag){
-        console.log("上")
-        return rangeArray(_fiexdVisual.miniRange + range, _fiexdVisual.miniRange)
-    }else{
-        console.log("下")
-        return rangeArray(_fiexdVisual.maxRange + range, _fiexdVisual.maxRange)
-    }
-
-}
-
-const rowCalculationMax = function (flag,range) {
-
-    if( range == 0){
-        return
-    }
-
-    if(!flag){
-        return rangeArray(_fiexdVisual.maxRange + range, _fiexdVisual.maxRange);
-    }else{
-        return rangeArray(_fiexdVisual.miniRange + range, _fiexdVisual.miniRange)
-
-    }
-
-}
-
-const rangeArray = function(max,mini){
-    let rangeArr = []
-    for(let i = mini; i < max ; i ++){
-        rangeArr.push(i)
-    }
-    return rangeArr;
-}
-
-const rowRemoveAndAdd = function (maxRange,miniRange) {
-
-    //减少的
-    var removeRow = rowCalculationMini(_fiexdVisual.maxRange >  maxRange,Math.abs(_fiexdVisual.maxRange -  maxRange))
-
-    console.log("removeRow",removeRow);
-
-    var lineFiexdVisualContainer = _container.querySelector(".line-fiexd-visual-container");
-
-    if(removeRow){
-
-        for (let i = 0 ; i < removeRow.length;i ++){
-
-            //var rowData = _container.querySelector("div[data-hash='" + md5(JSON.stringify(_config.data[removeRow[i]])) +"']");
-            //data-index
-            var rowData = _container.querySelector("div[data-index='" + removeRow[i] + "']");
-
-            if(rowData){
-                lineFiexdVisualContainer.removeChild(rowData)
-            }
-        }
-
-    }
-
-}
-
-
 const addRowForTransform = function(dataHash,data,container,rowIndex,before){
 
     var dataField = data
 
-    try{
-        var data1d = data["config"] || {}
-        console.log(data1d)
-    }catch (e) {
-        console.log("ex",data,rowIndex)
-    }
-
     var arr = {};
 
     var cellConfig = data["config"] || {}
-
-    console.log("addRowForTransform",rowIndex)
 
     if(_config.lineModel === "one"){
         if(_config.showLineNumber){
@@ -2169,7 +2047,7 @@ class TableGrid {
         this.columns = config.columns;
         this.data = config.data;
         config.data = config.data.map(function(row, index) {
-            row.index = index
+            row.index = index + 1
             return row
         });
         _config = config
