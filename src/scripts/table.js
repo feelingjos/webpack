@@ -601,7 +601,8 @@ const tableRenderDataRow = function (rowData,config) {
     rowData.forEach(function (item,index) {
 
         var arr = {};
-        var random = genId()
+        //var random = genId()
+        var random = md5(JSON.stringify(item));
 
         var cellConfig = item["config"] || {}
 
@@ -619,7 +620,7 @@ const tableRenderDataRow = function (rowData,config) {
 
             for (let itemKey in item) {
 
-                if(itemKey === "config"){
+                if(itemKey === "config" || itemKey === "index"){
                     continue
                 }
 
@@ -935,7 +936,7 @@ const tableRenderDataRow = function (rowData,config) {
                         var querySelector5 = _container.querySelector(".headerCell");
                         var querySelector9 = _container.querySelector(".fiexd-row-cell-scroll-container");
 
-                        querySelector9.style.marginTop = querySelector5.offsetHeight + 'px'
+                        //querySelector9.style.marginTop = querySelector5.offsetHeight + 'px'
 
                         if(maxHeight && _LengthMap.header[item.id].heightLength  <= maxHeight + 2){
                             _LengthMap.header[item.id].ellipsis = false
@@ -1228,6 +1229,9 @@ const tableRenderDataRow = function (rowData,config) {
 
     _dataResultsLength = dataLength;
 
+
+    console.log("dataLength",dataLength);
+
 }
 
 /**
@@ -1329,7 +1333,7 @@ const rowDataStructureInit = function () {
 
             for (let itemKey in item) {
 
-                if(itemKey === "config"){
+                if(itemKey === "config" || itemKey === "index"){
                     config = item[itemKey]
                     continue
                 }
@@ -1503,7 +1507,7 @@ const rowDataStructureInit = function () {
 
         for(let cell in item){
 
-            if(cell === "config" && cell === "index") {
+            if(cell === "config" || cell === "index") {
                 continue
             }
             var domCell = `<div class="table-tabulation-cell-line cell-header-${cell} 
@@ -1709,10 +1713,9 @@ const tableStyleFun = function () {
     var lineVisualContainer = document.querySelector(".line-visual-container");
 
     if(_config.lineModel === 'one'){
-        fiexdRowCellScrollContainer.style.height = (_config.data.length * 40 ) + 'px'
-        //assistor.style.height = visualDom + 'px'
+        fiexdRowCellScrollContainer.style.height = ((_config.data.length + 1) * 40 ) + 'px'
     }else{
-        lineVisualContainer.style.height = dataMapSource.allHeight  + 'px'
+        fiexdRowCellScrollContainer.style.height = dataMapSource.allHeight  + 'px'
     }
 
     console.log("dataMapSource",dataMapSource);
@@ -1722,15 +1725,18 @@ const tableStyleFun = function () {
     if(_config.lineModel === 'one'){
         configPosition(visualDom,{top:assistor.scrollTop})
         initScrollRow()
+
+        assistor.addEventListener('scroll', function(event) {
+            configPosition(visualDom,{top:assistor.scrollTop})
+            lineVisualContainer.style.paddingTop = (_configPosition.yStart * 40 ) + "px" ;
+            if(_config.lineModel === 'one'){
+                renderScrollRow()
+            }
+        })
+
     }
 
-    assistor.addEventListener('scroll', function(event) {
-        configPosition(visualDom,{top:assistor.scrollTop})
-        lineVisualContainer.style.paddingTop = (_configPosition.yStart * 40 ) + "px" ;
-        if(_config.lineModel === 'one'){
-            renderScrollRow()
-        }
-    })
+
 
     var addButton = document.getElementById("add");
     var subtractButton = document.getElementById("subtract");
