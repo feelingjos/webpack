@@ -1,6 +1,7 @@
 import './util/event'
 import {genId,isNull} from './util/utils'
 import {Dom} from './util/dom.js'
+import {configModel} from './model/config'
 
 var _el ,_container ,_checkValueMapStructure = {}
     ,_range,_x, _y , _hashDateMap = {},_config,_dataResultsLength,
@@ -23,7 +24,7 @@ const getOffset = function(dom){
             if (typeof(init) === 'undefined' && position === 'static') {
                 getOffset(node.parentNode)
                 return
-            }
+            }              
             result.top = node.offsetTop + result.top - node.scrollTop
             result.left = node.offsetLeft + result.left - node.scrollLeft
             //result.width = node.width === "undefined"  ? window.getComputedStyle(node).width : node.offsetWidth
@@ -2062,7 +2063,9 @@ class TableGrid {
         this.init(config)
         selectModelFun(_config.selectModel)
 
+        var configModels = new configModel(elP,config);
 
+        console.log("config1",configModels);
 
     }
 

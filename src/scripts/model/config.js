@@ -2,20 +2,18 @@
 import {isNull} from "../util/utils";
 
 
-class config{
+class configModel{
 
     constructor(container, config){
-        this.constructor = container;
+        this.container = container;
         this.config = config;
         this.initData(config)
     }
 
-    static data = {}
-
     initData(config){
 
-        if(isNull(config.data)){
-            data = config.data.map(function(item,index){
+        if(!isNull(config.data)){
+            this.data = config.data.map(function(item,index){
                 item.d_index = index + 1
                 return item;
             })
@@ -24,3 +22,5 @@ class config{
     }
 
 }
+
+export {configModel};
