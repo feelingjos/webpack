@@ -1,5 +1,5 @@
 import './util/event'
-import {genId} from './util/utils'
+import {genId,isNull} from './util/utils'
 import {Dom} from './util/dom.js'
 
 var _el ,_container ,_checkValueMapStructure = {}
@@ -1230,7 +1230,7 @@ const tableRenderDataRow = function (rowData,config) {
     _dataResultsLength = dataLength;
 
 
-    console.log("dataLength",dataLength);
+    //console.log("dataLength",dataLength);
 
 }
 
@@ -2061,6 +2061,8 @@ class TableGrid {
 
         this.init(config)
         selectModelFun(_config.selectModel)
+
+
 
     }
 

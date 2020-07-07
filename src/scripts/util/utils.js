@@ -8,5 +8,34 @@ String.prototype.ToDOM = function (str) {
     return doc;
 }
 
+/**
+ * 判空
+ * @param obj
+ * @returns {boolean}
+ */
+export function isNull(obj){
+
+    if(typeof obj === "undefined"){
+        return true
+    }
+    
+    if(typeof obj === "string"){
+        if(obj === ""){
+            return true
+        }
+    }
+
+    if(typeof obj === "object"){
+        for ( var name in obj ) {
+            return false;
+        }
+        return true
+
+    }
+
+    return false
+
+}
+
 
 
