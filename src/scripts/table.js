@@ -61,7 +61,7 @@ const checkHeader = function () {
 
     var isTrue = true
 
-    var nodeListOf = _container.querySelectorAll("span[checkbox]");
+    var nodeListOf = _configModel.containerDOM.querySelectorAll("span[checkbox]");
 
     for (let nodeListOfKeyAll = 0; nodeListOfKeyAll < nodeListOf.length ; nodeListOfKeyAll ++) {
         if(nodeListOf[nodeListOfKeyAll].getAttribute("check-hash") !== "header"
@@ -70,7 +70,7 @@ const checkHeader = function () {
             break
         };
     }
-    var headerCheckBox = _container.querySelector("[check-hash='header']");
+    var headerCheckBox = _configModel.containerDOM.querySelector("[check-hash='header']");
     if(isTrue){
         headerCheckBox["checkbox"] = true
         headerCheckBox.setAttribute("checkbox",true)
@@ -97,7 +97,7 @@ const checkHeader = function () {
  */
 const checkSelect = function(headerCheckBox,isTrue){
 
-    var nodeListOf1 = _container.querySelectorAll("span[checkbox]");
+    var nodeListOf1 = _configModel.containerDOM.querySelectorAll("span[checkbox]");
 
     for (let nodeListOfKeyAll = 0; nodeListOfKeyAll < nodeListOf1.length ; nodeListOfKeyAll ++) {
         if( nodeListOf1[nodeListOfKeyAll].getAttribute("checkbox") === "true"){
@@ -128,7 +128,7 @@ const checkSelect = function(headerCheckBox,isTrue){
             nodeListOf1[nodeListOfKeyAll].classList.remove("iconcheck-box-outline-bl")
 
             if(checkHashCheck !== "header"){
-                var querySelector = _container.querySelector("div[data-hash='" + checkHashCheck +"']");
+                var querySelector = _configModel.containerDOM.querySelector("div[data-hash='" + checkHashCheck +"']");
 
                 querySelector.classList.add("select-cell-Highlight")
             }
@@ -138,7 +138,7 @@ const checkSelect = function(headerCheckBox,isTrue){
             nodeListOf1[nodeListOfKeyAll].classList.remove("iconcheckboxoutline")
             nodeListOf1[nodeListOfKeyAll].classList.add("iconcheck-box-outline-bl")
             if(checkHashCheck !== "header"){
-                var querySelector = _container.querySelector("div[data-hash='" + checkHashCheck + "']");
+                var querySelector = _configModel.containerDOM.querySelector("div[data-hash='" + checkHashCheck + "']");
                 querySelector.classList.remove("select-cell-Highlight")
             }
             delete _checkValueMapStructure[checkHashCheck]
@@ -167,7 +167,7 @@ const checkHeaderSelect = function (selectCheckBox){
         selectCheckBox.classList.remove("iconcheck-box-outline-bl")
         _checkValueMapStructure[checkHash] = selectCheckBox.checkbox
         if( checkHash !== "header"){
-            var querySelector = _container.querySelector("div[data-hash='"+ checkHash +"']");
+            var querySelector = _configModel.containerDOM.querySelector("div[data-hash='"+ checkHash +"']");
             querySelector.classList.add("select-cell-Highlight")
         }
         checkHeader()
@@ -176,7 +176,7 @@ const checkHeaderSelect = function (selectCheckBox){
         selectCheckBox.classList.remove("iconcheckboxoutline")
         selectCheckBox.classList.add("iconcheck-box-outline-bl")
         if( checkHash !== "header"){
-            var querySelector = _container.querySelector("div[data-hash='"+ checkHash +"']");
+            var querySelector = _configModel.containerDOM.querySelector("div[data-hash='"+ checkHash +"']");
             querySelector.classList.remove("select-cell-Highlight")
         }
         checkHeader()
@@ -214,7 +214,7 @@ var selectRowFun = function (nodeRow,isTrue) {
 }
 
 const checkRange = function(range){
-    var dataCellList = _container.querySelectorAll("[data-hash]");
+    var dataCellList = _configModel.containerDOM.querySelectorAll("[data-hash]");
     for(let i = 0 ; i < dataCellList.length ; i ++){
         var cellDataHash = dataCellList[i].getAttribute("data-hash");
         var thatCell = dataCellList[i].querySelector("[check-hash='" + cellDataHash + "']");
@@ -235,7 +235,7 @@ const selectModelFun = function (selectModel = 'default') {
 
     if(selectModel === "rowspan"){
         selectModelClick()
-        _container.classList.add("select-text-prohibit")
+        _configModel.containerDOM.classList.add("select-text-prohibit")
         document.documentElement.addEventListener("mousedown",function (ev) {
             ev = ev || window.event;
             var scrollX = document.documentElement.scrollLeft || document.body.scrollLeft;//分别兼容ie和chrome
@@ -335,7 +335,7 @@ const checkBoxHookLine = function(){
     for (let i in _hashDateMap){
         //debugger
         if(_hashDateMap[i].config  && _hashDateMap[i].config.checkbox === "true"){
-            var CellNodeHash = _container.querySelector("[data-hash='" + i + "']");
+            var CellNodeHash = _configModel.containerDOM.querySelector("[data-hash='" + i + "']");
             selectRowFun(CellNodeHash,_hashDateMap[i].config.checkbox)
         }
     }
@@ -353,53 +353,57 @@ const tableRenderHeader = function(){
     var headerWidth = {}, LengthMap = {header:{},maxValue:{1:""}},maxValue = {1:"null"}, headerCssRules = ``,
         maxHeight = undefined, headerContainer = `` //头部样式*/
 
-    if(_configModel.lineModel === "auto"){//
+    var headerContainer =``,headerCssRules =``
 
-        if(_configModel.maxLineLength && _configModel.maxLineLength > 1){
-            _conifgModel.maxHeight = maxLineLength * 25
+    if(_configModel.config.lineModel === "auto"){//
+
+        if(_configModel.config.maxLineLength && _configModel.config.maxLineLength > 1){
+            _configModel.config.maxHeight = _configModel.config.maxLineLength * 25
         }
 
-        headerData.forEach(function(item){
+        _configModel.columns.forEach(function(item){
 
             var height = item.text.render("hide-surplus-text,horizontally,word-break-all,text-overall-situation",`width:${item.width}px`).height;
 
             var ellipsis = false;
 
-            if(maxHeight && height > maxHeight ){
+            if(_configModel.config.maxHeight && height > _configModel.config.maxHeight ){
                 ellipsis = true
-                height = maxHeight
+                height = _configModel.config.maxHeight
             }
 
-            headerWidth[item.id] = item.width
-            LengthMap.header[[item.id]] = {
+            _configModel.config.headerWidth[item.id] = item.width
+
+            _configModel.lengthMap.header[[item.id]] = {
                 heightLength:height,
                 heightAbsolute:true,
                 heightRelative:false,
                 ellipsis: ellipsis
             }
-            if(height > Object.keys(LengthMap.maxValue)[0]){
-                LengthMap.maxValue = {}
-                LengthMap.maxValue[height] = item.id
+            if(height > Object.keys(_configModel.lengthMap.maxValue)[0]){
+                _configModel.lengthMap.maxValue = {}
+                _configModel.lengthMap.maxValue[height] = item.id
             }
+
         })
-        LengthMap.header[Object.values(LengthMap.maxValue)[0]].heightAbsolute = !LengthMap.header[Object.values(LengthMap.maxValue)[0]].heightAbsolute
-        LengthMap.header[Object.values(LengthMap.maxValue)[0]].heightRelative = !LengthMap.header[Object.values(LengthMap.maxValue)[0]].heightRelative
+        _configModel.lengthMap.header[Object.values(_configModel.lengthMap.maxValue)[0]].heightAbsolute = !_configModel.lengthMap.header[Object.values(_configModel.lengthMap.maxValue)[0]].heightAbsolute
+        _configModel.lengthMap.header[Object.values(_configModel.lengthMap.maxValue)[0]].heightRelative = !_configModel.lengthMap.header[Object.values(_configModel.lengthMap.maxValue)[0]].heightRelative
     }
 
     headerContainer = `<div class="table-header-line-column header-cell 
-                ${lineModel === "auto" ? `heightRelative` : ``}">`;
+                ${_configModel.config.lineModel === "auto" ? `heightRelative` : ``}">`;
 
     var cellSize = 2;
 
     var leftScale = 2
 
-    if(showLineNumber){
+    if(_configModel.config.showLineNumber){
 
         cellSize += 30
 
-        if(lineModel === "one"){
+        if(_configModel.config === "one"){
 
-            var width = parseInt(dataRowLength.render("table-tabulation-cell-line,one-line-fixed-height,space-nowrap,hide-surplus-text,margin-right-left").width);
+            var width = parseInt(_configModel.config.dataRowLength.render("table-tabulation-cell-line,one-line-fixed-height,space-nowrap,hide-surplus-text,margin-right-left").width);
 
             headerCssRules += `
                     .cell-check-box-offset{
@@ -415,7 +419,7 @@ const tableRenderHeader = function(){
 
         }else{
 
-            var width = parseInt(dataRowLength.render("one-line-fixed-height,FlexItem,table-tabulation-cell-line,heightAbsolute,horizontally,word-break-all,hide-surplus-text,FlexContainer,margin-right-left").width);
+            var width = parseInt(_configModel.config.dataRowLength.render("one-line-fixed-height,FlexItem,table-tabulation-cell-line,heightAbsolute,horizontally,word-break-all,hide-surplus-text,FlexContainer,margin-right-left").width);
 
             headerCssRules += `
                     .cell-check-box-offset{
@@ -440,11 +444,11 @@ const tableRenderHeader = function(){
     }
 
 
-    if(checkbox){
+    if(_configModel.config.checkbox){
 
         cellSize += 30
 
-        if(lineModel === "one"){
+        if(_configModel.config.lineModel === "one"){
             headerContainer += `<div class="table-header-call heightRelative"/> 
                 <div class="cell-header-check-box one-line-fixed-height">
                     <span class="iconfont icon iconcheck-box-outline-bl" checkbox="false" check-hash="header"></span>
@@ -454,7 +458,7 @@ const tableRenderHeader = function(){
 
             headerContainer += `<div class="table-header-call"/> 
                     <div class="cell-header-check-box height-fill-parant heightAbsolute FlexContainer
-                      ${showLineNumber ? `cell-check-box-offset` : ``}
+                      ${_configModel.config.showLineNumber ? `cell-check-box-offset` : ``}
                     " >
                        <div class="FlexItem">
                           <span class="iconfont icon iconcheck-box-outline-bl" checkbox="false" check-hash="header"></span>
@@ -467,15 +471,15 @@ const tableRenderHeader = function(){
 
     }
 
-    headerData.forEach(function(item,index){
+    _configModel.columns.forEach(function(item,index){
 
         headerCssRules += `
                 .cell-header-${item.id}{
                     width: ${item.width}px;
                     text-align: ${item.align};
-                    ${lineModel === "one" ?
+                    ${_configModel.config.lineModel === "one" ?
             `` : `box-sizing: border-box; top:0;
-                    ${LengthMap.header[item.id].heightRelative ? `height: 100%;`:`height: 100%;`}
+                    ${_configModel.lengthMap.header[item.id].heightRelative ? `height: 100%;`:`height: 100%;`}
                     left: ${leftScale}px;`}
                 }
             `
@@ -490,27 +494,27 @@ const tableRenderHeader = function(){
         }
 
         headerContainer += `
-            <div class="table-header-call ${lineModel === "one" ? `heightRelative`:``}" >
-            ${lineModel === "one" ? `${item.sort ? `<div class="header-sort-desc iconjiangxu iconfont one-line-fixed-height" 
+            <div class="table-header-call ${_configModel.config.lineModel === "one" ? `heightRelative`:``}" >
+            ${_configModel.config.lineModel === "one" ? `${item.sort ? `<div class="header-sort-desc iconjiangxu iconfont one-line-fixed-height" 
                sortfield="${item.id}" title="sort-${item.id}"/></div>` : ``}
                     <div class="cell-header-${item.id} hide-surplus-text space-nowrap one-line-fixed-height" fieldindex="${index}" field="${item.id}">
                ` : `
                   <div class="cell-header-${item.id}  FlexContainer
-                            ${LengthMap.header[item.id].heightRelative ? `heightRelative` : `heightAbsolute`}
+                            ${_configModel.lengthMap.header[item.id].heightRelative ? `heightRelative` : `heightAbsolute`}
                                   hide-surplus-text word-break-all horizontally" fieldindex="${index}" field="${item.id}">
                             ${item.sort ? `<div class="header-sort-desc iconjiangxu iconfont one-sort-sign" sortfield="${item.id}" title="sort-${item.id}"/></div>`:``}  
                `}
-                ${lineModel === "auto" ?  `<div class="FlexItem line-Ellipsis text-row-line-sdtandard " 
-                     ${LengthMap.header[item.id].ellipsis ? `style="max-height:${LengthMap.header[item.id].heightLength}px "`:``}
+                ${_configModel.config.lineModel === "auto" ?  `<div class="FlexItem line-Ellipsis text-row-line-sdtandard " 
+                     ${_configModel.lengthMap.header[item.id].ellipsis ? `style="max-height:${_configModel.lengthMap.header[item.id].heightLength}px "`:``}
                 >` : ``}
                 ${item.text}
                 
-                ${lineModel === "auto" ?  `
-                 ${LengthMap.header[item.id].ellipsis ? ` <div class="text-ellipsis" ellipsis="${item.id}">...</div>` : ``} </div>` : ``}
-                ${lineModel === "auto" ? `${item.resize ? `<div class="table-header-right-resize" resizefield="${item.id}"></div>` : ``}`:``}
+                ${_configModel.config.lineModel === "auto" ?  `
+                 ${_configModel.lengthMap.header[item.id].ellipsis ? ` <div class="text-ellipsis" ellipsis="${item.id}">...</div>` : ``} </div>` : ``}
+                ${_configModel.config.lineModel === "auto" ? `${item.resize ? `<div class="table-header-right-resize" resizefield="${item.id}"></div>` : ``}`:``}
 
                 </div>
-                ${lineModel === "one" ? `${item.resize ? `<div class="table-header-right-resize" resizefield="${item.id}"></div>` : ``}`:``}
+                ${_configModel.config.lineModel === "one" ? `${item.resize ? `<div class="table-header-right-resize" resizefield="${item.id}"></div>` : ``}`:``}
             </div>
             `;
 
@@ -533,20 +537,18 @@ const tableRenderHeader = function(){
 
     var headersAll = document.createElement("div");
 
-    //headersAll.classList.add("heightAbsolute")
     headersAll.classList.add("headerCell")
-    //headersAll.setAttribute("style",`top:0px;`)
 
     headersAll.innerHTML = headerContainer
 
-    _container.appendChild(headersAll)
+    _configModel.containerDOM.appendChild(headersAll)
 
     document.head.appendChild(htmlStyleElement)
 
     var sheet = htmlStyleElement.sheet || htmlStyleElement.styleSheet || {}
     _headerStyleRules = sheet.cssRules || sheet.rules;
 
-    _LengthMap = LengthMap
+    //_LengthMap = LengthMap
 
 }
 
@@ -554,15 +556,15 @@ const checkLineSort = function () {
 
     var temp,min;
 
-    _keyMapHeader = Object.keys(_LengthMap.header);
+    _configModel.config.keyMapHeader = Object.keys(_configModel.lengthMap.header);
 
-    for(var i = 0 ;i < _keyMapHeader.length - 1 ; i ++){
+    for(var i = 0 ;i < _configModel.config.keyMapHeader.length - 1 ; i ++){
         min = i;
-        for(var j = i + 1;j < _keyMapHeader.length; j ++){
-            if(_LengthMap.header[_keyMapHeader[j]].heightLength > _LengthMap.header[_keyMapHeader[i]].heightLength ){
-                temp= _keyMapHeader[i];
-                _keyMapHeader[i] = _keyMapHeader[j];
-                _keyMapHeader[j] = temp;
+        for(var j = i + 1;j < _configModel.config.keyMapHeader.length; j ++){
+            if(_configModel.lengthMap.header[_configModel.config.keyMapHeader[j]].heightLength > _configModel.lengthMap.header[_configModel.config.keyMapHeader[i]].heightLength ){
+                temp= _configModel.config.keyMapHeader[i];
+                _configModel.config.keyMapHeader[i] = _configModel.config.keyMapHeader[j];
+                _configModel.config.keyMapHeader[j] = temp;
             }
         }
     }
@@ -572,12 +574,12 @@ const checkLineSort = function () {
 
 const tableRenderDataRow = function (rowData,config) {
 
-    var hashDateMap = {},lineModel = config.lineModel || 'one',  sort = {desc: ">",asc: "<"}, //绘制头部
+    /*var hashDateMap = {},lineModel = config.lineModel || 'one',  sort = {desc: ">",asc: "<"}, //绘制头部
         dataLength = {},configItems = config.configItems ,showLineNumber = config.showLineNumber || false,
         dataResult = {},fixedHeader = config.fixedHeader || false,maxLineLength = config.maxLineLength || undefined,
-        maxHeight = undefined,cellScrollBar = config.maxLineLength || false
+        maxHeight = undefined,cellScrollBar = config.maxLineLength || false*/
 
-    if(config.sort){
+    if(!isNull(_configModel.sort)){
         for (var i = 0; i < rowData.length - 1; i++) {
             // 内层循环,控制比较的次数，并且判断两个数的大小
             for (var j = 0; j < rowData.length - 1 - i; j++) {
@@ -609,16 +611,16 @@ const tableRenderDataRow = function (rowData,config) {
 
         var cellConfig = item["config"] || {}
 
-        hashDateMap[random] = item
+        _configModel.config.hashDataMap[random] = item
 
-        if(lineModel === "auto"){
+        if(_configModel.config.lineModel === "auto"){
 
-            dataLength[random] = {}
+            _configModel.config.dataLength[random] = {}
 
-            var LentMaxValue = {1:"field"}
+            var LentMaxValue = {1:""}
 
-            if(maxLineLength && maxLineLength > 1){
-                maxHeight = maxLineLength * 25
+            if(_configModel.config.maxLineLength && _configModel.config.maxLineLength > 1){
+                _configModel.config.maxHeight = _configModel.config.maxLineLength * 25
             }
 
             for (let itemKey in item) {
@@ -627,13 +629,13 @@ const tableRenderDataRow = function (rowData,config) {
                     continue
                 }
 
-                if(configItems[itemKey].replace
-                    && typeof configItems[itemKey].replace === "function"
-                    && typeof configItems[itemKey].replace(item[itemKey]) !== "undefined"
-                    && typeof configItems[itemKey].replace(item[itemKey]) !== "object" ){
+                if(_configModel.config.configItems[itemKey].replace
+                    && typeof _configModel.config.configItems[itemKey].replace === "function"
+                    && typeof _configModel.config.configItems[itemKey].replace(item[itemKey]) !== "undefined"
+                    && typeof _configModel.config.configItems[itemKey].replace(item[itemKey]) !== "object" ){
 
-                    var heightCell = configItems[itemKey].replace(item[itemKey]).toString().render("hide-surplus-text,horizontally," +
-                        "word-break-all,table-tabulation-cell-line,text-overall-situation",`width:${configItems[itemKey].width}px`).height
+                    var heightCell = _configModel.config.configItems[itemKey].replace(item[itemKey]).toString().render("hide-surplus-text,horizontally," +
+                        "word-break-all,table-tabulation-cell-line,text-overall-situation",`width:${_configModel.config.configItems[itemKey].width}px`).height
 
                     var ellipsis = false;
 
@@ -647,15 +649,15 @@ const tableRenderDataRow = function (rowData,config) {
                         LentMaxValue[heightCell] = itemKey
                     }
 
-                    if(config.lineModel === "auto" && config.maxLineLength > 1
-                        && cellScrollBar){
+                    if(_configModel.config.lineModel === "auto" && _configModel.config.maxLineLength > 1
+                        && _configModel.config.cellScrollBar){
                         ellipsis = false
                     }
 
 
-                    dataLength[random][itemKey] = {
+                    _configModel.config.dataLength[random][itemKey] = {
                         native:item[itemKey],
-                        text: configItems[itemKey].replace(item[itemKey]),
+                        text: _configModel.config.configItems[itemKey].replace(item[itemKey]),
                         heightLength: heightCell,
                         heightAbsolute:true,
                         heightRelative:false,
@@ -665,13 +667,13 @@ const tableRenderDataRow = function (rowData,config) {
                 }else{
 
                     var heightCell = item[itemKey].toString().render("hide-surplus-text,horizontally,word-break-all," +
-                        "table-tabulation-cell-line,text-overall-situation",`width:${configItems[itemKey].width}px`).height;
+                        "table-tabulation-cell-line,text-overall-situation",`width:${_configModel.config.configItems[itemKey].width}px`).height;
 
                     var ellipsis = false;
 
-                    if(maxHeight && heightCell > maxHeight ){
+                    if(_configModel.config.maxHeight && heightCell > _configModel.config.maxHeight ){
                         ellipsis = true
-                        heightCell = maxHeight
+                        heightCell = _configModel.config.maxHeight
                     }
 
                     if(heightCell > Object.keys(LentMaxValue)[0]){
@@ -679,12 +681,12 @@ const tableRenderDataRow = function (rowData,config) {
                         LentMaxValue[heightCell] = itemKey
                     }
 
-                    if(config.lineModel === "auto" && config.maxLineLength > 1
-                        && cellScrollBar){
+                    if(_configModel.config.lineModel === "auto" && _configModel.config.maxLineLength > 1
+                        && _configModel.config.cellScrollBar){
                         ellipsis = false
                     }
 
-                    dataLength[random][itemKey] = {
+                    _configModel.config.dataLength[random][itemKey] = {
                         text:item[itemKey],
                         heightLength: heightCell,
                         heightAbsolute:true,
@@ -694,15 +696,15 @@ const tableRenderDataRow = function (rowData,config) {
                 }
             }
 
-            dataLength[random].maxItem = LentMaxValue
+            _configModel.config.dataLength[random].maxItem = LentMaxValue
 
-            dataLength[random][Object.values(LentMaxValue)[0]].heightAbsolute = !dataLength[random][Object.values(LentMaxValue)[0]].heightAbsolute
-            dataLength[random][Object.values(LentMaxValue)[0]].heightRelative = !dataLength[random][Object.values(LentMaxValue)[0]].heightRelative
+            _configModel.config.dataLength[random][Object.values(LentMaxValue)[0]].heightAbsolute = !_configModel.config.dataLength[random][Object.values(LentMaxValue)[0]].heightAbsolute
+            _configModel.config.dataLength[random][Object.values(LentMaxValue)[0]].heightRelative = !_configModel.config.dataLength[random][Object.values(LentMaxValue)[0]].heightRelative
 
         }
 
-        if(lineModel === "one"){
-            if(showLineNumber){
+        if(_configModel.config.lineModel === "one"){
+            if(_configModel.config.showLineNumber){
 
                 var showLineNumberdomCells = `
                          <div class="table-tabulation-cell-line 
@@ -737,7 +739,7 @@ const tableRenderDataRow = function (rowData,config) {
 
         }else{
 
-            if(showLineNumber){
+            if(_configModel.config.showLineNumber){
 
                 var showLineNumberdomCells = `
                          <div class="table-tabulation-cell-line  
@@ -761,7 +763,7 @@ const tableRenderDataRow = function (rowData,config) {
             var domCells = `<div class="table-tabulation-cell-line cell-header-check-box
                           heightAbsolute horizontally word-break-all
                             hide-surplus-text  FlexContainer height-fill-parant
-                            ${showLineNumber ? `cell-check-box-offset`: ``}
+                            ${_configModel.config.showLineNumber ? `cell-check-box-offset`: ``}
                             >
                                <div class="one-line-fixed-height FlexItem">
                                 <span class="iconfont icon iconcheck-box-outline-bl ${cellConfig && cellConfig.disable && cellConfig.disable === "true" ? `cell-check-box-disable` : ``} " 
@@ -779,23 +781,24 @@ const tableRenderDataRow = function (rowData,config) {
 
         for(let cell in item){
 
-            if(cell !== "config" && cell !== "index") {
+            if(cell !== "config" && cell !== "index" && cell !== "d_index") {
 
                 var domCell = `<div class="table-tabulation-cell-line cell-header-${cell} 
-                              ${lineModel === "auto" ? `${dataLength[random][cell].heightRelative ? `heightRelative` : `heightAbsolute`} FlexContainer horizontally word-break-all` : `one-line-fixed-height space-nowrap`}
-                                hide-surplus-text " > ${lineModel === "auto" ? `<div class="FlexItem line-Ellipsis text-row-line-sdtandard" 
-                              style="overflow:auto;max-height: ${Object.keys(dataLength[random].maxItem)[0]}px">` : ``} `
+                              ${_configModel.config.lineModel === "auto" ? `${_configModel.config.dataLength[random][cell].heightRelative ? `heightRelative` : `heightAbsolute`} FlexContainer horizontally word-break-all` : `one-line-fixed-height space-nowrap`}
+                                hide-surplus-text " > ${_configModel.config.lineModel === "auto" ? `<div class="FlexItem line-Ellipsis text-row-line-sdtandard" 
+                              style="overflow:auto;max-height: ${Object.keys(_configModel.config.dataLength[random].maxItem)[0]}px">` : ``} `
 
-                if (configItems[cell].replace && typeof configItems[cell].replace === "function"
-                    && typeof configItems[cell].replace(item[cell]) !== "undefined"
-                    && typeof configItems[cell].replace(item[cell]) !== "object") {
-                    domCell += typeof configItems[cell].replace(item[cell]) !== "undefined" ? configItems[cell].replace(item[cell]) : item[cell]
+
+                if (_configModel.config.configItems[cell].replace && typeof _configModel.config.configItems[cell].replace === "function"
+                    && typeof _configModel.config.configItems[cell].replace(item[cell]) !== "undefined"
+                    && typeof _configModel.config.configItems[cell].replace(item[cell]) !== "object") {
+                    domCell += typeof _configModel.config.configItems[cell].replace(item[cell]) !== "undefined" ? _configModel.config.configItems[cell].replace(item[cell]) : item[cell]
                 } else {
                     domCell += item[cell]
                 }
 
-                domCell += ` ${lineModel === "auto" ? `</div>` : ``}
-                          ${lineModel === "auto" ?  `${dataLength[random][cell].ellipsis ? `<div class="text-ellipsis" ellipsis="${cell}-${random}">...</div>`: ``}` : ``}
+                domCell += ` ${_configModel.config.lineModel === "auto" ? `</div>` : ``}
+                          ${_configModel.config.lineModel === "auto" ?  `${_configModel.config.dataLength[random][cell].ellipsis ? `<div class="text-ellipsis" ellipsis="${cell}-${random}">...</div>`: ``}` : ``}
                         </div>`
 
                 Object.defineProperty(arr, cell, {
@@ -811,15 +814,15 @@ const tableRenderDataRow = function (rowData,config) {
         tableBodyTabulation.setAttribute("data-index",index)
         tableBodyTabulation.setAttribute("data-hash",random)
 
-        dataResult[index] = item
+        _configModel.config.dataResult[index] = item
 
         tableBodyTabulation.classList.add("table-body-tabulation")
-        if(lineModel === "auto"){
+        if(_configModel.config.lineModel === "auto"){
             tableBodyTabulation.classList.add("heightRelative")
         }
         tableBodyTabulation.classList.add("header-cell")
 
-        for (let configItemsKey in configItems) {
+        for (let configItemsKey in _configModel.config.configItems) {
             if(arr[configItemsKey]){
                 Dom.strCastDom(arr[configItemsKey],tableBodyTabulation)
             }else{
@@ -829,21 +832,21 @@ const tableRenderDataRow = function (rowData,config) {
             }
         }
 
-        if(config.fixedHeader){
+        if(_configModel.config.fixedHeader){
             //element.appendChild(tableBodyTabulation)
         }else{
-            _container.appendChild(tableBodyTabulation)
+            _configModel.containerDOM.appendChild(tableBodyTabulation)
         }
     });
 
-    if(config.fixedHeader) {
+    if(_configModel.config.fixedHeader) {
         element.classList.add("fiexd-row-cell-scroll-container")
 
-        var querySelector = _container.querySelector(".headerCell");
+        var querySelector = _configModel.containerDOM.querySelector(".headerCell");
 
         //element.style.marginTop = querySelector.offsetHeight + 'px'
 
-        _container.appendChild(element)
+        _configModel.containerDOM.appendChild(element)
     }
 
     var rulesheaders
@@ -856,7 +859,7 @@ const tableRenderDataRow = function (rowData,config) {
         }
     }
 
-    _config.columns.forEach(function(item){
+    _configModel.columns.forEach(function(item){
 
         if(item["resize"]){
 
@@ -936,20 +939,20 @@ const tableRenderDataRow = function (rowData,config) {
 
                         _LengthMap.header[item.id].heightLength = item.text.render("hide-surplus-text,horizontally,word-break-all,table-header-call,text-overall-situation",`width: ${headercell}px;`).height
 
-                        var querySelector5 = _container.querySelector(".headerCell");
-                        var querySelector9 = _container.querySelector(".fiexd-row-cell-scroll-container");
+                        var querySelector5 = _configModel.containerDOM.querySelector(".headerCell");
+                        var querySelector9 = _configModel.containerDOM.querySelector(".fiexd-row-cell-scroll-container");
 
                         //querySelector9.style.marginTop = querySelector5.offsetHeight + 'px'
 
                         if(maxHeight && _LengthMap.header[item.id].heightLength  <= maxHeight + 2){
                             _LengthMap.header[item.id].ellipsis = false
-                            var querySelector4 = _container.querySelector("[ellipsis='" + item.id + "']");
+                            var querySelector4 = _configModel.containerDOM.querySelector("[ellipsis='" + item.id + "']");
                             if(querySelector4){
                                 querySelector4.style.display = "none"
                             }
                         }else if(!_LengthMap.header[item.id].ellipsis){
                             _LengthMap.header[item.id].ellipsis = true
-                            var querySelector4 = _container.querySelector("[ellipsis='" + item.id + "']");
+                            var querySelector4 = _configModel.containerDOM.querySelector("[ellipsis='" + item.id + "']");
 
                             if(querySelector4){
                                 querySelector4.style.display = "inline";
@@ -1016,7 +1019,7 @@ const tableRenderDataRow = function (rowData,config) {
                                 dataLength[dataLengthKey][Object.values(dataLength[dataLengthKey].maxItem)[0]].heightRelative = !dataLength[dataLengthKey][Object.values(dataLength[dataLengthKey].maxItem)[0]].heightRelative
                                 dataLength[dataLengthKey][Object.values(dataLength[dataLengthKey].maxItem)[0]].heightAbsolute = !dataLength[dataLengthKey][Object.values(dataLength[dataLengthKey].maxItem)[0]].heightAbsolute
 
-                                var querySelector1ss = _container.querySelector(`[data-hash="${dataLengthKey}"]`);
+                                var querySelector1ss = _configModel.containerDOM.querySelector(`[data-hash="${dataLengthKey}"]`);
 
                                 var querySelector1 = querySelector1ss.querySelector(".heightRelative");
 
@@ -1041,7 +1044,7 @@ const tableRenderDataRow = function (rowData,config) {
                                     dataLength[dataLengthKey][item.id].heightRelative = !dataLength[dataLengthKey][item.id].heightRelative
                                     dataLength[dataLengthKey][item.id].heightAbsolute = !dataLength[dataLengthKey][item.id].heightAbsolute
 
-                                    var querySelector1ss = _container.querySelector(`[data-hash="${dataLengthKey}"]`);
+                                    var querySelector1ss = _configModel.containerDOM.querySelector(`[data-hash="${dataLengthKey}"]`);
 
                                     var thatItemOther = querySelector1ss.querySelector(`.heightRelative`);
 
@@ -1085,12 +1088,12 @@ const tableRenderDataRow = function (rowData,config) {
                             _LengthMap.header[Object.values(_LengthMap.maxValue)[0]].heightRelative = !_LengthMap.header[Object.values(_LengthMap.maxValue)[0]].heightRelative
                             _LengthMap.header[Object.values(_LengthMap.maxValue)[0]].heightAbsolute = !_LengthMap.header[Object.values(_LengthMap.maxValue)[0]].heightAbsolute
 
-                            var thatItem = _container.querySelector(`[field=${item.id}]`);
+                            var thatItem = _configModel.containerDOM.querySelector(`[field=${item.id}]`);
 
                             thatItem.classList.add("heightAbsolute");
                             thatItem.classList.remove("heightRelative");
 
-                            var thatItemOther = _container.querySelector(`[field=${Object.values(_LengthMap.maxValue)[0]}]`);
+                            var thatItemOther = _configModel.containerDOM.querySelector(`[field=${Object.values(_LengthMap.maxValue)[0]}]`);
 
                             thatItemOther.classList.add("heightRelative");
                             thatItemOther.classList.remove("heightAbsolute");
@@ -1105,12 +1108,12 @@ const tableRenderDataRow = function (rowData,config) {
                                 _LengthMap.header[item.id].heightRelative = !_LengthMap.header[item.id].heightRelative
                                 _LengthMap.header[item.id].heightAbsolute = !_LengthMap.header[item.id].heightAbsolute
 
-                                var thatItem = _container.querySelector(`[field=${item.id}]`);
+                                var thatItem = _configModel.containerDOM.querySelector(`[field=${item.id}]`);
 
                                 thatItem.classList.add("heightRelative");
                                 thatItem.classList.remove("heightAbsolute");
 
-                                var thatItemOther = _container.querySelector(`[field=${Object.values(_LengthMap.maxValue)[0]}]`);
+                                var thatItemOther = _configModel.containerDOM.querySelector(`[field=${Object.values(_LengthMap.maxValue)[0]}]`);
 
                                 thatItemOther.classList.add("heightAbsolute");
                                 thatItemOther.classList.remove("heightRelative");
@@ -1166,7 +1169,7 @@ const tableRenderDataRow = function (rowData,config) {
         }
         if(item["sort"]){
 
-            var sortFieldDOM = _container.querySelector(`[sortfield=${item.id}]`);
+            var sortFieldDOM = _configModel.containerDOM.querySelector(`[sortfield=${item.id}]`);
 
             sortFieldDOM.addEventListener("click",function (e) {
 
@@ -1175,10 +1178,10 @@ const tableRenderDataRow = function (rowData,config) {
                 var sortItemMap = []
 
                 for (let i = 0; i < data.length;i ++){
-                    if(typeof dataResult[i][item.id] === "number"){//内容为数字
-                        dome[i] = {[i]:dataResult[i][item.id]}
+                    if(typeof _configModel.config.dataResult[i][item.id] === "number"){//内容为数字
+                        dome[i] = {[i]:_configModel.config.dataResult[i][item.id]}
                     }else {
-                        dome[i] = {[i]:dataResult[i][item.id].length}
+                        dome[i] = {[i]:_configModel.config.dataResult[i][item.id].length}
                     }
                 }
 
@@ -1213,27 +1216,22 @@ const tableRenderDataRow = function (rowData,config) {
                 }
 
                 for(let i = 0 ; i < dome.length ; i ++){
-                    sortItemMap[i] = _container.querySelector(`[data-index="${Object.keys(dome[i])[0]}"]`)
-                    //_container.removeChild(_container.querySelector(`[data-index="${Object.keys(dome[i])[0]}"]`))
+                    sortItemMap[i] = _configModel.containerDOM.querySelector(`[data-index="${Object.keys(dome[i])[0]}"]`)
+                    //_configModel.containerDOM.removeChild(_configModel.containerDOM.querySelector(`[data-index="${Object.keys(dome[i])[0]}"]`))
                     document.removeChild(sortItemMap[i])
                 }
 
-                /*var rowContainer = _container.querySelector(".fiexd-row-cell-scroll-container");
+                /*var rowContainer = _configModel.containerDOM.querySelector(".fiexd-row-cell-scroll-container");
 
-                _container.removeChild(rowContainer);*/
+                _configModel.containerDOM.removeChild(rowContainer);*/
 
                 for (let i = 0 ; i < sortItemMap.length ; i ++) {
-                    _container.appendChild(sortItemMap[i])
+                    _configModel.containerDOM.appendChild(sortItemMap[i])
                 }
             })
         }
         return true
     })
-
-    _dataResultsLength = dataLength;
-
-
-    //console.log("dataLength",dataLength);
 
 }
 
@@ -1257,7 +1255,7 @@ const rowDataStructureInit = function () {
 
     //var element = document.createElement("div");
 
-    var element = _container.querySelector(".fiexd-row-cell-scroll-container")
+    var element = _configModel.containerDOM.querySelector(".fiexd-row-cell-scroll-container")
 
     var linevisualcontainer = document.createElement("div");
 
@@ -1565,7 +1563,7 @@ const rowDataStructureInit = function () {
             //linevisualcontainer.appendChild(tableBodyTabulation)
             lineFixedVisualContainer.appendChild(tableBodyTabulation)
         }else{
-            _container.appendChild(tableBodyTabulation)
+            _configModel.containerDOM.appendChild(tableBodyTabulation)
         }
 
         //initHeight += dataMap[random].maxVal
@@ -1581,11 +1579,11 @@ const rowDataStructureInit = function () {
     /*if(_config.fixedHeader) {
         element.classList.add("fiexd-row-cell-scroll-container")
 
-        var querySelector = _container.querySelector(".headerCell");
+        var querySelector = _configModel.containerDOM.querySelector(".headerCell");
 
         element.style.marginTop = querySelector.offsetHeight + 'px'
 
-        //_container.appendChild(element)
+        //_configModel.containerDOM.appendChild(element)
     }*/
 
     //console.log(dataMap);
@@ -1663,8 +1661,8 @@ const tableStyleFun = function () {
 
     var htmlDivElement = document.createElement("div")
 
-    var querySelector = _container.querySelector(".headerCell")
-    var fiexdRowCellScrollContainer = _container.querySelector(".fiexd-row-cell-scroll-container")
+    var querySelector = _configModel.containerDOM.querySelector(".headerCell")
+    var fiexdRowCellScrollContainer = _configModel.containerDOM.querySelector(".fiexd-row-cell-scroll-container")
 
     htmlDivElement.appendChild(querySelector)
     htmlDivElement.appendChild(fiexdRowCellScrollContainer)
@@ -1679,21 +1677,21 @@ const tableStyleFun = function () {
 
     //htmlDivElement1.appendChild(querySelector1)
 
-    _container.appendChild(htmlDivElement1)
+    _configModel.containerDOM.appendChild(htmlDivElement1)
 
     var dataMapSource =  rowDataStructureInit()
 
     var assistor = document.querySelector(".assistor")
 
-    var queryHeaderLineColum = _container.querySelector(".table-header-line-column")//行高
+    var queryHeaderLineColum = _configModel.containerDOM.querySelector(".table-header-line-column")//行高
 
-    var visualDom = _container.offsetHeight - queryHeaderLineColum.offsetHeight;
+    var visualDom = _configModel.containerDOM.offsetHeight - queryHeaderLineColum.offsetHeight;
 
-    console.log("容器大小",_container.offsetHeight,"可视大小",_container.offsetHeight - queryHeaderLineColum.offsetHeight )
+    console.log("容器大小",_configModel.containerDOM.offsetHeight,"可视大小",_configModel.containerDOM.offsetHeight - queryHeaderLineColum.offsetHeight )
 
-    _container.classList.add("datagrid-default-container")
+    _configModel.containerDOM.classList.add("datagrid-default-container")
 
-    var lineFiexdVisualContainer = _container.querySelector(".line-fiexd-visual-container");
+    var lineFiexdVisualContainer = _configModel.containerDOM.querySelector(".line-fiexd-visual-container");
 
     lineFiexdVisualContainer.style.marginTop = queryHeaderLineColum.offsetHeight + "px"
 
@@ -1799,7 +1797,7 @@ const rowSwitchCalculation = function(){
         for (let s = _previousPosition.yStart ; s < _configPosition.yStart ;  s ++){
 
             //console.log("-",s,"上")
-            var removeRow = _container.querySelector("div[data-index='" + parseInt( s + 1) +"']");
+            var removeRow = _configModel.containerDOM.querySelector("div[data-index='" + parseInt( s + 1) +"']");
             if(removeRow){
                 removeRow.parentNode.removeChild(removeRow)
             }
@@ -1808,7 +1806,7 @@ const rowSwitchCalculation = function(){
         for (let e = _previousPosition.yEnd ; e < _configPosition.yEnd ; e ++){
             //console.log("+",e,"下")
             
-            var addRow = _container.querySelector("div[data-index='" + parseInt( e + 1) +"']");
+            var addRow = _configModel.containerDOM.querySelector("div[data-index='" + parseInt( e + 1) +"']");
             
             if(!addRow){
                 addRowForTransform(md5(JSON.stringify(_config.data[e ])),_config.data[e],lineFiexdVisualContainer,_config.data[e].index,false)
@@ -1821,7 +1819,7 @@ const rowSwitchCalculation = function(){
 
             //console.log("+",s,"上")
 
-            var addRow = _container.querySelector("div[data-index='" + parseInt( s + 1) +"']");
+            var addRow = _configModel.containerDOM.querySelector("div[data-index='" + parseInt( s + 1) +"']");
 
             if(!addRow){
                 addRowForTransform(md5(JSON.stringify(_config.data[s])),_config.data[s],lineFiexdVisualContainer,_config.data[s].index,true)
@@ -1832,7 +1830,7 @@ const rowSwitchCalculation = function(){
 
             //console.log("-",e,"下")
 
-            var removeRow = _container.querySelector("div[data-index='" + parseInt( e + 1) +"']");
+            var removeRow = _configModel.containerDOM.querySelector("div[data-index='" + parseInt( e + 1) +"']");
             if(removeRow){
                 removeRow.parentNode.removeChild(removeRow)
             }
@@ -2077,25 +2075,9 @@ class TableGrid {
 
         tableRenderHeader()
 
-        var configItems = {}
+        tableRenderDataRow(_configModel.data,_configModel.config)
 
-        if(_config.showLineNumber){
-            configItems["showLineNumber"] = {}
-        }
-
-        if(_config.checkbox){
-            configItems["checkbox"] = {};
-        }
-
-        _config.columns.forEach(function(item){
-            configItems[item.id] = item
-        })
-
-        _config["configItems"] = configItems
-
-        tableRenderDataRow(data,config)
-
-        this.checkBoxInit(_config.selectRowCheck)
+        this.checkBoxInit(_configModel.config.selectRowCheck)
 
     }
 
@@ -2105,11 +2087,11 @@ class TableGrid {
 
         checkBoxHookLine();
 
-        var headerNodeAll = _container.querySelector("[check-hash='header']");
+        var headerNodeAll = _configModel.containerDOM.querySelector("[check-hash='header']");
         headerNodeAll.addEventListener("click",function () {
 
-            var disableTrue = _container.querySelectorAll("[checkbox='true'][disable]");
-            var disableFalse = _container.querySelectorAll("[checkbox='false'][disable]");
+            var disableTrue = _configModel.containerDOM.querySelectorAll("[checkbox='true'][disable]");
+            var disableFalse = _configModel.containerDOM.querySelectorAll("[checkbox='false'][disable]");
 
             var headerState = headerNodeAll.getAttribute("checkbox");
 
@@ -2123,7 +2105,7 @@ class TableGrid {
                     headerNodeAll.classList.add("iconcheck-box-outline-bl")
                     delete _checkValueMapStructure['header']
 
-                    var checkboxIsTrueNode = _container.querySelectorAll("[checkbox='true']:not([disable])");
+                    var checkboxIsTrueNode = _configModel.containerDOM.querySelectorAll("[checkbox='true']:not([disable])");
 
                     for(let i = 0 ; i < checkboxIsTrueNode.length; i ++){
                         checkboxIsTrueNode[i].setAttribute("checkbox",false)
@@ -2131,7 +2113,7 @@ class TableGrid {
                         checkboxIsTrueNode[i].classList.remove("iconcheckboxoutline")
                         checkboxIsTrueNode[i].classList.add("iconcheck-box-outline-bl")
                         var attributeHash = checkboxIsTrueNode[i].getAttribute('check-hash');
-                        var thatCellNode = _container.querySelector("[data-hash='"+ attributeHash +"']");
+                        var thatCellNode = _configModel.containerDOM.querySelector("[data-hash='"+ attributeHash +"']");
                         delete _checkValueMapStructure['thatCellNode']
                         thatCellNode.classList.remove("select-cell-Highlight")
                     }
@@ -2143,7 +2125,7 @@ class TableGrid {
                     headerNodeAll.classList.remove("iconcheck-box-outline-bl")
                     _checkValueMapStructure['header'] = true
 
-                    var checkboxIsTrueNode = _container.querySelectorAll("[checkbox='false']:not([disable])");
+                    var checkboxIsTrueNode = _configModel.containerDOM.querySelectorAll("[checkbox='false']:not([disable])");
 
                     for(let i = 0 ; i < checkboxIsTrueNode.length; i ++){
                         checkboxIsTrueNode[i].checkbox = true
@@ -2151,7 +2133,7 @@ class TableGrid {
                         checkboxIsTrueNode[i].classList.add("iconcheckboxoutline")
                         checkboxIsTrueNode[i].classList.remove("iconcheck-box-outline-bl")
                         var attributeHash = checkboxIsTrueNode[i].getAttribute('check-hash');
-                        var thatCellNode = _container.querySelector("[data-hash='"+ attributeHash +"']");
+                        var thatCellNode = _configModel.containerDOM.querySelector("[data-hash='"+ attributeHash +"']");
                         _checkValueMapStructure[attributeHash] = true
                         thatCellNode.classList.add("select-cell-Highlight")
                     }
@@ -2160,7 +2142,7 @@ class TableGrid {
             }else if(disableTrue && disableTrue.length > 0
                 && disableFalse && disableFalse.length > 0){ //禁用下存在true,false
 
-                var checkboxIsTrueNode = _container.querySelectorAll("[checkbox]:not([disable])");
+                var checkboxIsTrueNode = _configModel.containerDOM.querySelectorAll("[checkbox]:not([disable])");
 
                 for(let i = 0 ; i < checkboxIsTrueNode.length; i ++){
                     var attributeHash = checkboxIsTrueNode[i].getAttribute('check-hash');
@@ -2173,13 +2155,13 @@ class TableGrid {
                     if(checkboxIsTrueNode[i].checkbox === true){
                         checkboxIsTrueNode[i].classList.add("iconcheckboxoutline")
                         checkboxIsTrueNode[i].classList.remove("iconcheck-box-outline-bl")
-                        var thatCellNode = _container.querySelector("[data-hash='"+ attributeHash +"']");
+                        var thatCellNode = _configModel.containerDOM.querySelector("[data-hash='"+ attributeHash +"']");
                         _checkValueMapStructure[attributeHash] = true
                         thatCellNode.classList.add("select-cell-Highlight")
                     }else{
                         checkboxIsTrueNode[i].classList.remove("iconcheckboxoutline")
                         checkboxIsTrueNode[i].classList.add("iconcheck-box-outline-bl")
-                        var thatCellNode = _container.querySelector("[data-hash='"+ attributeHash +"']");
+                        var thatCellNode = _configModel.containerDOM.querySelector("[data-hash='"+ attributeHash +"']");
                         delete _checkValueMapStructure[attributeHash]
                         thatCellNode.classList.remove("select-cell-Highlight")
                     }
@@ -2188,7 +2170,7 @@ class TableGrid {
             }else if(disableTrue && disableTrue.length === 0
                 && disableFalse && disableFalse.length > 0){//禁用下存在false
 
-                var checkboxIsTrueNode = _container.querySelectorAll("[checkbox]:not([disable])");
+                var checkboxIsTrueNode = _configModel.containerDOM.querySelectorAll("[checkbox]:not([disable])");
 
                 for(let i = 0 ; i < checkboxIsTrueNode.length; i ++){
                     var attributeHash = checkboxIsTrueNode[i].getAttribute('check-hash');
@@ -2201,13 +2183,13 @@ class TableGrid {
                     if(checkboxIsTrueNode[i].checkbox === true){
                         checkboxIsTrueNode[i].classList.add("iconcheckboxoutline")
                         checkboxIsTrueNode[i].classList.remove("iconcheck-box-outline-bl")
-                        var thatCellNode = _container.querySelector("[data-hash='"+ attributeHash +"']");
+                        var thatCellNode = _configModel.containerDOM.querySelector("[data-hash='"+ attributeHash +"']");
                         _checkValueMapStructure[attributeHash] = true
                         thatCellNode.classList.add("select-cell-Highlight")
                     }else{
                         checkboxIsTrueNode[i].classList.remove("iconcheckboxoutline")
                         checkboxIsTrueNode[i].classList.add("iconcheck-box-outline-bl")
-                        var thatCellNode = _container.querySelector("[data-hash='"+ attributeHash +"']");
+                        var thatCellNode = _configModel.containerDOM.querySelector("[data-hash='"+ attributeHash +"']");
                         delete _checkValueMapStructure[attributeHash]
                         thatCellNode.classList.remove("select-cell-Highlight")
                     }
@@ -2223,7 +2205,7 @@ class TableGrid {
 
         if(selectRowCheck){
 
-            var indexList = _container.querySelectorAll("[data-hash]");
+            var indexList = _configModel.containerDOM.querySelectorAll("[data-hash]");
             for(let i = 0; i < indexList.length ; i ++ ){
                 //debugger
                 var dataHashCell = indexList[i].getAttribute("data-hash");
@@ -2234,13 +2216,13 @@ class TableGrid {
                 }
                 indexList[i].addEventListener("click",function(ev){
                     var dataHash = indexList[i].getAttribute("data-hash");
-                    var hashNode = _container.querySelector("[check-hash='" +dataHash+ "']");
+                    var hashNode = _configModel.containerDOM.querySelector("[check-hash='" +dataHash+ "']");
                     checkHeaderSelect(hashNode)
                 })
             }
 
         }else{
-            var nodeListOf = _container.querySelectorAll("span[checkbox]");
+            var nodeListOf = _configModel.containerDOM.querySelectorAll("span[checkbox]");
             for (let nodeListOfKey = 0; nodeListOfKey < nodeListOf.length ; nodeListOfKey ++) {
                 var cellDisable = nodeListOf[nodeListOfKey].getAttribute("disable");
                 var checkHash = nodeListOf[nodeListOfKey].getAttribute("check-hash");
