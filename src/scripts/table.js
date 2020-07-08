@@ -7,7 +7,9 @@ var _el ,_container ,_checkValueMapStructure = {}
     ,_range,_x, _y , _hashDateMap = {},_config,_dataResultsLength,
     _headerStyleRules,_LengthMap,_keyMapHeader,_dataMapStructure = {},
     _fiexdVisual = {maxRange:0,miniRange:0},_thatShow = {maxRange: 0,maxRange: 0},
-    _configPosition = {},_previousPosition = {}
+    _configPosition = {},_previousPosition = {},
+    _configModel
+
 ;
 
 const getOffset = function(dom){
@@ -344,17 +346,17 @@ const checkBoxHookLine = function(){
  */
 const tableRenderHeader = function(){
 
-    var lineModel = _config.lineModel || "one",showLineNumber = _config.showLineNumber || false,checkbox = _config.checkbox || false,
+    /*var lineModel = _config.lineModel || "one",showLineNumber = _config.showLineNumber || false,checkbox = _config.checkbox || false,
         dataRowLength = _config.dataRowLength || "100",maxLineLength = _config.maxLineLength || undefined
-        ,headerData = _config.columns
-
+        ,headerData = _config.columns*/
+/*
     var headerWidth = {}, LengthMap = {header:{},maxValue:{1:""}},maxValue = {1:"null"}, headerCssRules = ``,
-        maxHeight = undefined, headerContainer = `` //头部样式
+        maxHeight = undefined, headerContainer = `` //头部样式*/
 
-    if(lineModel === "auto"){//
+    if(_configModel.lineModel === "auto"){//
 
-        if(maxLineLength && maxLineLength > 1){
-            maxHeight = maxLineLength * 25
+        if(_configModel.maxLineLength && _configModel.maxLineLength > 1){
+            _conifgModel.maxHeight = maxLineLength * 25
         }
 
         headerData.forEach(function(item){
@@ -2049,49 +2051,30 @@ class TableGrid {
 
     constructor(elP,config) {
 
-        _el = elP;
-        _container = document.getElementById(_el);
-        this.columns = config.columns;
-        this.data = config.data;
-        config.data = config.data.map(function(row, index) {
+        _configModel = new configModel(elP,config);
+
+        console.log(_configModel);
+
+        //_el = elP;
+        //_container = document.getElementById(_el);
+        //this.columns = config.columns;
+        //this.data = config.data;
+        /*config.data = config.data.map(function(row, index) {
             row.index = index + 1
             return row
-        });
-        _config = config
-        _config.dataRowLength = config.data.length.toString()
+        });*/
+        //_config = config
+        //_config.dataRowLength = config.data.length.toString()
 
         this.init(config)
         selectModelFun(_config.selectModel)
 
-        var configModels = new configModel(elP,config);
 
-        console.log("config1",configModels);
 
     }
 
     init(config){
 
-        /*var sort = {desc: ">",asc: "<"}, //绘制头部
-            data = config.data,
-         columns = config.columns,headerCssRules = ``,dataResult = {},maxValue = {1:"null"}
-            ,LengthMap = {header:{}},lineModel = config.lineModel || "one" ,
-            headerWidth = {},dataLength = {}, headerContainer =``,showLineNumber = config.showLineNumber || false,
-            selectRowCheck = config.selectRowCheck || false,selectModel = config.selectRowCheck || 'default',
-            dataRowLength = config.data.length.toString()
-        ;*/
-
-        /*var config = {
-            "lineModel":config.lineModel || "one",
-            "showLineNumber" : config.showLineNumber || false,
-            "checkbox": config.checkbox || false,
-            "dataRowLength": config.data.length.toString(),
-            "sort" : config.sort || null,
-            "maxLineLength" : config.maxLineLength || undefined,
-            "fixedHeader": config.fixedHeader
-        }
-
-             console.log("config",config,"_config",_config)
-        */
         tableRenderHeader()
 
         var configItems = {}
