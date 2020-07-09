@@ -401,9 +401,11 @@ const tableRenderHeader = function(){
 
         cellSize += 30
 
-        if(_configModel.config === "one"){
+        if(_configModel.config.lineModel === "one"){
 
             var width = parseInt(_configModel.config.dataRowLength.render("table-tabulation-cell-line,one-line-fixed-height,space-nowrap,hide-surplus-text,margin-right-left").width);
+
+            console.log("width",width);
 
             headerCssRules += `
                     .cell-check-box-offset{
@@ -574,12 +576,14 @@ const checkLineSort = function () {
 
 const tableRenderDataRow = function (rowData,config) {
 
+   var sort = {desc: ">",asc: "<"}
+
     /*var hashDateMap = {},lineModel = config.lineModel || 'one',  sort = {desc: ">",asc: "<"}, //绘制头部
         dataLength = {},configItems = config.configItems ,showLineNumber = config.showLineNumber || false,
         dataResult = {},fixedHeader = config.fixedHeader || false,maxLineLength = config.maxLineLength || undefined,
         maxHeight = undefined,cellScrollBar = config.maxLineLength || false*/
 
-    if(!isNull(_configModel.sort)){
+    if(!isNull(_configModel.config.sort)){
         for (var i = 0; i < rowData.length - 1; i++) {
             // 内层循环,控制比较的次数，并且判断两个数的大小
             for (var j = 0; j < rowData.length - 1 - i; j++) {
@@ -625,7 +629,7 @@ const tableRenderDataRow = function (rowData,config) {
 
             for (let itemKey in item) {
 
-                if(itemKey === "config" || itemKey === "index"){
+                if(itemKey === "config" || itemKey === "index"  || itemKey === 'd_index'){
                     continue
                 }
 
@@ -1278,22 +1282,22 @@ const rowDataStructureInit = function () {
 
     linevisualcontainer.appendChild(lineFixedVisualContainer);
 
-    if(_config.sort){
-        for (var i = 0; i < _config.data.length - 1; i++) {
+    if(_configModel.config.sort){
+        for (var i = 0; i < _configModel.data.length - 1; i++) {
             // 内层循环,控制比较的次数，并且判断两个数的大小
-            for (var j = 0; j < _config.data.length - 1 - i; j++) {
+            for (var j = 0; j < _configModel.data.length - 1 - i; j++) {
                 // 白话解释：如果前面的数大，放到后面(当然是从小到大的冒泡排序)
-                if(typeof _config.data[j][_config.sort.field] === "number"){
-                    if(eval(_config.data[j][_config.sort.field] + sort[_config.sort.type || "desc"] + _config.data[j + 1][_config.sort.field])){
-                        let temp = _config.data[j];
-                        _config.data[j] = _config.data[j + 1];
-                        _config.data[j + 1] = temp;
+                if(typeof _configModel.data[j][_configModel.config.sort.field] === "number"){
+                    if(eval(_configModel.data[j][_configModel.config.sort.field] + sort[_configModel.config.sort.type || "desc"] + _configModel.data[j + 1][_configModel.config.sort.field])){
+                        let temp = _configModel.data[j];
+                        _configModel.data[j] = _configModel.data[j + 1];
+                        _configModel.data[j + 1] = temp;
                     }
                 }else{
-                    if(eval(_config.data[j][_config.sort.field].length + sort[_config.sort.type || "desc"] + _config.data[j + 1][_config.sort.field].length)){
-                        let temp = _config.data[j];
-                        _config.data[j] = _config.data[j + 1];
-                        _config.data[j + 1] = temp;
+                    if(eval(_configModel.data[j][_configModel.config.sort.field].length + sort[_configModel.config.sort.type || "desc"] + _configModel.data[j + 1][_configModel.config.sort.field].length)){
+                        let temp = _configModel.data[j];
+                        _configModel.data[j] = _configModel.data[j + 1];
+                        _configModel.data[j + 1] = temp;
                     }
                 }
             }
@@ -1305,7 +1309,7 @@ const rowDataStructureInit = function () {
     //console.log("_config.data 0",_config.data[0]);
     //console.log("_config.data 2",_config.data);
 
-    _config.data.forEach(function (item,index) {
+    _configModel.data.forEach(function (item,index) {
 
         var arr = {};
         //var random = genId()
@@ -1320,32 +1324,32 @@ const rowDataStructureInit = function () {
 
         dataMap[random].rowIndex = index
 
-        if(_config.lineModel === "auto"){
+        if(_configModel.config.lineModel === "auto"){
 
             dataMap[random].maxVal = 0
 
             var fieldData = {}
 
-            if(_config.maxLineLength && _config.maxLineLength > 1){
-                maxHeight = _config.maxLineLength * 25
+            if(_configModel.config.maxLineLength && _configModel.config.maxLineLength > 1){
+                maxHeight = _configModel.config.maxLineLength * 25
             }
 
             var config = {}
 
             for (let itemKey in item) {
 
-                if(itemKey === "config" || itemKey === "index"){
+                if(itemKey === "config" || itemKey === "index" || itemKey ==='d_index'){
                     config = item[itemKey]
                     continue
                 }
 
-                if(_config.configItems[itemKey].replace
-                    && typeof _config.configItems[itemKey].replace === "function"
-                    && typeof _config.configItems[itemKey].replace(item[itemKey]) !== "undefined"
-                    && typeof _config.configItems[itemKey].replace(item[itemKey]) !== "object" ){
+                if(_configModel.config.configItems[itemKey].replace
+                    && typeof _configModel.config.configItems[itemKey].replace === "function"
+                    && typeof _configModel.config.configItems[itemKey].replace(item[itemKey]) !== "undefined"
+                    && typeof _configModel.config.configItems[itemKey].replace(item[itemKey]) !== "object" ){
 
-                    var heightCell = _config.configItems[itemKey].replace(item[itemKey]).toString().render("hide-surplus-text,horizontally," +
-                        "word-break-all,table-tabulation-cell-line,text-overall-situation",`width:${_config.configItems[itemKey].width}px`).height
+                    var heightCell = _configModel.config.configItems[itemKey].replace(item[itemKey]).toString().render("hide-surplus-text,horizontally," +
+                        "word-break-all,table-tabulation-cell-line,text-overall-situation",`width:${_configModel.config.configItems[itemKey].width}px`).height
 
                     var ellipsis = false;
 
@@ -1360,14 +1364,14 @@ const rowDataStructureInit = function () {
 
                     }
 
-                    if(_config.lineModel === "auto" && _config.maxLineLength > 1
-                        && _config.cellScrollBar && _config.cellScrollBar === "true"){
+                    if(_configModel.config.lineModel === "auto" && _configModel.config.maxLineLength > 1
+                        && _configModel.config.cellScrollBar && _configModel.config.cellScrollBar === "true"){
                         ellipsis = false
                     }
 
                     fieldData[itemKey] = {
                         native:item[itemKey],
-                        text: _config.configItems[itemKey].replace(item[itemKey]),
+                        text: _configModel.config.configItems[itemKey].replace(item[itemKey]),
                         heightLength: heightCell,
                         heightAbsolute:true,
                         heightRelative:false,
@@ -1377,7 +1381,7 @@ const rowDataStructureInit = function () {
                 }else{
 
                     var heightCell = item[itemKey].toString().render("hide-surplus-text,horizontally,word-break-all," +
-                        "table-tabulation-cell-line,text-overall-situation",`width:${_config.configItems[itemKey].width}px`).height;
+                        "table-tabulation-cell-line,text-overall-situation",`width:${_configModel.config.configItems[itemKey].width}px`).height;
 
                     var ellipsis = false;
 
@@ -1391,8 +1395,8 @@ const rowDataStructureInit = function () {
                         dataMap[random].maxVal = heightCell
                     }
 
-                    if(_config.lineModel === "auto" && _config.maxLineLength > 1
-                        && _config.cellScrollBar && _config.cellScrollBar === "true"){
+                    if(_configModel.config.lineModel === "auto" && _configModel.config.maxLineLength > 1
+                        && _configModel.config.cellScrollBar && _configModel.config.cellScrollBar === "true"){
                         ellipsis = false
                     }
 
@@ -1430,8 +1434,8 @@ const rowDataStructureInit = function () {
 
 
 
-        if(_config.lineModel === "one"){
-            if(_config.showLineNumber){
+        if(_configModel.config.lineModel === "one"){
+            if(_configModel.config.showLineNumber){
 
                 var showLineNumberdomCells = `
                          <div class="table-tabulation-cell-line 
@@ -1466,7 +1470,7 @@ const rowDataStructureInit = function () {
 
         }else{
 
-            if(_config.showLineNumber){
+            if(_configModel.config.showLineNumber){
 
                 var showLineNumberdomCells = `
                          <div class="table-tabulation-cell-line  
@@ -1490,7 +1494,7 @@ const rowDataStructureInit = function () {
             var domCells = `<div class="table-tabulation-cell-line cell-header-check-box
                           heightAbsolute horizontally word-break-all
                             hide-surplus-text  FlexContainer height-fill-parant
-                            ${_config.showLineNumber ? `cell-check-box-offset`: ``}
+                            ${_configModel.config.showLineNumber ? `cell-check-box-offset`: ``}
                             >
                                <div class="one-line-fixed-height FlexItem">
                                 <span class="iconfont icon iconcheck-box-outline-bl ${cellConfig && cellConfig.disable && cellConfig.disable === "true" ? `cell-check-box-disable` : ``} " 
@@ -1508,24 +1512,24 @@ const rowDataStructureInit = function () {
 
         for(let cell in item){
 
-            if(cell === "config" || cell === "index") {
+            if(cell === "config" || cell === "index" || cell === "d_index") {
                 continue
             }
             var domCell = `<div class="table-tabulation-cell-line cell-header-${cell} 
-                          ${_config.lineModel === "auto" ? `${dataMap[random]["field"][cell].heightRelative ? `heightRelative` : `heightAbsolute`} FlexContainer horizontally word-break-all` : `one-line-fixed-height space-nowrap`}
-                            hide-surplus-text " > ${_config.lineModel === "auto" ? `<div class="FlexItem line-Ellipsis text-row-line-sdtandard" 
+                          ${_configModel.config.lineModel === "auto" ? `${dataMap[random]["field"][cell].heightRelative ? `heightRelative` : `heightAbsolute`} FlexContainer horizontally word-break-all` : `one-line-fixed-height space-nowrap`}
+                            hide-surplus-text " > ${_configModel.config.lineModel === "auto" ? `<div class="FlexItem line-Ellipsis text-row-line-sdtandard" 
                           style="overflow:auto;max-height: ${dataMap[random]["field"].maxVal}px">` : ``} `
 
-            if (_config.configItems[cell].replace && typeof _config.configItems[cell].replace === "function"
-                && typeof _config.configItems[cell].replace(item[cell]) !== "undefined"
-                && typeof _config.configItems[cell].replace(item[cell]) !== "object") {
-                domCell += typeof _config.configItems[cell].replace(item[cell]) !== "undefined" ? _config.configItems[cell].replace(item[cell]) : item[cell]
+            if (_configModel.config.configItems[cell].replace && typeof _configModel.config.configItems[cell].replace === "function"
+                && typeof _configModel.config.configItems[cell].replace(item[cell]) !== "undefined"
+                && typeof _configModel.config.configItems[cell].replace(item[cell]) !== "object") {
+                domCell += typeof _configModel.config.configItems[cell].replace(item[cell]) !== "undefined" ? _configModel.config.configItems[cell].replace(item[cell]) : item[cell]
             } else {
                 domCell += item[cell]
             }
 
-            domCell += ` ${_config.lineModel === "auto" ? `</div>` : ``}
-                      ${_config.lineModel === "auto" ?  `${dataMap[random]["field"][cell].ellipsis ? `<div class="text-ellipsis" ellipsis="${cell}-${random}">...</div>`: ``}` : ``}
+            domCell += ` ${_configModel.config.lineModel === "auto" ? `</div>` : ``}
+                      ${_configModel.config.lineModel === "auto" ?  `${dataMap[random]["field"][cell].ellipsis ? `<div class="text-ellipsis" ellipsis="${cell}-${random}">...</div>`: ``}` : ``}
                     </div>`
 
             Object.defineProperty(arr, cell, {
@@ -1544,12 +1548,12 @@ const rowDataStructureInit = function () {
         //dataResult[index] = item
 
         tableBodyTabulation.classList.add("table-body-tabulation")
-        if(_config.lineModel === "auto"){
+        if(_configModel.config.lineModel === "auto"){
             tableBodyTabulation.classList.add("heightRelative")
         }
         tableBodyTabulation.classList.add("header-cell")
 
-        for (let configItemsKey in _config.configItems) {
+        for (let configItemsKey in _configModel.config.configItems) {
             if(arr[configItemsKey]){
                 Dom.strCastDom(arr[configItemsKey],tableBodyTabulation)
             }else{
@@ -1559,7 +1563,7 @@ const rowDataStructureInit = function () {
             }
         }
 
-        if(_config.fixedHeader){
+        if(_configModel.config.fixedHeader){
             //linevisualcontainer.appendChild(tableBodyTabulation)
             lineFixedVisualContainer.appendChild(tableBodyTabulation)
         }else{
@@ -1713,8 +1717,8 @@ const tableStyleFun = function () {
 
     var lineVisualContainer = document.querySelector(".line-visual-container");
 
-    if(_config.lineModel === 'one'){
-        fiexdRowCellScrollContainer.style.height = ((_config.data.length + 1) * 40 ) + 'px'
+    if(_configModel.config.lineModel === 'one'){
+        fiexdRowCellScrollContainer.style.height = ((_configModel.config.data.length + 1) * 40 ) + 'px'
     }else{
         fiexdRowCellScrollContainer.style.height = dataMapSource.allHeight  + 'px'
     }
@@ -1723,14 +1727,14 @@ const tableStyleFun = function () {
     //console.log("dataMapSource lenght",_config.data.length);
     console.log("dataMapSource lenght",Object.keys(dataMapSource).length);
 
-    if(_config.lineModel === 'one'){
+    if(_configModel.config.lineModel === 'one'){
         configPosition(visualDom,{top:assistor.scrollTop})
         initScrollRow()
 
         assistor.addEventListener('scroll', function(event) {
             configPosition(visualDom,{top:assistor.scrollTop})
             lineVisualContainer.style.paddingTop = (_configPosition.yStart * 40 ) + "px" ;
-            if(_config.lineModel === 'one'){
+            if(_configModel.config.lineModel === 'one'){
                 renderScrollRow()
             }
         })
@@ -1775,11 +1779,11 @@ const tableStyleFun = function () {
 const initScrollRow = function(){
     var lineFiexdVisualContainer = document.querySelector(".line-fiexd-visual-container");
 
-    var initData = _config.data ? _config.data.slice(_configPosition.yStart, _configPosition.yEnd) : [];
+    var initData = _configModel.config.data ? _configModel.config.data.slice(_configPosition.yStart, _configPosition.yEnd) : [];
 
     for(var index in initData){
         //console.log(index,initData[index].rowIndex)
-        addRowForTransform(md5(JSON.stringify(initData[index])),initData[index],lineFiexdVisualContainer,initData[index].index,false)
+        addRowForTransform(md5(JSON.stringify(initData[index])),initData[index],lineFiexdVisualContainer,initData[index].d_index,false)
     }
 
 }
@@ -1809,7 +1813,7 @@ const rowSwitchCalculation = function(){
             var addRow = _configModel.containerDOM.querySelector("div[data-index='" + parseInt( e + 1) +"']");
             
             if(!addRow){
-                addRowForTransform(md5(JSON.stringify(_config.data[e ])),_config.data[e],lineFiexdVisualContainer,_config.data[e].index,false)
+                addRowForTransform(md5(JSON.stringify(_configModel.data[e ])),_configModel.data[e],lineFiexdVisualContainer,_configModel.data[e].d_index,false)
             }
 
         }
@@ -1822,7 +1826,7 @@ const rowSwitchCalculation = function(){
             var addRow = _configModel.containerDOM.querySelector("div[data-index='" + parseInt( s + 1) +"']");
 
             if(!addRow){
-                addRowForTransform(md5(JSON.stringify(_config.data[s])),_config.data[s],lineFiexdVisualContainer,_config.data[s].index,true)
+                addRowForTransform(md5(JSON.stringify(_configModel.data[s])),_configModel.data[s],lineFiexdVisualContainer,_configModel.data[s].d_index,true)
             }
 
         }
@@ -1847,8 +1851,8 @@ const addRowForTransform = function(dataHash,data,container,rowIndex,before){
 
     var cellConfig = data["config"] || {}
 
-    if(_config.lineModel === "one"){
-        if(_config.showLineNumber){
+    if(_configModel.config.lineModel === "one"){
+        if(_configModel.config.showLineNumber){
 
             var showLineNumberdomCells = `
                          <div class="table-tabulation-cell-line 
@@ -1883,7 +1887,7 @@ const addRowForTransform = function(dataHash,data,container,rowIndex,before){
 
     }else{
 
-        if(_config.showLineNumber){
+        if(_configModel.config.showLineNumber){
 
             var showLineNumberdomCells = `
                          <div class="table-tabulation-cell-line  
@@ -1925,24 +1929,24 @@ const addRowForTransform = function(dataHash,data,container,rowIndex,before){
 
     for(let cell in dataField){
 
-        if(cell === "config" || cell === "index") {
+        if(cell === "config" || cell === "index" || cell === 'd_index') {
             continue
         }
         var domCell = `<div class="table-tabulation-cell-line cell-header-${cell} 
-                          ${_config.lineModel === "auto" ? `${dataField[cell].heightRelative ? `heightRelative` : `heightAbsolute`} FlexContainer horizontally word-break-all` : `one-line-fixed-height space-nowrap`}
-                            hide-surplus-text " > ${_config.lineModel === "auto" ? `<div class="FlexItem line-Ellipsis text-row-line-sdtandard" 
+                          ${_configModel.config.lineModel === "auto" ? `${dataField[cell].heightRelative ? `heightRelative` : `heightAbsolute`} FlexContainer horizontally word-break-all` : `one-line-fixed-height space-nowrap`}
+                            hide-surplus-text " > ${_configModel.config.lineModel === "auto" ? `<div class="FlexItem line-Ellipsis text-row-line-sdtandard" 
                           style="overflow:auto;max-height: ${data.maxVal}px">` : ``} `
 
-        if (_config.configItems[cell].replace && typeof _config.configItems[cell].replace === "function"
-            && typeof _config.configItems[cell].replace(dataField[cell]) !== "undefined"
-            && typeof _config.configItems[cell].replace(dataField[cell]) !== "object") {
-            domCell += typeof _config.configItems[cell].replace(dataField[cell]) !== "undefined" ? _config.configItems[cell].replace(dataField[cell]) : dataField[cell]
+        if (_configModel.config.configItems[cell].replace && typeof _configModel.config.configItems[cell].replace === "function"
+            && typeof _configModel.config.configItems[cell].replace(dataField[cell]) !== "undefined"
+            && typeof _configModel.config.configItems[cell].replace(dataField[cell]) !== "object") {
+            domCell += typeof _configModel.config.configItems[cell].replace(dataField[cell]) !== "undefined" ? _configModel.config.configItems[cell].replace(dataField[cell]) : dataField[cell]
         } else {
             domCell += dataField[cell]
         }
 
-        domCell += ` ${_config.lineModel === "auto" ? `</div>` : ``}
-                      ${_config.lineModel === "auto" ?  `${dataField[cell].ellipsis ? `<div class="text-ellipsis" ellipsis="${cell}-${dataHash}">...</div>`: ``}` : ``}
+        domCell += ` ${_configModel.config.lineModel === "auto" ? `</div>` : ``}
+                      ${_configModel.config.lineModel === "auto" ?  `${dataField[cell].ellipsis ? `<div class="text-ellipsis" ellipsis="${cell}-${dataHash}">...</div>`: ``}` : ``}
                     </div>`
 
         Object.defineProperty(arr, cell, {
@@ -1962,12 +1966,12 @@ const addRowForTransform = function(dataHash,data,container,rowIndex,before){
     //dataResult[index] = item
 
     tableBodyTabulation.classList.add("table-body-tabulation")
-    if(_config.lineModel === "auto"){
+    if(_configModel.config.lineModel === "auto"){
         tableBodyTabulation.classList.add("heightRelative")
     }
     tableBodyTabulation.classList.add("header-cell")
 
-    for (let configItemsKey in _config.configItems) {
+    for (let configItemsKey in _configModel.config.configItems) {
         if(arr[configItemsKey]){
             Dom.strCastDom(arr[configItemsKey],tableBodyTabulation)
         }else{
@@ -2065,7 +2069,8 @@ class TableGrid {
         //_config.dataRowLength = config.data.length.toString()
 
         this.init(config)
-        selectModelFun(_config.selectModel)
+        tableStyleFun()
+        selectModelFun(_configModel.config.selectModel)
 
 
 
@@ -2077,13 +2082,13 @@ class TableGrid {
 
         tableRenderDataRow(_configModel.data,_configModel.config)
 
-        this.checkBoxInit(_configModel.config.selectRowCheck)
+        if(_configModel.config.checkbox){
+            this.checkBoxInit(_configModel.config.selectRowCheck)
+        }
 
     }
 
     checkBoxInit(selectRowCheck){
-
-        tableStyleFun()
 
         checkBoxHookLine();
 
